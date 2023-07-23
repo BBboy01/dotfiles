@@ -158,6 +158,26 @@ if [[ $? = 0 ]]; then
 fi
 
 # ###########################################################
+bot "fish setup"
+# ###########################################################
+require_brew fish
+
+# symslink fish config
+FISH_CONF="$HOME/.config/fish"
+running "Configuring zsh"
+if [ ! -d "FISH_CONF" ]; then
+  read -r -p "Seems like your fish config file exist,do you want delete it? [y|N] " response
+  if [[ $response =~ (y|yes|Y) ]]; then
+    rm -rf $HOME/.config/fish
+    action "link fish and set fish as default shell"
+    ln -s ~/.dotfiles/fish ~/.config/fish
+    chsh -s /opt/homebrew/bin/fish
+  else
+    ok "skipped"
+  fi
+fi
+
+# ###########################################################
 bot "Install fonts"
 # ###########################################################
 read -r -p "Install fonts? [y|N] " response
@@ -246,6 +266,14 @@ read -r -p "Do you want install alacritty? [y|N] " responseinstall
 if [[ $response =~ (y|yes|Y) ]];then
   require_cask alacritty
   ln -s ~/.dotfiles/config/alacritty ~/.config/alacritty
+else
+  ok "skipped"
+fi
+
+read -r -p "Do you want install karabiner-elements? [y|N] " responseinstall
+if [[ $response =~ (y|yes|Y) ]];then
+  require_cask karabiner-elements
+  ln -s ~/.dotfiles/config/karabiner ~/.config/karabiner
 else
   ok "skipped"
 fi
