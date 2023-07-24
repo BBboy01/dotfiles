@@ -225,7 +225,6 @@ ok
 action "Install yabai and skhd"
 brew install koekeishiya/formulae/yabai
 brew install koekeishiya/formulae/skhd
-sudo yabai --install-sa
 sudo yabai --load-sa
 ln -s "${HOME}/.dotfiles/yabai/yabairc" "${HOME}/.yabairc"
 ln -s "${HOME}/.dotfiles/yabai/skhdrc" "${HOME}/.skhdrc"
@@ -247,14 +246,14 @@ requier_brew rust-analyzer
 require_brew lua-language-server
 require_brew stylua
 
-pnpm add -g eslint
-pnpm add -g typescript
-pnpm add -g typescript-language-server
-pnpm add -g prettier
-pnpm add -g vscode-langservers-extracted
-pnpm add -g bash-language-server
-pnpm add -g @angular/language-server
-pnpm add -g vite
+pnpm add -g \
+  eslint \
+  typescript \
+  typescript-language-server \
+  prettier vscode-langservers-extracted \
+  bash-language-server \
+  @angular/language-server@15 \
+  vite
 
 
 # ###########################################################
@@ -264,7 +263,7 @@ require_brew raycast
 
 read -r -p "Do you want install alacritty? [y|N] " responseinstall
 if [[ $response =~ (y|yes|Y) ]];then
-  require_cask alacritty
+  require_cask alacritty --no-quarantine
   ln -s ~/.dotfiles/config/alacritty ~/.config/alacritty
 else
   ok "skipped"
