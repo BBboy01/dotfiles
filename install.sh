@@ -247,14 +247,18 @@ require_brew lua-language-server
 require_brew stylua
 
 pnpm add -g \
+  vite \
   eslint \
+  prettier \
+  emmet-ls \
   typescript \
-  typescript-language-server \
-  prettier vscode-langservers-extracted \
+  @vue/language-server \
   bash-language-server \
+  typescript-language-server \
   @angular/language-server@15 \
-  vite
-
+  @tailwindcss/language-server \
+  vscode-langservers-extracted \
+  dockerfile-language-server-nodejs \
 
 # ###########################################################
 bot " Install Gui Applications"
