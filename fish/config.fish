@@ -100,12 +100,10 @@ command -qv nvim && alias vim nvim
 
 set -gx EDITOR nvim
 
-set -gx PATH bin $PATH
+set -gx PATH /bin $PATH
 set -gx PATH ~/bin $PATH
 set -gx PATH ~/.local/bin $PATH
 set -gx PATH ~/.cargo/bin $PATH
-set -gx PATH ~/.bun/bin $PATH
-set -gx PATH ~/.bun/bin $PATH
 
 # proxy
 function proxy
@@ -122,17 +120,11 @@ function ssh_proxy
     ssh -o ProxyCommand="nc -X 5 -x 127.0.0.1:7890 %h %p" $argv
 end
 
-# NodeJS
-set -gx PATH node_modules/.bin $PATH
-
 # Visual Studio Code
 function code
   set location "$PWD/$argv"
   open -n -b "com.microsoft.VSCode" --args $location
 end
-
-# Environment Variables
-# fish_add_path /usr/local/sbin
 
 # Homebrew
 fish_add_path /opt/homebrew/bin
@@ -157,3 +149,4 @@ set LOCAL_CONFIG (dirname (status --current-filename))/config-local.fish
 if test -f $LOCAL_CONFIG
   source $LOCAL_CONFIG
 end
+
