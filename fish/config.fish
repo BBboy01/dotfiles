@@ -100,10 +100,14 @@ command -qv nvim && alias vim nvim
 
 set -gx EDITOR nvim
 
-set -gx PATH /bin $PATH
 set -gx PATH ~/bin $PATH
 set -gx PATH ~/.local/bin $PATH
 set -gx PATH ~/.cargo/bin $PATH
+set -gx PATH ~/.bun/bin $PATH
+
+# cwd PATH
+set -gx PATH bin $PATH
+set -gx PATH node_modules/.bin $PATH
 
 # proxy
 function proxy
@@ -149,4 +153,3 @@ set LOCAL_CONFIG (dirname (status --current-filename))/config-local.fish
 if test -f $LOCAL_CONFIG
   source $LOCAL_CONFIG
 end
-

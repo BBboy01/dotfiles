@@ -248,7 +248,7 @@ require_brew stylua
 
 pnpm add -g \
   vite \
-  eslint \
+  eslint_d \
   prettier \
   emmet-ls \
   typescript \
