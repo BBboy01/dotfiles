@@ -15,8 +15,10 @@ set -g theme_hostname always
 # Aliases
 alias ls "ls -p -G"
 alias la "ls -A"
-alias ll "exa -l -g --icons"
+alias ll "exa -l -g --icons --git"
 alias lla "ll -a"
+alias tree "exa --tree --icons -g"
+alias treel "ll --tree --git"
 
 
 alias -s md='open -a /Applications/Typora.app' >/dev/null
