@@ -265,6 +265,14 @@ bot " Install Gui Applications"
 # ###########################################################
 require_brew raycast
 
+read -r -p "Do you want install kitty? [y|N] " responseinstall
+if [[ $response =~ (y|yes|Y) ]];then
+  require_cask kitty
+  ln -s ~/.dotfiles/config/kitty ~/.config/kitty
+else
+  ok "skipped"
+fi
+
 read -r -p "Do you want install alacritty? [y|N] " responseinstall
 if [[ $response =~ (y|yes|Y) ]];then
   require_cask alacritty --no-quarantine
