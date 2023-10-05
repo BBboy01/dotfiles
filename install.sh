@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # include my library helpers for colorized echo and require_brew, etc
-source ./util.sh
+source "$(dirname "$0")/utils.sh"
 
 # @see https://apple.stackexchange.com/questions/10467/how-to-increase-keyboard-key-repeat-rate-on-os-x
 defaults write NSGlobalDomain KeyRepeat -int 1
@@ -242,7 +242,7 @@ git clone https://github.com/BBBoy01/nvim ~/.config/nvim
 ok
 
 bot "install develop"
-requier_brew rust-analyzer
+require_brew rust-analyzer
 require_brew lua-language-server
 require_brew stylua
 
@@ -254,6 +254,7 @@ pnpm add -g \
   typescript \
   @vue/language-server \
   bash-language-server \
+  yaml-language-server \
   typescript-language-server \
   @angular/language-server@15 \
   @tailwindcss/language-server \
