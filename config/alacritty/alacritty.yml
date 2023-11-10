@@ -10,7 +10,6 @@ window:
     y: 10
   decorations: buttonless
   opacity: 0.95
-  option_as_alt: Both
 
 font:
   normal:
