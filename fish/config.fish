@@ -2,7 +2,7 @@ set -x LANG en_US.UTF-8
 
 set fish_greeting ""
 
-set -gx TERM xterm-256color
+set -gx TERM alacritty
 
 # Theme
 set -g theme_color_scheme terminal-dark
