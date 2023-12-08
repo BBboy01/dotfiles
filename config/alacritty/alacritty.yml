@@ -1,10 +1,8 @@
 window:
+  option_as_alt: Both
   dimensions:
     columns: 180
     lines: 40
-  position:
-    x: 550
-    y: 200
   padding:
     x: 10
     y: 10
