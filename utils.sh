@@ -38,6 +38,32 @@ function error() {
     echo -e "$COL_RED[error]$COL_RESET "$1
 }
 
+
+function log() {
+  echo -e "\033[1;33m$1\033[0m"
+}
+
+function log_error() {
+  echo -e "\033[1;31m$1\033[0m"
+}
+
+function log_success() {
+  echo -e "\033[1;32m$1\033[0m"
+}
+
+function log_info() {
+  echo -e "\033[1;35m$1\033[0m"
+}
+
+function log_with_header() {
+  length=$(echo "$1" | awk '{print length}')
+  delimiter=$(head -c $length </dev/zero | tr '\0' "${2:-=}")
+
+  log_info "$delimiter"
+  log_info "$1"
+  log_info "$delimiter"
+}
+
 ###
 # convienience methods for requiring installed software
 ###

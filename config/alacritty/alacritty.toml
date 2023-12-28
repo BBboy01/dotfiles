@@ -1,0 +1,104 @@
+[window]
+blur = true
+opacity = 0.75
+option_as_alt = "Both"
+decorations = "Buttonless"
+padding = { x = 10, y = 10 }
+
+[font]
+size = 14.0
+offset = { x = 0, y = 10 }
+glyph_offset = { x = 0, y = 4 }
+normal = { family = "Hack Nerd Font Mono", style = "Regular" }
+bold = { family = "Hack Nerd Font Mono", style = "Bold" }
+italic = { family = "Hack Nerd Font Mono", style = "Italic" }
+bold_italic = { family = "Hack Nerd Font Mono", style = "Bold Italic" }
+
+[selection]
+save_to_clipboard = true
+
+[mouse]
+hide_when_typing = true
+
+[[hints.enabled]]
+command = "open"
+hyperlinks = true
+post_processing = true
+
+[colors.cursor]
+cursor = "#839496"
+
+[colors.primary]
+background = "#002129"
+foreground = "#839496"
+
+[colors.normal]
+black = "#110f18"
+blue = "#a277ff"
+cyan = "#61ffca"
+green = "#61ffca"
+magenta = "#a277ff"
+red = "#ff6767"
+white = "#edecee"
+yellow = "#ffca85"
+
+[colors.bright]
+black = "#4d4d4d"
+blue = "#a277ff"
+cyan = "#61ffca"
+green = "#61ffca"
+magenta = "#a277ff"
+red = "#ff6767"
+white = "#edecee"
+yellow = "#ffca85"
+
+[[keyboard.bindings]]
+action = "Quit"
+key = "W"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "N"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "T"
+mods = "Command"
+
+[[keyboard.bindings]]
+chars = "\u001Bb"
+key = "Left"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001Bf"
+key = "Right"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u0001"
+key = "Left"
+mods = "Command"
+
+[[keyboard.bindings]]
+chars = "\u0005"
+key = "Right"
+mods = "Command"
+
+[[keyboard.bindings]]
+chars = "\u001B\u007F"
+key = "Back"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u0015"
+key = "Back"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "LBracket"
+mods = "Alt"
+
