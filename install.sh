@@ -244,7 +244,9 @@ ok
 bot "install develop"
 require_brew rust-analyzer
 require_brew lua-language-server
+require_brew luacheck
 require_brew stylua
+require_brew dprint
 
 pnpm add -g \
   vite \

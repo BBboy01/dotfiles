@@ -101,4 +101,3 @@ mods = "Command"
 action = "ToggleViMode"
 key = "LBracket"
 mods = "Alt"
-
