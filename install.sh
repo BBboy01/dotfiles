@@ -70,6 +70,7 @@ brew doctor
 # skip those GUI clients, git command-line all the way
 action "install the latest version of git"
 require_brew git
+require_brew difftastic
 
 bot "OK, now I am going to update the .gitconfig for your user info:"
 
