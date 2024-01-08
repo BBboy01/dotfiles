@@ -2,8 +2,9 @@
 blur = true
 opacity = 0.75
 option_as_alt = "Both"
+dynamic_padding = true
 decorations = "Buttonless"
-padding = { x = 10, y = 10 }
+padding = { x = 2, y = 0 }
 
 [font]
 size = 14.0
@@ -44,13 +45,6 @@ yellow = "#ffca85"
 
 [colors.bright]
 black = "#4d4d4d"
-blue = "#a277ff"
-cyan = "#61ffca"
-green = "#61ffca"
-magenta = "#a277ff"
-red = "#ff6767"
-white = "#edecee"
-yellow = "#ffca85"
 
 [[keyboard.bindings]]
 action = "Quit"
