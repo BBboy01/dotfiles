@@ -1,3 +1,4 @@
+# -*- mode: gitignore; -*-
 #########
 # MacOS #
 #########
@@ -120,3 +121,10 @@ Xtest_*
 Xviminfo
 $XDG_DATA_*
 doc/tags
+.swp
+Xtest_logging
+Xviminfo
+.tmux/plugins/*
+*/debug.h
+*/neovim/min_repro*
+.luarc.json
