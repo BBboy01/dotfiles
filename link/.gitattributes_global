@@ -1,0 +1,8 @@
+#############
+# Lock File #
+#############
+package-lock.json diff=nodiff
+yarn.lock diff=nodiff
+pnpm-lock.yaml diff=nodiff
+bun.lockb diff=nodiff
+lazy-lock.json diff=nodiff
