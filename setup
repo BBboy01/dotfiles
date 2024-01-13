@@ -8,7 +8,7 @@ dotfiles_dir="$HOME/.dotfiles"
 home_config_dir="$HOME/.config"
 
 echo "link config file"
-target_folders=("alacritty" "kitty")
+target_folders=("alacritty" "kitty" "btop")
 for folder_name in "${target_folders[@]}"; do
   folder="$dotfiles_dir/config/$folder_name"
   target_folder="$home_config_dir/$folder_name"
