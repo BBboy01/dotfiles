@@ -25,25 +25,18 @@ done
 # ###########################################################
 # Install non-brew various tools (PRE-BREW Installs)
 # ###########################################################
-echo "ensuring build/install tools are available"
 if ! xcode-select --print-path &> /dev/null; then
+  echo "installing XCode Command Line Tools"
   # Prompt user to install the XCode Command Line Tools
   xcode-select --install &> /dev/null
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Wait until the XCode Command Line Tools are installed
-  until xcode-select --print-path &> /dev/null; do
-    sleep 5
-  done
-
   if [[ $? != 0 ]]; then
-    echo 'XCode Command Line Tools Installed'
+    echo 'XCode Command Line Tools installed'
   else
-    echo $? 'XCode Command Line Tools Install Failed!!!'
+    echo $? 'XCode Command Line Tools install failed!!!'
   fi
-  # Prompt user to agree to the terms of the Xcode license
-  # https://github.com/alrra/dotfiles/issues/10
-  sudo xcodebuild -license
-  echo $? 'Agree with the XCode Command Line Tools licence'
+else
+  echo "XCode Command Line Tools already installed"
 fi
 
 # ###########################################################
@@ -57,6 +50,8 @@ if [[ $? != 0 ]]; then
     echo "unable to install homebrew, script $0 abort!"
     exit 2
   fi
+else
+  echo "homebrew already installed"
 fi
 
 ###########################################################
@@ -80,20 +75,6 @@ install_package() {
   local package_manager="$1"
   local package="$2"
   case "$package_manager" in
-    "brew")
-      if brew list "$package" &> /dev/null; then
-        echo "Package '$package' is already installed."
-      else
-        brew install "$package"
-        if [ $? -eq 0 ]; then
-          echo "Successfully installed '$package'."
-        else
-          echo "Error installing '$package'."
-          exit 1
-        fi
-      fi
-      ;;
-
     "pnpm")
       if pnpm ls -g "$package" &> /dev/null; then
         echo "Package '$package' is already installed globally."
@@ -116,71 +97,14 @@ install_package() {
 }
 
 echo "install packages"
-brew tap homebrew/cask-fonts
-brew_packages=(
-  "git"
-  "difftastic"
-  "git-delta"
-  "make"
-  "cmake"
-  "llvm"
-  "curl"
-  "ripgrep"
-  "ninja"
-  "gum"
-  "fish"
-  "jq"
-  "tokei"
-  "bat"
-  "zoxide"
-  "fzf"
-  "tldr"
-  "tmux"
-  "btop"
-  "yazi"
-  "bun"
-  "pnpm"
-  "stylua"
-  "dprint"
-  "lua"
-  "luarocks"
-  "luacheck"
-  "rustup-init"
-  "rust-analyzer"
-  "lua-language-server"
-  "golang"
-  "gopls"
-  "yabai"
-  "skhd"
-  "font-monaspace"
-  "font-hack-nerd-font"
-  "visual-studio-code"
-  "karabiner-elements"
-  "raycast"
-  "cleanshot"
-  "arc"
-  "firefox"
-  "google-chrome"
-  "qq"
-  "qqmusic"
-  "docker"
-  "wechat"
-  "iina"
-)
-
-brew install alacritty --no-quarantine
 
 # Install Homebrew packages
-for package in "${brew_packages[@]}"; do
-  install_package "brew" "$package"
-done
+brew bundle install --file $dotfiles_dir/Brewfile
 
 # Change to fish
 # chsh -s $(which fish)
 
 # Config git
-git config --global user.name "BBBoy01"
-git config --global user.email "1156678002@qq.com"
 git config --global core.editor "nvim"
 git config --global core.pager "delta"
 git config --global credential.helper store
