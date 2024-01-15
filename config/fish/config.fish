@@ -13,11 +13,11 @@ set -g theme_hostname always
 
 
 # Aliases
-alias ls "ls -p -G"
-alias la "ls -A"
-alias ll "exa -l -g --icons --git"
+alias ls "eza --icons"
+alias la "ls -a"
+alias ll "eza -l -g --icons --git"
 alias lla "ll -a"
-alias tree "exa --tree --icons -g"
+alias tree "eza --tree --icons -g"
 alias treel "ll --tree --git"
 
 
