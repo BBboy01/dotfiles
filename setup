@@ -70,34 +70,6 @@ for file in "$HOME/.dotfiles/link"/*; do
   fi
 done
 
-# Function to install a package with a given package manager
-install_package() {
-  local package_manager="$1"
-  local package="$2"
-  case "$package_manager" in
-    "pnpm")
-      if pnpm ls -g "$package" &> /dev/null; then
-        echo "Package '$package' is already installed globally."
-      else
-        pnpm add -g "$package"
-        if [ $? -eq 0 ]; then
-          echo "Successfully installed '$package' globally."
-        else
-          echo "Error installing '$package' globally."
-          exit 1
-        fi
-      fi
-      ;;
-      
-    *)
-      echo "Unsupported package manager: $package_manager"
-      exit 1
-      ;;
-  esac
-}
-
-echo "install packages"
-
 # Install Homebrew packages
 brew bundle install --file $dotfiles_dir/Brewfile
 
@@ -143,28 +115,24 @@ rustup-init
 # refresh cache
 fc-cache -f -v
 
-# pnpm relate
-pnpm_packages=(
-  "vite"
-  "eslint_d"
-  "prettier"
-  "emmet-ls"
-  "typescript"
-  "@vue/language-server"
-  "bash-language-server"
-  "yaml-language-server"
-  "typescript-language-server"
-  "@angular/language-server@15"
-  "@tailwindcss/language-server"
-  "vscode-langservers-extracted"
-  "dockerfile-language-server-nodejs"
-)
-# Install npm packages globally
-for package in "${npm_packages[@]}"; do
-  install_package "pnpm" "$package"
-done
 # Install lts node
 pnpm env use -g lts
+
+# pnpm relate
+pnpm i -g \
+  "vite" \
+  "eslint_d" \
+  "prettier" \
+  "emmet-ls" \
+  "typescript" \
+  "@vue/language-server" \
+  "bash-language-server" \
+  "yaml-language-server" \
+  "typescript-language-server" \
+  "@angular/language-server@15" \
+  "@tailwindcss/language-server" \
+  "vscode-langservers-extracted" \
+  "dockerfile-language-server-nodejs"
 
 # Init yabai
 sudo yabai --load-sa
