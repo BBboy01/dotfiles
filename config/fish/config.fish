@@ -4,6 +4,8 @@ set fish_greeting ""
 
 set -gx TERM alacritty
 
+set -gx NEOVIDE_TITLE_HIDDEN true
+
 # Theme
 set -g theme_color_scheme terminal-dark
 set -g fish_prompt_pwd_dir_length 1
