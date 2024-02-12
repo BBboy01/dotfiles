@@ -176,6 +176,7 @@ git config --global column.ui auto
 git config --global branch.sort -committerdate
 git config --global gpg.format ssh
 git config --global user.signingKey ~/.ssh/key.pub
+git config --global commit.gpgsign true
 git config --global diff.colormoved default
 git config --global diff.tool difftastic
 git config --global diff.external difft
