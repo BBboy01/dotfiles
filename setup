@@ -173,13 +173,13 @@ git config --global push.autoSetupRemote true
 git config --global merge.conflictstyle diff3
 git config --global fetch.writeCommitGraph true
 git config --global rerere.enabled true
-git config --global column.ui auto
-git config --global branch.sort -committerdate
-git config --global gpg.format ssh
-git config --global user.signingKey ~/.ssh/key.pub
-git config --global commit.gpgsign true
-git config --global maintenance.auto false
-git config --global maintenance.strategy incremental
+git config --global column.ui auto # arrange _branch name_ (`git branch`) with multi-column, defautl is pager
+git config --global branch.sort -committerdate # sort by last commit date descending
+git config --global gpg.format ssh # ssh format gpg signingKey
+git config --global user.signingKey ~/.ssh/key.pub # gpg signingKey file
+git config --global commit.gpgsign true # commit with gigsign
+git config --global maintenance.auto false # start maintenance cronJobs
+git config --global maintenance.strategy incremental # gc: disabled, commit-graph: hourly, prefetch: hourly, loose-objects: daily, incremental-repack: daily
 git config --global diff.colormoved default
 git config --global diff.tool difftastic
 git config --global diff.external difft
