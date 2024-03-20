@@ -3,6 +3,7 @@
 # MacOS #
 #########
 .DS_Store
+*/.DS_Store
 .AppleDouble
 .LSOverride
 
@@ -97,7 +98,6 @@ notes
 .node-gyp
 .cowsay
 .localized
-.DS_Store
 .asdf
 .cargo
 .npm
@@ -125,6 +125,5 @@ doc/tags
 Xtest_logging
 Xviminfo
 .tmux/plugins/*
-*/debug.h
 */neovim/min_repro*
 .luarc.json
