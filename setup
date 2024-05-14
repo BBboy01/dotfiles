@@ -158,8 +158,10 @@ done
 # Install Homebrew packages
 brew bundle install --file $dotfiles_dir/Brewfile
 
-# Change to fish
-# chsh -s $(which fish)
+# Set fish as default shell
+chsh -s fish
+# Install fish plugins
+fisher update
 
 # Config git
 git config --global core.editor "nvim"
