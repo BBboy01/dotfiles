@@ -159,7 +159,8 @@ done
 brew bundle install --file $dotfiles_dir/Brewfile
 
 # Set fish as default shell
-chsh -s fish
+echo $(which fish) | sudo tee -a /etc/shells
+chsh -s $(which fish)
 # Install fish plugins
 fisher update
 
