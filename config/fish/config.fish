@@ -1,6 +1,5 @@
 set fish_greeting
 
-set -gx SHELL fish
 set -gx LANG en_US.UTF-8
 set -gx TERM alacritty
 set -gx NEOVIDE_TITLE_HIDDEN true
