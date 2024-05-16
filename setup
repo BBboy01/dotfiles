@@ -146,7 +146,7 @@ case "${SHELL}" in
     shell_rcfile="${HOME}/.bash_profile"
     ;;
   */zsh*)
-    shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zprofile"
+    shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zshrc"
     ;;
   */fish*)
     shell_rcfile="${HOME}/.config/fish/config.fish"
@@ -184,12 +184,17 @@ done
 # Install Homebrew packages
 brew bundle install --file $dotfiles_dir/Brewfile
 
-# Set fish as default shell
-echo $(which fish) | sudo tee -a /etc/shells
-chsh -s $(which fish)
-fish
 # Install fish plugins
-fisher update
+fish -c "fisher update"
+fish -c "tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No --lean_prompt_height='Two lines' --prompt_connection=Disconnected --prompt_spacing=Compact --icons='Few icons' --transient=No"
+
+# Set fish as default shell
+fish_bin=$(which fish)
+grep -qs "${fish_bin}" "/etc/shells"
+if [[ $? != 0 ]]; then
+  echo $fish_bin | sudo tee -a /etc/shells
+fi
+chsh -s $(which fish)
 
 # Config git
 git config --global core.editor "nvim"
@@ -232,7 +237,6 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 luarocks --lua-version=5.1 install vusted
 
 # Init rust
-echo $CARGO_HOME $RUSTUP_HOME
 rustup-init
 
 # refresh cache
@@ -264,4 +268,6 @@ skhd --start-service
 
 brew cleanup
 brew doctor
+
 echo "All done"
+echo "Sign out & Sign in for update config"
