@@ -135,6 +135,7 @@ if [[ $? != 0 ]]; then
     echo "unable to install homebrew, script $0 abort!"
     exit 2
   fi
+  export PATH=$PATH:/opt/homebrew/bin
 else
   echo "homebrew already installed"
 fi
