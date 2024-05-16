@@ -92,7 +92,7 @@ sudo spctl --master-disable
 dotfiles_dir="$HOME/.dotfiles"
 home_config_dir="$HOME/.config"
 
-echo "link config file"
+echo "linking config file"
 target_folders=("alacritty" "kitty" "btop")
 for folder_name in "${target_folders[@]}"; do
   folder="$dotfiles_dir/config/$folder_name"
@@ -161,6 +161,7 @@ brew bundle install --file $dotfiles_dir/Brewfile
 # Set fish as default shell
 echo $(which fish) | sudo tee -a /etc/shells
 chsh -s $(which fish)
+fish
 # Install fish plugins
 fisher update
 
