@@ -127,6 +127,7 @@ fi
 # ###########################################################
 # install homebrew (CLI Packages)
 # ###########################################################
+HOMEBREW_PREFIX="/opt/homebrew"
 brew_bin=$(which brew) 2>&1 > /dev/null
 if [[ $? != 0 ]]; then
   echo "installing homebrew"
@@ -135,9 +136,33 @@ if [[ $? != 0 ]]; then
     echo "unable to install homebrew, script $0 abort!"
     exit 2
   fi
-  export PATH=$PATH:/opt/homebrew/bin
+  export PATH="$PATH:$HOMEBREW_PREFIX/bin"
 else
   echo "homebrew already installed"
+fi
+
+case "${SHELL}" in
+  */bash*)
+    shell_rcfile="${HOME}/.bash_profile"
+    ;;
+  */zsh*)
+    shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zprofile"
+    ;;
+  */fish*)
+    shell_rcfile="${HOME}/.config/fish/config.fish"
+    ;;
+  *)
+    shell_rcfile="${ENV:-"${HOME}/.profile"}"
+    ;;
+esac
+
+if grep -qs "eval \"\$(${HOMEBREW_PREFIX}/bin/brew shellenv)\"" "${shell_rcfile}"; then
+  if ! [[ -x "$(command -v brew)" ]]; then
+    eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+  fi
+else
+  (echo; echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"') >> ${shell_rcfile}
+  eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 fi
 
 ###########################################################

@@ -20,7 +20,6 @@ set -gx CARGO_HOME $XDG_DATA_HOME/cargo
 set -gx RUSTUP_HOME $XDG_DATA_HOME/rustup
 set -gx CARGO_INSTALL $HOME/.cargo
 
-set -gx HOMEBREW_INSTALL /opt/homebrew
 set -gx PNPM_HOME $HOME/Library/pnpm
 set -gx BUN_INSTALL $HOME/.bun
 
@@ -34,9 +33,13 @@ end
 set -gx PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 set -gx PUPPETEER_EXECUTABLE_PATH (which chromium)
 
+set -gx HOMEBREW_PREFIX "/opt/homebrew";
+set -gx HOMEBREW_CELLAR "/opt/homebrew/Cellar";
+set -gx HOMEBREW_REPOSITORY "/opt/homebrew";
+fish_add_path -gP "/opt/homebrew/bin" "/opt/homebrew/sbin";
+! set -q MANPATH; and set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
+! set -q INFOPATH; and set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
 
-fish_add_path "$HOMEBREW_INSTALL/bin"
-fish_add_path "$HOMEBREW_INSTALL/sbin"
 fish_add_path "/usr/local/bin"
 
 fish_add_path "bin"
