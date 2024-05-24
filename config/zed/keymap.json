@@ -1,0 +1,69 @@
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-j": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-j": null,
+      "ctrl-k": null,
+      "ctrl-y": null,
+      "ctrl-s": "workspace::Save",
+      "ctrl-shift-s": "workspace::SaveAll"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+    "bindings": {
+      "alt-k": "editor::MoveLineUp",
+      "alt-j": "editor::MoveLineDown",
+      "space e": "workspace::ToggleRightDock",
+      "; f": "editor::Format"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      "g c c": "editor::ToggleComments",
+      "g h": "editor::Hover",
+      "g r": "editor::FindAllReferences",
+      "g a": "editor::ToggleCodeActions",
+      "; n": "editor::Rename",
+      "; s": "vim::Search",
+      "; r": "workspace::NewSearch",
+      "; g ]": "editor::GoToHunk",
+      "; g [": "editor::GoToPrevHunk",
+      "; g p": "editor::ToggleHunkDiff",
+      "s v": "pane::SplitRight",
+      "s i": "pane::SplitUp",
+      "s w": "pane::CloseActiveItem",
+      "s h": ["workspace::ActivatePaneInDirection", "Left"],
+      "s l": ["workspace::ActivatePaneInDirection", "Right"],
+      "s k": ["workspace::ActivatePaneInDirection", "Up"],
+      "s j": ["workspace::ActivatePaneInDirection", "Down"],
+      "z a": "editor::Fold"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      "g c": "editor::ToggleComments"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert && !menu",
+    "bindings": {
+      "ctrl-k": "editor::ShowCompletions",
+      "ctrl-y": "editor::ConfirmCompletion"
+    }
+  }
+]

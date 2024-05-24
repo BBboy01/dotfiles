@@ -1,0 +1,41 @@
+{
+  "theme": "Catppuccin Mocha - No Italics",
+  "ui_font_size": 16,
+  "buffer_font_family": "Cascadia Mono",
+  "buffer_font_size": 14,
+  "terminal": {
+    "font_size": 14,
+    "font_family": "Hack Nerd Font Mono"
+  },
+  "cursor_blink": false,
+  "scrollbar": {
+    "show": "never"
+  },
+  "format_on_save": "off",
+  "project_panel": {
+    "dock": "right"
+  },
+  "vim_mode": true,
+  "base_keymap": "VSCode",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "inlay_hints": {
+    "enabled": true
+  },
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "check": {
+          "command": "clippy"
+        }
+      }
+    }
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  }
+}
