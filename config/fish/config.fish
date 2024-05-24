@@ -2,7 +2,7 @@ set fish_greeting
 
 set -gx LANG en_US.UTF-8
 set -gx TERM alacritty
-set -gx NEOVIDE_TITLE_HIDDEN true
+set -gx NEOVIDE_FORK 1
 set -gx EDITOR nvim
 
 set -gx XDG_CACHE_HOME $HOME/.cache
