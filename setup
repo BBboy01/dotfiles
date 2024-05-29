@@ -249,11 +249,7 @@ pnpm env use -g lts
 # pnpm relate
 pnpm i -g \
 	"vite" \
-	"eslint_d" \
-	"prettier" \
 	"emmet-ls" \
-	"stylelint" \
-	"typescript" \
 	"@vue/language-server" \
 	"bash-language-server" \
 	"yaml-language-server" \
