@@ -94,96 +94,95 @@ home_config_dir="$HOME/.config"
 
 echo "linking config file"
 for folder_name in "$HOME/.dotfiles/config"/*; do
-  folder=$(basename "$folder_name")
-  target_folder="$home_config_dir/$folder"
+	folder=$(basename "$folder_name")
+	target_folder="$home_config_dir/$folder"
 
-  if [ -d "$target_folder" ]; then
-    rm -rf "$target_folder"
-    echo "Removed existing $target_folder"
-  fi
+	if [ -d "$target_folder" ]; then
+		rm -rf "$target_folder"
+		echo "Removed existing $target_folder"
+	fi
 
-  ln -s "$folder_name" "$target_folder"
-  echo "Created symlink from $folder_name to $target_folder"
+	ln -s "$folder_name" "$target_folder"
+	echo "Created symlink from $folder_name to $target_folder"
 done
 
 # ###########################################################
 # Install non-brew various tools (PRE-BREW Installs)
 # ###########################################################
-if ! xcode-select --print-path &> /dev/null; then
-  echo "installing XCode Command Line Tools"
-  # Prompt user to install the XCode Command Line Tools
-  xcode-select --install &> /dev/null
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  if [[ $? != 0 ]]; then
-    echo 'XCode Command Line Tools installed'
-  else
-    echo $? 'XCode Command Line Tools install failed!!!'
-  fi
+if ! xcode-select --print-path &>/dev/null; then
+	echo "installing XCode Command Line Tools"
+	# Prompt user to install the XCode Command Line Tools
+	if ! xcode-select --install &>/dev/null; then
+		echo 'XCode Command Line Tools installed'
+	else
+		echo 'XCode Command Line Tools install failed!!!'
+	fi
 else
-  echo "XCode Command Line Tools already installed"
+	echo "XCode Command Line Tools already installed"
 fi
 
 # ###########################################################
 # install homebrew (CLI Packages)
 # ###########################################################
 HOMEBREW_PREFIX="/opt/homebrew"
-brew_bin=$(which brew) 2>&1 > /dev/null
-if [[ $? != 0 ]]; then
-  echo "installing homebrew"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  if [[ $? != 0 ]]; then
-    echo "unable to install homebrew, script $0 abort!"
-    exit 2
-  fi
-  export PATH="$PATH:$HOMEBREW_PREFIX/bin"
+if ! which brew; then
+	echo "installing homebrew"
+	if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+		echo "unable to install homebrew, script $0 abort!"
+		exit 2
+	fi
+	export PATH="$PATH:$HOMEBREW_PREFIX/bin"
 else
-  echo "homebrew already installed"
+	echo "homebrew already installed"
 fi
 
 case "${SHELL}" in
-  */bash*)
-    shell_rcfile="${HOME}/.bash_profile"
-    ;;
-  */zsh*)
-    shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zshrc"
-    ;;
-  */fish*)
-    shell_rcfile="${HOME}/.config/fish/config.fish"
-    ;;
-  *)
-    shell_rcfile="${ENV:-"${HOME}/.profile"}"
-    ;;
+*/bash*)
+	shell_rcfile="${HOME}/.bash_profile"
+	;;
+*/zsh*)
+	shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zshrc"
+	;;
+*/fish*)
+	shell_rcfile="${HOME}/.config/fish/config.fish"
+	;;
+*)
+	shell_rcfile="${ENV:-"${HOME}/.profile"}"
+	;;
 esac
 
 if grep -qs "eval \"\$(${HOMEBREW_PREFIX}/bin/brew shellenv)\"" "${shell_rcfile}"; then
-  if ! [[ -x "$(command -v brew)" ]]; then
-    eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
-  fi
+	if ! [[ -x "$(command -v brew)" ]]; then
+		eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+	fi
 else
-  (echo; echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"') >> ${shell_rcfile}
-  eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+	(
+		echo
+		echo "eval \"\$(${HOMEBREW_PREFIX}/bin/brew shellenv)\""
+	) >>"${shell_rcfile}"
+	eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 fi
 
 ###########################################################
 # Config
 ###########################################################
 for file in "$HOME/.dotfiles/link"/*; do
-  filename=$(basename "$file")
-  target_file="$HOME/$filename"
+	filename=$(basename "$file")
+	target_file="$HOME/$filename"
 
-  if [ -f $target_file ]; then
-    rm -f $target_file
-    echo "Removed existing $target_file"
-  fi
+	if [ -f "$target_file" ]; then
+		rm -f "$target_file"
+		echo "Removed existing $target_file"
+	fi
 
-  if [ -f "$file" ]; then
-    ln -s "$file" "$HOME/$filename"
-    echo "Created symlink from $file to $target_file"
-  fi
+	if [ -f "$file" ]; then
+		ln -s "$file" "$HOME/$filename"
+		echo "Created symlink from $file to $target_file"
+	fi
 done
 
 # Install Homebrew packages
-brew bundle install --file $dotfiles_dir/Brewfile
+brew bundle install --file "$dotfiles_dir"/Brewfile
 
 # Install fish plugins
 fish -c "fisher update"
@@ -191,29 +190,29 @@ fish -c "tide configure --auto --style=Lean --prompt_colors='True color' --show_
 
 # Set fish as default shell
 fish_bin=$(which fish)
-grep -qs "${fish_bin}" "/etc/shells"
-if [[ $? != 0 ]]; then
-  echo $fish_bin | sudo tee -a /etc/shells
+
+if ! grep -qs "${fish_bin}" "/etc/shells"; then
+	echo "$fish_bin" | sudo tee -a /etc/shells
 fi
-chsh -s $(which fish)
+chsh -s "$(which fish)"
 
 # Config git
 git config --global core.editor "nvim"
 git config --global core.pager "delta"
-git config --global core.excludesFile $HOME/.gitignore_global
-git config --global core.attributesFile $HOME/.gitattributes_global
+git config --global core.excludesFile "$HOME"/.gitignore_global
+git config --global core.attributesFile "$HOME"/.gitattributes_global
 git config --global init.defaultbranch "main"
 git config --global interactive.difffilter "delta --color-only"
 git config --global push.autoSetupRemote true
 git config --global merge.conflictstyle diff3
 git config --global fetch.writeCommitGraph true
 git config --global rerere.enabled true
-git config --global column.ui auto # arrange _branch name_ (`git branch`) with multi-column, defautl is pager
-git config --global branch.sort -committerdate # sort by last commit date descending
-git config --global gpg.format ssh # ssh format gpg signingKey
-git config --global user.signingKey ~/.ssh/key.pub # gpg signingKey file
-git config --global commit.gpgsign true # commit with gigsign
-git config --global maintenance.auto false # start maintenance cronJobs
+git config --global column.ui auto                   # arrange _branch name_ (`git branch`) with multi-column, defautl is pager
+git config --global branch.sort -committerdate       # sort by last commit date descending
+git config --global gpg.format ssh                   # ssh format gpg signingKey
+git config --global user.signingKey ~/.ssh/key.pub   # gpg signingKey file
+git config --global commit.gpgsign true              # commit with gigsign
+git config --global maintenance.auto false           # start maintenance cronJobs
 git config --global maintenance.strategy incremental # gc: disabled, commit-graph: hourly, prefetch: hourly, loose-objects: daily, incremental-repack: daily
 git config --global diff.colormoved default
 git config --global diff.tool difftastic
@@ -249,19 +248,20 @@ pnpm env use -g lts
 
 # pnpm relate
 pnpm i -g \
-  "vite" \
-  "eslint_d" \
-  "prettier" \
-  "emmet-ls" \
-  "typescript" \
-  "@vue/language-server" \
-  "bash-language-server" \
-  "yaml-language-server" \
-  "@angular/language-server" \
-  "typescript-language-server" \
-  "@tailwindcss/language-server" \
-  "vscode-langservers-extracted" \
-  "dockerfile-language-server-nodejs"
+	"vite" \
+	"eslint_d" \
+	"prettier" \
+	"emmet-ls" \
+	"stylelint" \
+	"typescript" \
+	"@vue/language-server" \
+	"bash-language-server" \
+	"yaml-language-server" \
+	"@angular/language-server" \
+	"typescript-language-server" \
+	"@tailwindcss/language-server" \
+	"vscode-langservers-extracted" \
+	"dockerfile-language-server-nodejs"
 
 # Init yabai
 sudo yabai --load-sa

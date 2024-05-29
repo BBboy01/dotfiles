@@ -32,16 +32,18 @@ end
 set -gx PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 set -gx PUPPETEER_EXECUTABLE_PATH (which chromium)
 
-set -gx HOMEBREW_PREFIX "/opt/homebrew";
-set -gx HOMEBREW_CELLAR "/opt/homebrew/Cellar";
-set -gx HOMEBREW_REPOSITORY "/opt/homebrew";
-fish_add_path -gP "/opt/homebrew/bin" "/opt/homebrew/sbin";
-! set -q MANPATH; and set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
-! set -q INFOPATH; and set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
+set -gx HOMEBREW_PREFIX /opt/homebrew
+set -gx HOMEBREW_CELLAR /opt/homebrew/Cellar
+set -gx HOMEBREW_REPOSITORY /opt/homebrew
+fish_add_path -gP /opt/homebrew/bin /opt/homebrew/sbin
+! set -q MANPATH; and set MANPATH ''
+set -gx MANPATH /opt/homebrew/share/man $MANPATH
+! set -q INFOPATH; and set INFOPATH ''
+set -gx INFOPATH /opt/homebrew/share/info $INFOPATH
 
-fish_add_path "/usr/local/bin"
+fish_add_path /usr/local/bin
 
-fish_add_path "bin"
+fish_add_path bin
 fish_add_path "node_modules/.bin"
 fish_add_path "$CARGO_INSTALL/bin"
 fish_add_path "$BUN_INSTALL/bin"
@@ -148,15 +150,15 @@ function ssh_proxy
 end
 
 function code
-  set location "$PWD/$argv"
-  open -n -b "com.microsoft.VSCode" --args $location
+    set location "$PWD/$argv"
+    open -n -b "com.microsoft.VSCode" --args $location
 end
 
 function yy
-  set tmp (mktemp -t "yazi-cwd.XXXXXX")
-  yazi $argv --cwd-file="$tmp"
-  if set cwd (cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-    cd -- "$cwd"
-  end
-  rm -f -- "$tmp"
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    yazi $argv --cwd-file="$tmp"
+    if set cwd (cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+        cd -- "$cwd"
+    end
+    rm -f -- "$tmp"
 end
