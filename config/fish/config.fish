@@ -29,7 +29,7 @@ for file in $fisher_path/conf.d/*.fish
     source $file
 end
 
-set -gx PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+set -gx PUPPETEER_SKIP_DOWNLOAD true
 set -gx PUPPETEER_EXECUTABLE_PATH (which chromium)
 
 set -gx HOMEBREW_PREFIX /opt/homebrew
