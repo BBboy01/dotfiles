@@ -1,6 +1,6 @@
 [window]
 blur = true
-opacity = 0.75
+opacity = 0.90
 option_as_alt = "Both"
 dynamic_padding = true
 decorations = "Buttonless"
