@@ -249,15 +249,7 @@ pnpm env use -g lts
 # pnpm relate
 pnpm i -g \
 	"vite" \
-	"emmet-ls" \
-	"@vue/language-server" \
-	"bash-language-server" \
-	"yaml-language-server" \
-	"@angular/language-server" \
-	"typescript-language-server" \
-	"@tailwindcss/language-server" \
-	"vscode-langservers-extracted" \
-	"dockerfile-language-server-nodejs"
+	"@angular/cli"
 
 # Init yabai
 sudo yabai --load-sa
