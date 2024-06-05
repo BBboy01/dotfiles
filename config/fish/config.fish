@@ -41,12 +41,10 @@ set -gx MANPATH /opt/homebrew/share/man $MANPATH
 ! set -q INFOPATH; and set INFOPATH ''
 set -gx INFOPATH /opt/homebrew/share/info $INFOPATH
 
-fish_add_path /usr/local/bin
-
-fish_add_path bin
 fish_add_path "$CARGO_INSTALL/bin"
 fish_add_path "$BUN_INSTALL/bin"
 fish_add_path "$PNPM_HOME"
+fish_add_path /usr/local/bin
 
 # Aliases
 alias vim nvim
