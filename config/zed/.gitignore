@@ -1,2 +1,3 @@
-embeddings
-.tmp*
+*
+!keymap.json
+!settings.json

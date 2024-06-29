@@ -22,7 +22,7 @@
     }
   },
   {
-    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting",
     "bindings": {
       "alt-k": "editor::MoveLineUp",
       "alt-j": "editor::MoveLineDown",
@@ -31,10 +31,8 @@
     }
   },
   {
-    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "context": "Editor && vim_mode == normal && !VimWaiting",
     "bindings": {
-      "g c c": "editor::ToggleComments",
-      "g h": "editor::Hover",
       "g r": "editor::FindAllReferences",
       "g a": "editor::ToggleCodeActions",
       "; n": "editor::Rename",
@@ -54,13 +52,11 @@
     }
   },
   {
-    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
-    "bindings": {
-      "g c": "editor::ToggleComments"
-    }
+    "context": "Editor && vim_mode == visual && !VimWaiting",
+    "bindings": {}
   },
   {
-    "context": "Editor && vim_mode == insert && !menu",
+    "context": "Editor && vim_mode == insert",
     "bindings": {
       "ctrl-k": "editor::ShowCompletions",
       "ctrl-y": "editor::ConfirmCompletion"
