@@ -39,7 +39,3 @@ set -gx HOMEBREW_REPOSITORY /opt/homebrew
 set -gx MANPATH /opt/homebrew/share/man $MANPATH
 ! set -q INFOPATH; and set INFOPATH ''
 set -gx INFOPATH /opt/homebrew/share/info $INFOPATH
-
-set -gx PKG_CONFIG_PATH $HOMEBREW_PREFIX/opt/ruby/lib/pkgconfig
-set -gx LDFLAGS "-L/opt/homebrew/opt/ruby/lib"
-set -gx CPPFLAGS "-I/opt/homebrew/opt/ruby/include"
