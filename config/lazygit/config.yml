@@ -1,3 +1,7 @@
 disableStartupPopups: true
 os:
   editPreset: 'nvim'
+git:
+  paging:
+    colorArg: always
+    pager: delta --paging=never --hyperlinks --line-numbers
