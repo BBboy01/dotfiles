@@ -3,3 +3,8 @@
 [manager]
 linemode = "size"
 show_hidden = true
+sort_by = "natural"
+
+[preview]
+max_width = 1000
+max_height = 1000
