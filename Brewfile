@@ -15,6 +15,7 @@ brew "eza"
 brew "gum"  # markdown renderer
 brew "chafa"  # terminal image renderer
 brew "sox"  # audio file processor
+brew "ffmpeg"  # video file processor
 brew "wrk"  # HTTP benchmarking tool
 brew "exiftool"
 brew "fish"
