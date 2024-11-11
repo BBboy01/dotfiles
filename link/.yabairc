@@ -3,30 +3,32 @@ yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 sudo yabai --load-sa
 
 # mission-control desktop labels
-yabai -m space 1 --label code
-yabai -m space 2 --label web
+yabai -m space 1 --label web
+yabai -m space 2 --label code
 yabai -m space 3 --label social
 yabai -m space 4 --label media
 yabai -m space 5 --label notes
 yabai -m space 6 --label mail
 
 # window rules
-yabai -m rule --add app="^Alacritty$"           code
+yabai -m rule --add app="^Alacritty$"                  code
 
-yabai -m rule --add app="^Chrome$"              web
-yabai -m rule --add app="^Arc$"                 web
-yabai -m rule --add app="^Safari$"              web
+yabai -m rule --add app="^Chrome$"                     web
+yabai -m rule --add app="^Arc$"                        web
+yabai -m rule --add app="^Safari$"                     web
+yabai -m rule --add app="^Firefox Developer Edition$"  web
 
-yabai -m rule --add app="^QQ$"                  manage=off
-yabai -m rule --add app="^IINA$"                manage=off
-yabai -m rule --add app="^CleanShot X$"         manage=off
-yabai -m rule --add app="^Raycast$"             manage=off
-yabai -m rule --add app="^Preview$"             manage=off
-yabai -m rule --add app="^WeChat$"              manage=off
-yabai -m rule --add app="^WeCom$"               manage=off
-yabai -m rule --add app="^App Store$"           manage=off
-yabai -m rule --add app="^System Settings$"     manage=off
-yabai -m rule --add app="^Finder$"              manage=off
+yabai -m rule --add app="^QQ$"                         manage=off
+yabai -m rule --add app="^Creative Cloud$"             manage=off
+yabai -m rule --add app="^IINA$"                       manage=off
+yabai -m rule --add app="^CleanShot X$"                manage=off
+yabai -m rule --add app="^Raycast$"                    manage=off
+yabai -m rule --add app="^Preview$"                    manage=off
+yabai -m rule --add app="^WeChat$"                     manage=off
+yabai -m rule --add app="^WeCom$"                      manage=off
+yabai -m rule --add app="^App Store$"                  manage=off
+yabai -m rule --add app="^System Settings$"            manage=off
+yabai -m rule --add app="^Finder$"                     manage=off
 
 # global settings
 yabai -m config                              \
@@ -54,5 +56,3 @@ yabai -m config                              \
     mouse_action1               move         \
     mouse_action2               resize       \
     mouse_drop_action           swap
-
-echo "yabai configuration loaded.."
