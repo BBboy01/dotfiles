@@ -1,5 +1,4 @@
 tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
 tap "koekeishiya/formulae"
 tap "jesseduffield/lazygit"
 tap "oven-sh/bun"
