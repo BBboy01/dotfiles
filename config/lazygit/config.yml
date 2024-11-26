@@ -3,5 +3,8 @@ os:
   editPreset: 'nvim'
 git:
   paging:
-    colorArg: always
-    pager: delta --paging=never --hyperlinks --line-numbers
+    pager: delta --paging=never
+gui:
+  nerdFontsVersion: "3"
+  showFileIcons: false
+  filterMode: fuzzy
