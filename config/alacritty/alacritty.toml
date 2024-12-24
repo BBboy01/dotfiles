@@ -30,7 +30,7 @@ post_processing = true
 cursor = "#839496"
 
 [colors.primary]
-background = "#002129"
+background = "#001A1B"
 foreground = "#839496"
 
 [colors.normal]
