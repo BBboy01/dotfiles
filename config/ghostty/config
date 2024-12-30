@@ -1,0 +1,14 @@
+theme = Solarized Dark Higher Contrast
+font-family = "Cascadia Mono"
+font-size = 14
+background-opacity = 0.9
+background-blur-radius = 100
+mouse-hide-while-typing = true
+macos-titlebar-style = hidden
+shell-integration-features = no-cursor
+cursor-style = block
+cursor-style-blink = false
+window-padding-x = 2
+window-padding-balance = true
+
+keybind = global:cmd+s=toggle_quick_terminal
