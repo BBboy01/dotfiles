@@ -3,7 +3,7 @@ os:
   editPreset: 'nvim'
 git:
   paging:
-    pager: delta --paging=never
+    externalDiffCommand: difft --color=always --syntax-highlight=off
 gui:
   nerdFontsVersion: "3"
   showFileIcons: false
