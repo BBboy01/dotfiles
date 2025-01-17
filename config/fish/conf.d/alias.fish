@@ -75,6 +75,8 @@ alias gx "git clean -df"
 
 alias gop "git open"
 
+alias gcp "git cherry-pick"
+
 
 alias gfu "git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
 # Switch branchs
