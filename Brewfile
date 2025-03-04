@@ -13,6 +13,7 @@ brew "fd"
 brew "eza"
 brew "gum"  # markdown renderer
 brew "chafa"  # terminal image renderer
+brew "imagemagick"  # image file processor
 brew "sox"  # audio file processor
 brew "ffmpeg"  # video file processor
 brew "wrk"  # HTTP benchmarking tool
