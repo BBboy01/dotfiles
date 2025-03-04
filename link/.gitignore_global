@@ -87,7 +87,6 @@ node_modules
 tmp
 _site
 .git
-Library
 Music
 Screenshots
 Movies
@@ -112,7 +111,6 @@ notes
 .rustup
 *history*
 *debug*
-/Library/
 /Downloads/
 .luarc.json
 
