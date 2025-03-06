@@ -77,7 +77,6 @@ alias gop "git open"
 
 alias gcp "git cherry-pick"
 
-
 alias gfu "git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
 # Switch branchs
 alias cbr 'git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git switch'
