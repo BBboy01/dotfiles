@@ -181,6 +181,9 @@ for file in "$HOME/.dotfiles/link"/*; do
 	fi
 done
 
+# Disable Last Login message
+touch .hushlogin
+
 # Install Homebrew packages
 brew bundle install --file "$dotfiles_dir"/Brewfile
 
