@@ -8,3 +8,8 @@ sort_by = "natural"
 [preview]
 max_width = 1000
 max_height = 1000
+
+[plugin]
+prepend_previewers = [
+  { name = "*.md", run = "md-preview" },
+]

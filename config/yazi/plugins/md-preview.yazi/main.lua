@@ -1,43 +1,39 @@
 local M = {}
 
 function M:peek(job)
-	local child = Command("glow"):stdout(Command.PIPED):stderr(Command.PIPED):spawn()
-
+	local child, err = Command("glow"):arg(tostring(job.file.url)):stdout(Command.PIPED):spawn()
 	if not child then
+		return ya.err("spawn `glow` command failed: " .. err)
+	end
+
+	-- Skip the first line which is the archive file itself
+	local _, e = child:read_line()
+	if e == 1 then
 		return
 	end
-	local count, lines = 0, ""
+
+	local limit = job.area.h
+	local i, lines = 0, {}
 	repeat
 		local line, event = child:read_line()
 		if event ~= 0 then
 			break
-		else
-			count = count + 1
-			if count > job.skip then
-				lines = lines .. line
-			end
 		end
-	until count >= job.skip + job.area.h
+
+		i = i + 1
+		if i > job.skip then
+			table.insert(lines, line)
+		end
+	until i >= job.skip + limit
+
 	child:start_kill()
-	if job.skip > 0 and count < job.skip + job.area.h then
-		ya.manager_emit("peek", {
-			tostring(math.max(0, count - job.area.h)),
-			only_if = job.file.url,
-			upper_bound = "",
-		})
+	if job.skip > 0 and i < job.skip + limit then
+		ya.mgr_emit("peek", { math.max(0, i - limit), only_if = job.file.url, upper_bound = true })
 	else
-		ya.preview_widgets(job, { ui.Text.parse(lines):area(job.area) })
+		ya.preview_widgets(job, { ui.Text(lines):area(job.area) })
 	end
 end
 
-function M:seek(job)
-	local h = cx.active.current.hovered
-	if h and h.url == job.file.url then
-		ya.manager_emit("peek", {
-			math.max(0, cx.active.preview.skip + job.units),
-			only_if = job.file.url,
-		})
-	end
-end
+function M:seek(job) end
 
 return M
