@@ -33,17 +33,12 @@ yabai -m rule --add app="^Adobe Photoshop"             manage=off
 
 # global settings
 yabai -m config                              \
-    external_bar                off:41:0     \
+    external_bar                off          \
     mouse_follows_focus         off          \
     focus_follows_mouse         off          \
     window_placement            second_child \
     window_shadow               off          \
     window_animation_duration   0.25         \
-    window_opacity_duration     0.25         \
-    active_window_opacity       1.00         \
-    normal_window_opacity       0.50         \
-    window_opacity              on           \
-    insert_feedback_color       0xaad75f5f   \
     split_ratio                 0.50         \
     split_type                  auto         \
     auto_balance                off          \
