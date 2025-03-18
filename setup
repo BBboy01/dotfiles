@@ -231,7 +231,7 @@ git config --global delta.syntax-theme Dracula
 
 # My neovim config
 echo "Download neovim config"
-git clone https://github.com/BBBoy01/nvim ~/.config/nvim
+git clone --recurse-submodules https://github.com/BBBoy01/nvim ~/.config/nvim
 
 # Tmux tpm plugin manager
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
