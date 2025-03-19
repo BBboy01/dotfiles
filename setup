@@ -7,7 +7,7 @@
 # Auto hide the menubar
 defaults write -g _HIHideMenuBar -bool true
 # Enable full keyboard access for all controls
-defaults write -g AppleKeyboardUIMode -int 3
+defaults write -g AppleKeyboardUIMode -int 2
 # Enable press-and-hold repeating
 defaults write -g ApplePressAndHoldEnabled -bool false
 defaults write -g InitialKeyRepeat -int 10
@@ -27,6 +27,8 @@ defaults write -g NSNavPanelExpandedStateForSaveMode2 -bool true
 defaults write -g NSDocumentSaveNewDocumentsToCloud -bool true
 # Prefer tabs when opening documents
 defaults write -g AppleWindowTabbingMode -string always
+# Show Icon immediately
+defaults write -g NSGlobalDomain NSToolbarTitleViewRolloverDelay -float "0"
 
 ### Dock
 # Set icon size and dock orientation
@@ -46,12 +48,12 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Show all files and their extensions
 defaults write com.apple.finder AppleShowAllExtensions -bool true
 defaults write com.apple.finder AppleShowAllFiles -bool true
-# Show path bar, and layout as multi-column
-defaults write com.apple.finder ShowPathbar -bool true
+# Layout as multi-column
 defaults write com.apple.finder FXPreferredViewStyle -string clmv
 # Search in current folder by default
 defaults write com.apple.finder FXDefaultSearchScope -string SCcf
 # Keep the desktop clean
+defaults write com.apple.finder CreateDesktop -bool false
 defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
@@ -85,6 +87,8 @@ defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
 defaults write com.apple.AdLib forceLimitAdTracking -bool true
 defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
 defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
+
+killall Dock Finder
 
 # Allow open applications from any source
 sudo spctl --master-disable
