@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 sudo yabai --load-sa
 
@@ -9,14 +10,6 @@ yabai -m space 3 --label social
 yabai -m space 4 --label media
 yabai -m space 5 --label notes
 yabai -m space 6 --label mail
-
-# window rules
-yabai -m rule --add app="^Alacritty$"                  code
-
-yabai -m rule --add app="^Chrome$"                     web
-yabai -m rule --add app="^Arc$"                        web
-yabai -m rule --add app="^Safari$"                     web
-yabai -m rule --add app="^Firefox Developer Edition$"  web
 
 yabai -m rule --add app="^QQ$"                         manage=off
 yabai -m rule --add app="^Creative Cloud$"             manage=off
