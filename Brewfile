@@ -11,6 +11,7 @@ brew "curl"
 brew "ripgrep"
 brew "fd"
 brew "eza"
+brew "genact" # nonsense activity generator -- pretend to be busy
 brew "gum"  # markdown renderer
 brew "chafa"  # terminal image renderer
 brew "imagemagick"  # image file processor
