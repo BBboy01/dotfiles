@@ -1,0 +1,14 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:piper"
+rev = "a54b96a"
+hash = "2bdc137505b8d9a0cc867a57d0e99b01"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "a54b96a"
+hash = "a7ab702e1ef0c097defbc976ed34c186"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-mocha"
+rev = "657aaf3"
+hash = "662a1b35b98668d4f75746eb37af7fd"

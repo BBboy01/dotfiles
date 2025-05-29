@@ -1,6 +1,6 @@
 "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
-[manager]
+[mgr]
 linemode = "size"
 show_hidden = true
 sort_by = "natural"
@@ -11,5 +11,5 @@ max_height = 1000
 
 [plugin]
 prepend_previewers = [
-  { name = "*.md", run = "md-preview" },
+  { name = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
 ]
