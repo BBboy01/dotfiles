@@ -1,3 +1,4 @@
+# @fish-lsp-disable 2002
 alias vim nvim
 
 alias ls "eza --icons"
@@ -52,6 +53,7 @@ alias grba "git rebase --abort"
 
 alias gl "git log"
 alias glo "git log --oneline --graph"
+alias glf "git log -p"
 
 alias grsH "git reset HEAD"
 alias grsH1 "git reset HEAD~1"
