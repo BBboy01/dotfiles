@@ -21,6 +21,7 @@ brew "fish"
 brew "fisher"
 brew "jq"
 brew "ast-grep"
+brew "task" # todo list
 brew "tokei"  # code line summary
 brew "vhs"  # generate GIFs with terminal code
 brew "bat"
@@ -65,6 +66,7 @@ cask "alfred"
 cask "cleanshot"
 cask "bartender"
 cask "alt-tab"
+cask "keka"
 cask "typora"
 cask "arc"
 cask "firefox@developer-edition"
