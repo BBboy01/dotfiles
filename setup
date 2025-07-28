@@ -205,13 +205,11 @@ chsh -s "$(which fish)"
 
 # Config git
 git config --global core.editor "nvim"
-git config --global core.pager "delta"
 git config --global core.excludesFile "$HOME"/.gitignore_global
 git config --global core.attributesFile "$HOME"/.gitattributes_global
 git config --global init.defaultbranch "main"
-git config --global interactive.difffilter "delta --color-only"
 git config --global push.autoSetupRemote true
-git config --global merge.conflictstyle diff3
+git config --global merge.conflictStyle zdiff3
 git config --global fetch.writeCommitGraph true
 git config --global rerere.enabled true
 git config --global column.ui auto                   # arrange _branch name_ (`git branch`) with multi-column, defautl is pager
@@ -222,11 +220,17 @@ git config --global commit.gpgsign true              # commit with gigsign
 git config --global maintenance.auto false           # start maintenance cronJobs
 git config --global maintenance.strategy incremental # gc: disabled, commit-graph: hourly, prefetch: hourly, loose-objects: daily, incremental-repack: daily
 git config --global diff.colormoved default
+git config --global diff.nodiff.command true
+git config --global diff.nodiff.binary true
+# difftastic
 git config --global diff.tool difftastic
-git config --global diff.external difft
+git config --global diff.external "difft --color=always"
 git config --global difftool.prompt false
-git config --global difftool.difftastic.cmd "difft $LOCAL $REMOTE"
+git config --global difftool.difftastic.cmd "difft \"\$LOCAL\" \"\$REMOTE\""
 git config --global pager.difftool true
+# git-delta
+git config --global core.pager "delta"
+git config --global interactive.difffilter "delta --color-only"
 git config --global delta.light false
 git config --global delta.navigate true
 git config --global delta.side-by-side true
