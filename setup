@@ -208,6 +208,7 @@ git config --global core.editor "nvim"
 git config --global core.excludesFile "$HOME"/.gitignore_global
 git config --global core.attributesFile "$HOME"/.gitattributes_global
 git config --global init.defaultbranch "main"
+git config --global pull.rebase true
 git config --global push.autoSetupRemote true
 git config --global merge.conflictStyle zdiff3
 git config --global fetch.writeCommitGraph true
