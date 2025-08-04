@@ -1,6 +1,5 @@
 tap "homebrew/bundle"
 tap "koekeishiya/formulae"
-tap "jesseduffield/lazygit"
 tap "oven-sh/bun"
 
 brew "git"
@@ -27,7 +26,7 @@ brew "vhs"  # generate GIFs with terminal code
 brew "bat"
 brew "zoxide"
 brew "fzf"
-brew "tldr"  # community effort man page
+brew "tlrc"  # community effort man page
 brew "tmux"
 brew "btop"
 brew "watch"
