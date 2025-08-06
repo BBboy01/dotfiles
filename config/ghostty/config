@@ -15,3 +15,4 @@ quick-terminal-position = center
 auto-update = off
 
 keybind = all:cmd+s=toggle_quick_terminal
+keybind = cmd+enter=unbind
