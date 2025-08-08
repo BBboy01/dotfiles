@@ -8,3 +8,4 @@ gui:
   nerdFontsVersion: "3"
   showFileIcons: false
   filterMode: fuzzy
+  mouseEvents: false
