@@ -255,8 +255,9 @@ rustup default stable
 # refresh cache
 fc-cache -f -v
 
-# Install lts node
-pnpm env use -g lts
+# enable package manager
+corepack enable
+corepack install -g pnpm@latest
 
 # pnpm relate
 pnpm i -g \
