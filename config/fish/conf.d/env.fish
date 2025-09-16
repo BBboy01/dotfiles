@@ -1,5 +1,4 @@
 set -gx LANG en_US.UTF-8
-set -gx TERM ghostty
 set -gx NEOVIDE_FORK 1
 set -gx EDITOR nvim
 
