@@ -13,6 +13,6 @@ window-padding-x = 2
 window-padding-balance = true
 quick-terminal-position = center
 auto-update = off
-custom-shader = cursor_blaze.glsl
+custom-shader = shaders/cursor_blaze.glsl
 
 keybind = cmd+enter=unbind
