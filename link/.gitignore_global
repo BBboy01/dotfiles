@@ -93,7 +93,6 @@ Movies
 Desktop
 Downloads
 Applications
-notes
 .node-gyp
 .cowsay
 .localized
@@ -105,7 +104,6 @@ notes
 .zcomp*
 .pylint*
 .v8flags*
-*cache*
 .oh-my-zsh
 .vim/bundle
 .rustup
@@ -124,4 +122,3 @@ Xtest_logging
 Xviminfo
 .tmux/plugins/*
 */neovim/min_repro*
-.luarc.json
