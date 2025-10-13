@@ -50,6 +50,7 @@ brew "python-setuptools"
 brew "rustup-init"
 brew "golang"
 brew "ruby"
+brew "tree-sitter-cli"
 brew "neovim"
 
 cask "font-hack-nerd-font"
