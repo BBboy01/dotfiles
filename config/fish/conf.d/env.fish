@@ -14,7 +14,6 @@ set -gx GO111MODULE on
 
 set -gx CARGO_HOME $XDG_DATA_HOME/cargo
 set -gx RUSTUP_HOME $XDG_DATA_HOME/rustup
-set -gx CARGO_INSTALL $HOME/.cargo
 
 set -gx PNPM_HOME $HOME/Library/pnpm
 set -gx BUN_INSTALL $HOME/.bun
