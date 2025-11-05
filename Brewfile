@@ -15,6 +15,7 @@ brew "imagemagick"  # image file processor
 brew "sox"  # audio file processor
 brew "ffmpeg"  # video file processor
 brew "wrk"  # HTTP benchmarking tool
+brew "flamegraph"  # Convert profile log to flamegraph
 brew "exiftool"
 brew "fish"
 brew "fisher"
