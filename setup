@@ -94,12 +94,12 @@ killall Dock Finder
 sudo spctl --master-disable
 
 dotfiles_dir="$HOME/.dotfiles"
-home_config_dir="$HOME/.config"
+config_path="$HOME/.config"
 
 echo "linking config file"
-for folder_name in "$HOME/.dotfiles/config"/*; do
+for folder_name in "$dotfiles_dir/config"/*; do
 	folder=$(basename "$folder_name")
-	target_folder="$home_config_dir/$folder"
+	target_folder="$config_path/$folder"
 
 	if [ -d "$target_folder" ]; then
 		rm -rf "$target_folder"
@@ -170,7 +170,7 @@ fi
 ###########################################################
 # Config
 ###########################################################
-for file in "$HOME/.dotfiles/link"/*; do
+for file in "$dotfiles_dir/link"/*; do
 	filename=$(basename "$file")
 	target_file="$HOME/$filename"
 
@@ -180,7 +180,7 @@ for file in "$HOME/.dotfiles/link"/*; do
 	fi
 
 	if [ -f "$file" ]; then
-		ln -s "$file" "$HOME/$filename"
+		ln -s "$file" "$target_file"
 		echo "Created symlink from $file to $target_file"
 	fi
 done
@@ -213,13 +213,13 @@ git config --global push.autoSetupRemote true
 git config --global merge.conflictStyle zdiff3
 git config --global fetch.writeCommitGraph true
 git config --global rerere.enabled true
-git config --global column.ui auto                   # arrange _branch name_ (`git branch`) with multi-column, defautl is pager
-git config --global branch.sort -committerdate       # sort by last commit date descending
-git config --global gpg.format ssh                   # ssh format gpg signingKey
-git config --global user.signingKey ~/.ssh/key.pub   # gpg signingKey file
-git config --global commit.gpgsign true              # commit with gigsign
-git config --global maintenance.auto false           # start maintenance cronJobs
-git config --global maintenance.strategy incremental # gc: disabled, commit-graph: hourly, prefetch: hourly, loose-objects: daily, incremental-repack: daily
+git config --global column.ui auto                       # arrange _branch name_ (`git branch`) with multi-column, defautl is pager
+git config --global branch.sort -committerdate           # sort by last commit date descending
+git config --global gpg.format ssh                       # ssh format gpg signingKey
+git config --global user.signingKey "$HOME"/.ssh/key.pub # gpg signingKey file
+git config --global commit.gpgsign true                  # commit with gigsign
+git config --global maintenance.auto false               # start maintenance cronJobs
+git config --global maintenance.strategy incremental     # gc: disabled, commit-graph: hourly, prefetch: hourly, loose-objects: daily, incremental-repack: daily
 git config --global diff.colormoved default
 git config --global diff.nodiff.command true
 git config --global diff.nodiff.binary true
@@ -240,10 +240,10 @@ git config --global delta.syntax-theme Dracula
 
 # My neovim config
 echo "Download neovim config"
-git clone --recurse-submodules https://github.com/BBBoy01/nvim ~/.config/nvim
+git clone --recurse-submodules https://github.com/BBBoy01/nvim "$config_path"/nvim
 
 # Tmux tpm plugin manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm "$HOME"/.tmux/plugins/tpm
 
 # Neovim plugin test framework
 luarocks --lua-version=5.1 install vusted
