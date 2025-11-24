@@ -8,6 +8,7 @@ brew "git-delta"
 brew "ripgrep"
 brew "fd"
 brew "eza"
+brew "just" # command runner
 brew "genact" # nonsense activity generator -- pretend to be busy
 brew "gum"  # markdown renderer
 brew "chafa"  # terminal image renderer
