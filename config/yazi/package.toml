@@ -8,6 +8,11 @@ use = "yazi-rs/plugins:smart-enter"
 rev = "a54b96a"
 hash = "a7ab702e1ef0c097defbc976ed34c186"
 
+[[plugin.deps]]
+use = "ndtoan96/ouch"
+rev = "cfb9140"
+hash = "b5067143415bd2d46c0dfa57319ddcef"
+
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
 rev = "657aaf3"
