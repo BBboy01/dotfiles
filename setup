@@ -641,7 +641,7 @@ if [[ "${DRY_RUN}" != "true" ]] && [[ ("$MODULE_BREW" == "true") || ("$MODULE_SH
 
 		# Install JavaScript development packages
 		log_task "Installing JavaScript development packages..."
-		execute_with_log pnpm i -g "vite" "@angular/cli"
+		execute_with_log pnpm i -g "vite" "@angular/cli" "prettier"
 
 		# Init yabai
 		log_task "Starting yabai and skhd..."
