@@ -1,22 +1,44 @@
+# =============================================================================
+# SYSTEM & SHELL SETTINGS
+# =============================================================================
+
 set -gx LANG en_US.UTF-8
 set -gx NEOVIDE_FORK 1
 set -gx EDITOR nvim
+
+# =============================================================================
+# XDG BASE DIRECTORIES
+# =============================================================================
 
 set -gx XDG_CACHE_HOME $HOME/.cache
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx XDG_STATE_HOME $HOME/.local/var
 
+# =============================================================================
+# LANGUAGE-SPECIFIC PATHS & SETTINGS
+# =============================================================================
+
+# Go programming language
 set -gx GOPATH $XDG_DATA_HOME/go
 set -gx GOBIN $XDG_DATA_HOME/go/bin
 set -gx GOPROXY https://goproxy.cn,direct
 set -gx GO111MODULE on
 
+# Rust programming language
 set -gx CARGO_HOME $XDG_DATA_HOME/cargo
 set -gx RUSTUP_HOME $XDG_DATA_HOME/rustup
 
+# =============================================================================
+# PACKAGE MANAGERS
+# =============================================================================
+
 set -gx PNPM_HOME $HOME/Library/pnpm
 set -gx BUN_INSTALL $HOME/.bun
+
+# =============================================================================
+# FISH SHELL CONFIGURATION
+# =============================================================================
 
 set fisher_path $XDG_DATA_HOME/fisher
 set fish_complete_path $fish_complete_path[1] $fisher_path/completions $fish_complete_path[2..]
@@ -25,8 +47,16 @@ for file in $fisher_path/conf.d/*.fish
     source $file
 end
 
+# =============================================================================
+# PUPPETEER SETTINGS
+# =============================================================================
+
 set -gx PUPPETEER_SKIP_DOWNLOAD true
 set -gx PUPPETEER_EXECUTABLE_PATH (which chromium)
+
+# =============================================================================
+# HOMEBREW CONFIGURATION
+# =============================================================================
 
 set -gx HOMEBREW_PREFIX /opt/homebrew
 set -gx HOMEBREW_CELLAR /opt/homebrew/Cellar
