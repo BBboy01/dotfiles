@@ -8,8 +8,8 @@ alias la "ls -a"
 alias ll "eza -l -g --icons --git"
 alias lla "ll -a"
 alias ls "eza --icons"
-alias tree "eza --tree --icons -g"
-alias treel "ll --tree --git"
+alias tree "eza --tree --icons -g --git-ignore"
+alias treel "ll --tree --git --git-ignore"
 
 # =============================================================================
 # FILE OPERATIONS
