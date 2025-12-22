@@ -2,6 +2,7 @@ tap "homebrew/bundle"
 tap "koekeishiya/formulae"
 tap "oven-sh/bun"
 tap "productdevbook/tap"
+tap "tw93/tap"
 
 brew "git"
 brew "difftastic"
@@ -27,6 +28,7 @@ brew "ast-grep"
 brew "task" # todo list
 brew "tokei"  # code line summary
 brew "vhs"  # generate GIFs with terminal code
+brew "mole" # deep cleaning
 brew "bat"
 brew "zoxide"
 brew "fzf"
