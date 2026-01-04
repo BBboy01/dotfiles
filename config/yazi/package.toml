@@ -1,17 +1,32 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "1612f00"
-hash = "d00cacddd5e4f58e2fb13aecae42d655"
+rev = "03cdd4b"
+hash = "2dd68af59418b631b9703a03f606b31f"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "1612f00"
+rev = "03cdd4b"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
 rev = "cfb9140"
 hash = "b5067143415bd2d46c0dfa57319ddcef"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:full-border"
+rev = "03cdd4b"
+hash = "3996fc74044bc44144b323686f887e1"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "03cdd4b"
+hash = "36a484acf6a0a0219c543ccb4cee218f"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:zoom"
+rev = "03cdd4b"
+hash = "a638db397a5a41d3f3a08a7427ccead1"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"

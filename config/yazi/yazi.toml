@@ -6,11 +6,17 @@ show_hidden = true
 sort_by = "natural"
 
 [preview]
-max_width = 1000
-max_height = 1000
+wrap = "yes"
+max_width = 1500
+max_height = 1500
 
 [plugin]
 prepend_previewers = [
   { url = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
   { mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}", run = "ouch" },
+  { mime = "image/{jpeg,png,webp}", run = "zoom 5" },
+]
+prepend_fetchers = [
+  { id = "git", url = "*", run = "git" },
+  { id = "git", url = "*/", run = "git" },
 ]
