@@ -37,15 +37,10 @@ set -gx PNPM_HOME $HOME/Library/pnpm
 set -gx BUN_INSTALL $HOME/.bun
 
 # =============================================================================
-# FISH SHELL CONFIGURATION
+# SHELL PROMPT CONFIGURATION
 # =============================================================================
 
-set fisher_path $XDG_DATA_HOME/fisher
-set fish_complete_path $fish_complete_path[1] $fisher_path/completions $fish_complete_path[2..]
-set fish_function_path $fish_function_path[1] $fisher_path/functions $fish_function_path[2..]
-for file in $fisher_path/conf.d/*.fish
-    source $file
-end
+set -gx STARSHIP_CONFIG $XDG_CONFIG_HOME/starship/starship.toml
 
 # =============================================================================
 # PUPPETEER SETTINGS

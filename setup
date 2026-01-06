@@ -535,13 +535,6 @@ if [[ "${DRY_RUN}" != "true" ]] && [[ ("$MODULE_BREW" == "true") || ("$MODULE_SH
 
 	# Install fish plugins if shell module is enabled
 	if [[ "$MODULE_SHELL" == "true" ]]; then
-		log_task "Installing/updating fish plugins..."
-		log_subtask "Running: ${COLOR_CMD}fish -c${COLOR_RESET} ${COLOR_ARG}\"fisher update\"${COLOR_RESET}"
-		fish -c "fisher update"
-		log_subtask "Running: ${COLOR_CMD}fish -c${COLOR_RESET} ${COLOR_ARG}\"tide configure...\"${COLOR_RESET}"
-		fish -c "tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No --lean_prompt_height='Two lines' --prompt_connection=Disconnected --prompt_spacing=Compact --icons='Few icons' --transient=No"
-		log_subtask "Fish plugins updated and configured"
-
 		# Set fish as default shell
 		log_task "Setting fish as default shell..."
 		fish_bin=$(which fish)

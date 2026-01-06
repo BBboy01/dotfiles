@@ -1,0 +1,87 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+
+format = """$directory$git_branch$git_commit$git_state$git_status\
+$fill\
+$jobs$status$cmd_duration\
+$username$hostname$kubernetes$docker_context$package$c$cmake$dart$deno$dotnet$elixir$elm$erlang$fennel$gleam$golang$haskell$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$php$python$ruby$rust$scala$solidity$swift$terraform$typst$zig$buf$nix_shell$conda$aws$gcloud$azure$nats$env_var$mise$custom$container
+$character"""
+
+[fill]
+symbol = " "
+
+[character]
+success_symbol = "[❯](green)"
+
+[git_branch]
+style = "#5FD700 italic"
+format = 'on [$branch(:$remote_branch)]($style) '
+truncation_length = 24
+[git_status]
+format = "([$ahead_behind$stashed$conflicted$deleted$renamed$typechanged$modified$staged$untracked]($style) )"
+ahead = "[⇡$count](green) "
+behind = "[⇣$count](blue) "
+conflicted = "[~$count](#FF0000) "
+stashed = "[*$count](#5FD700) "
+deleted = "[✘$count](#FF0000) "
+modified = "[!$count](#D7AF00) "
+staged = "[+$count](#D7AF00) "
+untracked = "[?$count](#00AFFF) "
+[git_commit]
+tag_symbol = '  '
+
+[directory]
+read_only_style = "yellow"
+read_only = ""
+truncation_length = 24
+
+[lua]
+symbol = "󰢱 "
+[nodejs]
+style = "#44883E"
+symbol = " "
+[bun]
+style = "#FBF0DF"
+symbol = " "
+[rust]
+style = "#F74C00"
+symbol = "󱘗 "
+[zig]
+style = "#F7A41D"
+symbol = " "
+[ruby]
+style = "#B31209"
+symbol = " "
+[python]
+style = "#00AFAF"
+symbol = " "
+[golang]
+style = "#00ACD7"
+symbol = " "
+[package]
+symbol = "󰏗 "
+[docker_context]
+style = "#2496ED"
+symbol = "  "
+[kubernetes]
+style = "#326CE5"
+symbol = "󱃾 "
+[elixir]
+style = "#4E2A8E"
+symbol = ' '
+[nix_shell]
+style = "#7EBAE4"
+symbol = "  "
+[php]
+style = "#617CBE"
+symbol = " "
+[java]
+style = "#ED8B00"
+symbol = " "
+[gcloud]
+style = "#4285F4"
+symbol = "󰊭  "
+[aws]
+style = "#FF9900"
+symbol = "  "

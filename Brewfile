@@ -22,7 +22,7 @@ brew "flamegraph"  # convert profile log to flamegraph
 brew "ouch"  # compressing and decompressing
 brew "exiftool"
 brew "fish"
-brew "fisher"
+brew "starship"
 brew "jq"
 brew "ast-grep"
 brew "task" # todo list
