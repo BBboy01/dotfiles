@@ -21,6 +21,7 @@ truncation_length = 24
 [git_status]
 format = "([$ahead_behind$stashed$conflicted$deleted$renamed$typechanged$modified$staged$untracked]($style) )"
 ahead = "[⇡$count](green) "
+diverged = '⇡${ahead_count} ⇣${behind_count} '
 behind = "[⇣$count](blue) "
 conflicted = "[~$count](#FF0000) "
 stashed = "[*$count](#5FD700) "
