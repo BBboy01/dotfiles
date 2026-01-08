@@ -18,6 +18,7 @@ chmod +x setup
 - **Fish-optimized**: Leverages Fish conf.d system for PATH management
 - **Enhanced logging**: Solarized color-coded output for better visibility
 - **Safety first**: Dry-run mode and modular design for safe execution
+- **SSH configuration**: Automatic SSH settings for better connection management
 
 ## Usage
 

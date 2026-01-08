@@ -494,6 +494,25 @@ if [[ "$MODULE_CONFIG" == "true" ]]; then
 		log_task "Creating ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET} to disable Last Login message"
 		execute_with_log touch "$HOME/.hushlogin"
 
+		# SSH configuration
+		log_task "Configuring SSH settings..."
+		mkdir -p "$HOME/.ssh"
+		chmod 700 "$HOME/.ssh" # Ensure proper permissions for SSH directory
+		log_subtask "Creating SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
+		# Write SSH config with proper indentation
+		{
+			echo "Host *"
+			echo "  ServerAliveInterval 30"
+			echo "  TCPKeepAlive yes"
+			echo "  Compression yes"
+			echo "  ServerAliveCountMax 6"
+			echo "  AddKeysToAgent yes"
+			echo "  UseKeychain yes"
+			echo "  IdentityFile ~/.ssh/key"
+		} >>~/.ssh/config
+		log_subtask "Setting permissions for SSH config..."
+		chmod 600 "$HOME/.ssh/config" # Ensure proper permissions for SSH config
+
 		# Refresh font cache after configuration changes
 		log_task "Refreshing font cache..."
 		if command -v fc-cache >/dev/null 2>&1; then
@@ -503,6 +522,8 @@ if [[ "$MODULE_CONFIG" == "true" ]]; then
 		fi
 	else
 		log_task "DRY RUN: Would touch ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
+		log_task "DRY RUN: Would create SSH directory and config with proper permissions"
+		log_subtask "DRY RUN: Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
 		log_task "DRY RUN: Would execute ${COLOR_CMD}fc-cache${COLOR_RESET} ${COLOR_ARG}-f -v${COLOR_RESET}"
 	fi
 else
