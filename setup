@@ -663,6 +663,8 @@ if [[ "${DRY_RUN}" != "true" ]] && [[ ("$MODULE_BREW" == "true") || ("$MODULE_SH
 		execute_with_log sudo yabai --load-sa
 		execute_with_log yabai --start-service
 		execute_with_log skhd --start-service
+		log_subtask "Disable SIP for advanced yabai features."
+		execute_with_log echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 "$(which yabai)" | cut -d " " -f 1) $(which yabai) --load-sa" | sudo tee /private/etc/sudoers.d/yabai
 	else
 		log_task "Skipping other tools initialization (module disabled)"
 	fi
