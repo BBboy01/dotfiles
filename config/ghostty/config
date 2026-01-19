@@ -15,4 +15,5 @@ quick-terminal-position = center
 auto-update = off
 custom-shader = shaders/cursor_blaze.glsl
 
-keybind = cmd+enter=unbind
+keybind = super+enter=unbind
+keybind = super+,=unbind
