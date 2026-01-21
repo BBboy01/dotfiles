@@ -20,6 +20,7 @@ brew "ffmpeg"  # video file processor
 brew "wrk"  # HTTP benchmarking tool
 brew "flamegraph"  # convert profile log to flamegraph
 brew "ouch"  # compressing and decompressing
+brew "caddy" # web server with automatic HTTPS
 brew "exiftool"
 brew "fish"
 brew "starship"
