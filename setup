@@ -636,15 +636,8 @@ if [[ "${DRY_RUN}" != "true" ]] && [[ ("$MODULE_BREW" == "true") || ("$MODULE_SH
 
 		# Init rust
 		log_task "Installing Rust..."
-		if command -v rustup >/dev/null 2>&1; then
-			log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
-			rustup default stable
-		else
-			log_subtask "Running: ${COLOR_CMD}rustup-init${COLOR_RESET} ${COLOR_ARG}-y${COLOR_RESET}"
-			rustup-init -y
-			log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
-			rustup default stable
-		fi
+		log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
+		rustup default stable
 
 		# JavaScript package management setup
 		log_task "Setting up JavaScript package management..."
