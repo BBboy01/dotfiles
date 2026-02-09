@@ -47,7 +47,7 @@ set -gx STARSHIP_CONFIG $XDG_CONFIG_HOME/starship/starship.toml
 # =============================================================================
 
 set -gx PUPPETEER_SKIP_DOWNLOAD true
-set -gx PUPPETEER_EXECUTABLE_PATH (which chromium)
+set -gx PUPPETEER_EXECUTABLE_PATH (command -s chromium)
 
 # =============================================================================
 # HOMEBREW CONFIGURATION
