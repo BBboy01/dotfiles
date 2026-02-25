@@ -1,4 +1,7 @@
 {
+  "session": {
+    "trust_all_worktrees": true
+  },
   "icon_theme": "Catppuccin Mocha",
   "theme": "Catppuccin Mocha",
   "ui_font_size": 16,
