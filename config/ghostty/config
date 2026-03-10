@@ -17,3 +17,34 @@ custom-shader = shaders/cursor_blaze.glsl
 
 keybind = super+enter=unbind
 keybind = super+,=unbind
+
+# ###############################################################################
+# TMUX LIKE KEYBIND
+# ###############################################################################
+keybind = tmux/z=toggle_split_zoom
+keybind = chain=deactivate_key_table
+keybind = tmux/i=new_split:right
+keybind = chain=deactivate_key_table
+keybind = tmux/v=new_split:down
+keybind = chain=deactivate_key_table
+keybind = tmux/j=goto_split:down
+keybind = chain=deactivate_key_table
+keybind = tmux/k=goto_split:up
+keybind = chain=deactivate_key_table
+keybind = tmux/h=goto_split:left
+keybind = chain=deactivate_key_table
+keybind = tmux/l=goto_split:right
+keybind = chain=deactivate_key_table
+keybind = tmux/0=equalize_splits
+keybind = chain=deactivate_key_table
+keybind = tmux/ctrl+j=resize_split:down,10
+keybind = tmux/ctrl+k=resize_split:up,10
+keybind = tmux/ctrl+h=resize_split:left,10
+keybind = tmux/ctrl+l=resize_split:right,10
+keybind = tmux/ctrl+u=scroll_page_up
+keybind = tmux/ctrl+d=scroll_page_down
+keybind = tmux/escape=deactivate_key_table
+keybind = tmux/ctrl+c=deactivate_key_table
+keybind = tmux/catch_all=ignore
+
+keybind = alt+a=activate_key_table:tmux
