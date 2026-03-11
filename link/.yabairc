@@ -3,45 +3,31 @@
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 sudo yabai --load-sa
 
-# mission-control desktop labels
-yabai -m space 1 --label web
-yabai -m space 2 --label code
-yabai -m space 3 --label social
-yabai -m space 4 --label media
-yabai -m space 5 --label notes
-yabai -m space 6 --label mail
-
-yabai -m rule --add app="^QQ$"                         manage=off
-yabai -m rule --add app="^Creative Cloud$"             manage=off
-yabai -m rule --add app="^IINA$"                       manage=off
-yabai -m rule --add app="^CleanShot X$"                manage=off
-yabai -m rule --add app="^Raycast$"                    manage=off
-yabai -m rule --add app="^Preview$"                    manage=off
-yabai -m rule --add app="^WeChat$"                     manage=off
-yabai -m rule --add app="^WeCom$"                      manage=off
-yabai -m rule --add app="^App Store$"                  manage=off
-yabai -m rule --add app="^System Settings$"            manage=off
-yabai -m rule --add app="^Finder$"                     manage=off
-yabai -m rule --add app="^Adobe Photoshop"             manage=off
+yabai -m rule --add app="^(Preview|App Store|Finder|System Preferences|System Settings)$" manage=off
+yabai -m rule --add app="^(Creative Cloud|IINA|CleanShot X|Raycast|PortKiller|Clash Verge|Adobe .+)$" manage=off
+yabai -m rule --add app="^(QQ|WeChat|WeCom|BaiduNetdisk|剪映专业版|像素蛋糕)$" manage=off
 
 # global settings
-yabai -m config                              \
-    external_bar                off          \
-    mouse_follows_focus         off          \
-    focus_follows_mouse         off          \
-    window_placement            second_child \
-    window_shadow               off          \
-    window_animation_duration   0.25         \
-    split_ratio                 0.50         \
-    split_type                  auto         \
-    auto_balance                off          \
-    top_padding                 10           \
-    left_padding                10           \
-    right_padding               10           \
-    bottom_padding              10           \
-    window_gap                  10           \
-    layout                      bsp          \
-    mouse_modifier              fn           \
-    mouse_action1               move         \
-    mouse_action2               resize       \
-    mouse_drop_action           swap
+yabai -m config \
+	external_bar off \
+	mouse_follows_focus off \
+	focus_follows_mouse off \
+	window_placement second_child \
+	window_shadow on \
+	window_animation_duration 0 \
+	split_ratio 0.50 \
+	split_type auto \
+	auto_balance off \
+	top_padding 10 \
+	left_padding 10 \
+	right_padding 10 \
+	bottom_padding 10 \
+	window_gap 10 \
+	layout bsp \
+	mouse_modifier fn \
+	mouse_action1 move \
+	mouse_action2 resize \
+	mouse_drop_action swap
+
+yabai -m signal --add event=window_focused \
+	action='yabai -m window --sub-layer normal'
