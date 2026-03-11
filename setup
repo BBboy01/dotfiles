@@ -1,708 +1,797 @@
 #!/usr/bin/env bash
+#
+# Configure a macOS development environment from this dotfiles repository.
+# The script supports modular execution, dry runs, and first-level symlink
+# management for both config/ and link/.
 
-set -euo pipefail # Exit on error, undefined variables, and pipe failures
+set -euo pipefail
 
-# ###############################################################################
-# CONFIGURATION VARIABLES
-# ###############################################################################
+SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
 readonly DOTFILES_DIR="$HOME/.dotfiles"
 readonly CONFIG_PATH="$HOME/.config"
 readonly HOMEBREW_PREFIX="/opt/homebrew"
 
-# ###############################################################################
-# COLOR DEFINITIONS AND LOGGING
-# ###############################################################################
+readonly COLOR_TIMESTAMP='\033[0;36m'
+readonly COLOR_INFO='\033[0;32m'
+readonly COLOR_WARNING='\033[0;33m'
+readonly COLOR_ERROR='\033[0;31m'
+readonly COLOR_STATUS='\033[0;35m'
+readonly COLOR_MAIN='\033[0;34m'
+readonly COLOR_TASK='\033[0;36m'
+readonly COLOR_CMD='\033[1;36m'
+readonly COLOR_ARG='\033[1;33m'
+readonly COLOR_PATH='\033[1;34m'
+readonly COLOR_ARROW='\033[1;37m'
+readonly COLOR_GREEN='\033[1;32m'
+readonly COLOR_RESET='\033[0m'
 
-# Solarized dark theme color palette
-readonly COLOR_TIMESTAMP='\033[0;36m' # Dark cyan for timestamps
-readonly COLOR_INFO='\033[0;32m'      # Darker green for INFO
-readonly COLOR_WARNING='\033[0;33m'   # Darker yellow for WARNING
-readonly COLOR_ERROR='\033[0;31m'     # Darker red for ERROR
-readonly COLOR_STATUS='\033[0;35m'    # Darker magenta for STATUS
-readonly COLOR_MAIN='\033[0;34m'      # Darker blue for MAIN
-readonly COLOR_TASK='\033[0;36m'      # Darker cyan for TASK
-readonly COLOR_CMD='\033[1;36m'       # Bright cyan for commands
-readonly COLOR_ARG='\033[1;33m'       # Bright yellow for command arguments
-readonly COLOR_PATH='\033[1;34m'      # Bright blue for file paths
-readonly COLOR_ARROW='\033[1;37m'     # Bright white for arrow symbol
-readonly COLOR_GREEN='\033[1;32m'     # Bright green for success indicators
-readonly COLOR_RESET='\033[0m'        # Reset to default
+readonly INDENT_LVL0=""
+readonly INDENT_LVL1="  "
+readonly INDENT_LVL2="    "
+readonly INDENT_LVL3="      "
 
-# Indentation levels for hierarchical logging
-readonly INDENT_LVL0=""       # No indent (main level)
-readonly INDENT_LVL1="  "     # 2 spaces (task level)
-readonly INDENT_LVL2="    "   # 4 spaces (subtask level)
-readonly INDENT_LVL3="      " # 6 spaces (status level)
+readonly DEFAULTS_FIELD_SEPARATOR=$'\t'
+readonly GIT_CONFIG_FIELD_SEPARATOR=$'\t'
 
-# Hierarchical logging functions
-# Basic logging functions with emoji indicators
+DRY_RUN=false
+VERBOSE=false
+EXPLICIT_MODULES_SELECTED=false
+MODULE_SYSTEM=true
+MODULE_CONFIG=true
+MODULE_BREW=true
+MODULE_SHELL=true
+MODULE_GIT=true
+MODULE_TOOLS=true
+
+readonly -a SYSTEM_DEFAULTS=(
+  $'-g\t_HIHideMenuBar\t-bool\ttrue'
+  $'-g\tAppleKeyboardUIMode\t-int\t2'
+  $'-g\tApplePressAndHoldEnabled\t-bool\tfalse'
+  $'-g\tInitialKeyRepeat\t-int\t10'
+  $'-g\tKeyRepeat\t-int\t1'
+  $'-g\tcom.apple.swipescrolldirection\t-bool\tfalse'
+  $'-g\tNSAutomaticDashSubstitutionEnabled\t-bool\tfalse'
+  $'-g\tNSAutomaticPeriodSubstitutionEnabled\t-bool\tfalse'
+  $'-g\tNSAutomaticQuoteSubstitutionEnabled\t-bool\tfalse'
+  $'-g\tNSAutomaticCapitalizationEnabled\t-bool\tfalse'
+  $'-g\tNSNavPanelExpandedStateForSaveMode\t-bool\ttrue'
+  $'-g\tNSNavPanelExpandedStateForSaveMode2\t-bool\ttrue'
+  $'-g\tNSDocumentSaveNewDocumentsToCloud\t-bool\tfalse'
+  $'-g\tAppleWindowTabbingMode\t-string\talways'
+  $'-g\tNSGlobalDomain NSToolbarTitleViewRolloverDelay\t-int\t0'
+  $'com.apple.dock\ttilesize\t-int\t48'
+  $'com.apple.dock\torientation\t-string\tbottom'
+  $'com.apple.dock\tautohide\t-bool\ttrue'
+  $'com.apple.dock\tshow-recents\t-bool\tfalse'
+  $'com.apple.dock\tshow-process-indicators\t-bool\tfalse'
+  $'com.apple.finder\tQuitMenuItem\t-bool\ttrue'
+  $'com.apple.finder\tFXEnableExtensionChangeWarning\t-bool\tfalse'
+  $'com.apple.finder\tAppleShowAllExtensions\t-bool\ttrue'
+  $'com.apple.finder\tAppleShowAllFiles\t-bool\ttrue'
+  $'com.apple.finder\tFXPreferredViewStyle\t-string\tclmv'
+  $'com.apple.finder\tFXDefaultSearchScope\t-string\tSCcf'
+  $'com.apple.finder\tCreateDesktop\t-bool\tfalse'
+  $'com.apple.finder\tShowHardDrivesOnDesktop\t-bool\tfalse'
+  $'com.apple.finder\tShowRemovableMediaOnDesktop\t-bool\tfalse'
+  $'com.apple.finder\tShowExternalHardDrivesOnDesktop\t-bool\tfalse'
+  $'com.apple.finder\tShowMountedServersOnDesktop\t-bool\tfalse'
+  $'com.apple.finder\tNewWindowTarget\t-string\tPfHm'
+  $'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
+  $'com.apple.finder\tQLEnableTextSelection\t-bool\ttrue'
+  $'com.apple.AppleMultitouchTrackpad\tClicking\t-bool\ttrue'
+  $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tClicking\t-bool\ttrue'
+  $'com.apple.LaunchServices\tLSQuarantine\t-bool\tfalse'
+  $'com.apple.desktopservices\tDSDontWriteUSBStores\t-bool\ttrue'
+  $'com.apple.desktopservices\tDSDontWriteNetworkStores\t-bool\ttrue'
+  $'com.apple.CrashReporter\tDialogType\t-string\tnone'
+  $'com.apple.frameworks.diskimages\tskip-verify\t-bool\ttrue'
+  $'com.apple.frameworks.diskimages\tskip-verify-locked\t-bool\ttrue'
+  $'com.apple.frameworks.diskimages\tskip-verify-remote\t-bool\ttrue'
+  $'com.apple.AdLib\tforceLimitAdTracking\t-bool\ttrue'
+  $'com.apple.AdLib\tallowApplePersonalizedAdvertising\t-bool\tfalse'
+  $'com.apple.AdLib\tallowIdentifierForAdvertising\t-bool\tfalse'
+)
+
+readonly -a GIT_CONFIG_SETTINGS=(
+  $'core.editor\tnvim'
+  $'core.excludesFile\t'"$HOME/.gitignore_global"
+  $'core.attributesFile\t'"$HOME/.gitattributes_global"
+  $'init.defaultbranch\tmain'
+  $'pull.rebase\ttrue'
+  $'push.autoSetupRemote\ttrue'
+  $'merge.conflictStyle\tzdiff3'
+  $'fetch.writeCommitGraph\ttrue'
+  $'rerere.enabled\ttrue'
+  $'column.ui\tauto'
+  $'branch.sort\t-committerdate'
+  $'gpg.format\tssh'
+  $'user.signingKey\t'"$HOME/.ssh/key.pub"
+  $'commit.gpgsign\ttrue'
+  $'maintenance.auto\tfalse'
+  $'maintenance.strategy\tincremental'
+  $'diff.colormoved\tdefault'
+  $'diff.nodiff.command\ttrue'
+  $'diff.nodiff.binary\ttrue'
+  $'diff.tool\tdifftastic'
+  $'diff.external\tdifft --color=always'
+  $'difftool.prompt\tfalse'
+  $'difftool.difftastic.cmd\tdifft "$LOCAL" "$REMOTE"'
+  $'pager.difftool\ttrue'
+  $'core.pager\tdelta'
+  $'interactive.difffilter\tdelta --color-only'
+  $'delta.light\tfalse'
+  $'delta.navigate\ttrue'
+  $'delta.side-by-side\ttrue'
+  $'delta.line-numbers\ttrue'
+  $'delta.syntax-theme\tDracula'
+)
+
 log_info() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_INFO}INFO${COLOR_RESET}    $*"
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_INFO}INFO${COLOR_RESET}    $*"
 }
 
 log_warn() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_WARNING}⚠️ ${COLOR_RESET} $*"
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_WARNING}⚠️ ${COLOR_RESET} $*"
 }
 
 log_error() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_ERROR}❌${COLOR_RESET}   $*" >&2
-	exit 1
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_ERROR}❌${COLOR_RESET}   $*" \
+    >&2
+  exit 1
 }
 
-# Hierarchical logging functions with emoji indicators
 log_main() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_MAIN}⚙️ ${COLOR_RESET}    $INDENT_LVL0$*"
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_MAIN}⚙️ ${COLOR_RESET}    ${INDENT_LVL0}$*"
 }
 
 log_task() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📋${COLOR_RESET}    $INDENT_LVL1$*"
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📋${COLOR_RESET}    ${INDENT_LVL1}$*"
 }
 
 log_subtask() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📝${COLOR_RESET}     $INDENT_LVL2$*"
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📝${COLOR_RESET}     ${INDENT_LVL2}$*"
 }
 
 log_status() {
-	echo -e "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}✅${COLOR_RESET}  $INDENT_LVL3$*"
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}✅${COLOR_RESET}  ${INDENT_LVL3}$*"
 }
 
-# ###############################################################################
-# UTILITY FUNCTIONS
-# ###############################################################################
-
-# Function to execute commands with enhanced colored output
 execute_with_log() {
-	local cmd="$1"
-	shift
-	local args=("$@") # Store all remaining arguments as an array
-	log_task "EXECUTING: ${COLOR_CMD}${cmd}${COLOR_RESET} ${COLOR_ARG}${args[*]}${COLOR_RESET}"
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		"$cmd" "${args[@]}"
-	else
-		log_subtask "DRY RUN: Would execute '${COLOR_CMD}${cmd}${COLOR_RESET} ${COLOR_ARG}${args[*]}${COLOR_RESET}'"
-	fi
+  local cmd="$1"
+  shift
+  local args=("$@")
+
+  log_task "EXECUTING: ${COLOR_CMD}${cmd}${COLOR_RESET} ${COLOR_ARG}${args[*]}${COLOR_RESET}"
+  if [[ "$DRY_RUN" != "true" ]]; then
+    "$cmd" "${args[@]}"
+  else
+    log_subtask \
+      "DRY RUN: Would execute '${COLOR_CMD}${cmd}${COLOR_RESET} ${COLOR_ARG}${args[*]}${COLOR_RESET}'"
+  fi
 }
 
-# ###############################################################################
-# MODULE SELECTION SYSTEM
-# ###############################################################################
+#######################################
+# Write a single macOS defaults entry.
+# Arguments:
+#   $1: Domain
+#   $2: Key
+#   $3: Flag such as -bool, -int, or -string
+#   $4: Value
+#######################################
+write_default_setting() {
+  local domain="$1"
+  local key="$2"
+  local flag="$3"
+  local value="$4"
 
-# Track if any modules were explicitly selected
-EXPLICIT_MODULES_SELECTED=false
+  defaults write "${domain}" "${key}" "${flag}" "${value}"
+}
 
-# Module selection variables (default to true for backward compatibility unless modules are explicitly selected)
-MODULE_SYSTEM=true # macOS system defaults
-MODULE_CONFIG=true # Config linking
-MODULE_BREW=true   # Homebrew and applications
-MODULE_SHELL=true  # Shell configuration (fish)
-MODULE_GIT=true    # Git configuration
-MODULE_TOOLS=true  # Other tools (luarocks, rust, pnpm, etc.)
+#######################################
+# Apply a list of "domain key flag value" defaults entries.
+# Globals:
+#   DEFAULTS_FIELD_SEPARATOR
+# Arguments:
+#   Array entries as positional parameters
+#######################################
+apply_defaults_entries() {
+  local entry=""
+  local domain=""
+  local key=""
+  local flag=""
+  local value=""
 
-# ###############################################################################
-# COMMAND LINE INTERFACE
-# ###############################################################################
+  for entry in "$@"; do
+    IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
+    write_default_setting "${domain}" "${key}" "${flag}" "${value}"
+  done
+}
+
+#######################################
+# Apply a list of Git global config key/value pairs.
+# Globals:
+#   GIT_CONFIG_FIELD_SEPARATOR
+# Arguments:
+#   Array entries as positional parameters
+#######################################
+apply_git_config_entries() {
+  local entry=""
+  local key=""
+  local value=""
+
+  for entry in "$@"; do
+    IFS="${GIT_CONFIG_FIELD_SEPARATOR}" read -r key value <<<"${entry}"
+    git config --global "${key}" "${value}"
+  done
+}
 
 show_help() {
-	echo "Usage: $0 [OPTIONS]"
-	echo ""
-	echo "Initialize macOS development environment with configurable modules."
-	echo ""
-	echo "Options:"
-	echo "  --dry-run                    Run without making changes (for testing)"
-	echo "  --verbose                    Enable verbose output"
-	echo "  --modules                    List available modules"
-	echo "  --system                     Configure macOS system defaults"
-	echo "  --config                     Link configuration files"
-	echo "  --brew                       Install applications via Homebrew"
-	echo "  --shell                      Configure shell (fish)"
-	echo "  --git                        Configure Git"
-	echo "  --tools                      Initialize other tools (luarocks, rust, etc.)"
-	echo "  --help                       Show this help message"
-	echo ""
-	echo "Examples:"
-	echo "  $0                          # Run all modules (default)"
-	echo "  $0 --brew --shell          # Run only Homebrew and shell modules"
-	echo "  $0 --dry-run --git         # Dry run for Git configuration only"
-	echo ""
+  cat <<EOF
+Usage: ${SCRIPT_NAME} [OPTIONS]
+
+Initialize macOS development environment with configurable modules.
+
+Options:
+  --dry-run                    Run without making changes (for testing)
+  --verbose                    Enable verbose output
+  --modules                    List available modules
+  --system                     Configure macOS system defaults
+  --config                     Link configuration files
+  --brew                       Install applications via Homebrew
+  --shell                      Configure shell (fish)
+  --git                        Configure Git
+  --tools                      Initialize other tools (luarocks, rust, etc.)
+  --help                       Show this help message
+
+Examples:
+  ${SCRIPT_NAME}                          # Run all modules (default)
+  ${SCRIPT_NAME} --brew --shell          # Run only Homebrew and shell modules
+  ${SCRIPT_NAME} --dry-run --git         # Dry run for Git configuration only
+EOF
 }
 
 list_modules() {
-	echo "Available modules:"
-	echo "  --system   : macOS system defaults"
-	echo "  --config   : Config linking"
-	echo "  --brew     : Homebrew and applications"
-	echo "  --shell    : Shell configuration (fish)"
-	echo "  --git      : Git configuration"
-	echo "  --tools    : Other tools (luarocks, rust, pnpm, etc.)"
+  cat <<'EOF'
+Available modules:
+  --system   : macOS system defaults
+  --config   : Config linking
+  --brew     : Homebrew and applications
+  --shell    : Shell configuration (fish)
+  --git      : Git configuration
+  --tools    : Other tools (luarocks, rust, pnpm, etc.)
+EOF
 }
 
-# Parse command line arguments
-DRY_RUN=false
-VERBOSE=false
+disable_all_modules() {
+  MODULE_SYSTEM=false
+  MODULE_CONFIG=false
+  MODULE_BREW=false
+  MODULE_SHELL=false
+  MODULE_GIT=false
+  MODULE_TOOLS=false
+}
 
-while [[ $# -gt 0 ]]; do
-	case $1 in
-	--help)
-		show_help
-		exit 0
-		;;
-	--modules)
-		list_modules
-		exit 0
-		;;
-	--dry-run)
-		DRY_RUN=true
-		shift
-		;;
-	--verbose)
-		VERBOSE=true
-		shift
-		;;
-	--system)
-		# When a specific module is selected, set EXPLICIT_MODULES_SELECTED
-		if [[ "$EXPLICIT_MODULES_SELECTED" == "false" ]]; then
-			EXPLICIT_MODULES_SELECTED=true
-			# When modules are explicitly selected, disable all by default
-			MODULE_SYSTEM=false
-			MODULE_CONFIG=false
-			MODULE_BREW=false
-			MODULE_SHELL=false
-			MODULE_GIT=false
-			MODULE_TOOLS=false
-		fi
-		MODULE_SYSTEM=true
-		shift
-		;;
-	--config)
-		# When a specific module is selected, set EXPLICIT_MODULES_SELECTED
-		if [[ "$EXPLICIT_MODULES_SELECTED" == "false" ]]; then
-			EXPLICIT_MODULES_SELECTED=true
-			# When modules are explicitly selected, disable all by default
-			MODULE_SYSTEM=false
-			MODULE_CONFIG=false
-			MODULE_BREW=false
-			MODULE_SHELL=false
-			MODULE_GIT=false
-			MODULE_TOOLS=false
-		fi
-		MODULE_CONFIG=true
-		shift
-		;;
-	--brew)
-		# When a specific module is selected, set EXPLICIT_MODULES_SELECTED
-		if [[ "$EXPLICIT_MODULES_SELECTED" == "false" ]]; then
-			EXPLICIT_MODULES_SELECTED=true
-			# When modules are explicitly selected, disable all by default
-			MODULE_SYSTEM=false
-			MODULE_CONFIG=false
-			MODULE_BREW=false
-			MODULE_SHELL=false
-			MODULE_GIT=false
-			MODULE_TOOLS=false
-		fi
-		MODULE_BREW=true
-		shift
-		;;
-	--shell)
-		# When a specific module is selected, set EXPLICIT_MODULES_SELECTED
-		if [[ "$EXPLICIT_MODULES_SELECTED" == "false" ]]; then
-			EXPLICIT_MODULES_SELECTED=true
-			# When modules are explicitly selected, disable all by default
-			MODULE_SYSTEM=false
-			MODULE_CONFIG=false
-			MODULE_BREW=false
-			MODULE_SHELL=false
-			MODULE_GIT=false
-			MODULE_TOOLS=false
-		fi
-		MODULE_SHELL=true
-		shift
-		;;
-	--git)
-		# When a specific module is selected, set EXPLICIT_MODULES_SELECTED
-		if [[ "$EXPLICIT_MODULES_SELECTED" == "false" ]]; then
-			EXPLICIT_MODULES_SELECTED=true
-			# When modules are explicitly selected, disable all by default
-			MODULE_SYSTEM=false
-			MODULE_CONFIG=false
-			MODULE_BREW=false
-			MODULE_SHELL=false
-			MODULE_GIT=false
-			MODULE_TOOLS=false
-		fi
-		MODULE_GIT=true
-		shift
-		;;
-	--tools)
-		# When a specific module is selected, set EXPLICIT_MODULES_SELECTED
-		if [[ "$EXPLICIT_MODULES_SELECTED" == "false" ]]; then
-			EXPLICIT_MODULES_SELECTED=true
-			# When modules are explicitly selected, disable all by default
-			MODULE_SYSTEM=false
-			MODULE_CONFIG=false
-			MODULE_BREW=false
-			MODULE_SHELL=false
-			MODULE_GIT=false
-			MODULE_TOOLS=false
-		fi
-		MODULE_TOOLS=true
-		shift
-		;;
-	*)
-		echo "Unknown option: $1"
-		echo "Use --help for usage information."
-		exit 1
-		;;
-	esac
-done
+mark_explicit_module_selection() {
+  if [[ "$EXPLICIT_MODULES_SELECTED" == "true" ]]; then
+    return
+  fi
 
-# Log the execution mode and selected modules
-log_main "Starting setup script..."
+  EXPLICIT_MODULES_SELECTED=true
+  disable_all_modules
+}
 
-# Determine and log execution mode
-if [[ "${DRY_RUN}" == "true" ]] && [[ "${VERBOSE}" == "true" ]]; then
-	log_task "Execution mode: DRY RUN with VERBOSE output - no changes will be made"
-	set -x
-elif [[ "${DRY_RUN}" == "true" ]]; then
-	log_task "Execution mode: DRY RUN - no changes will be made"
-elif [[ "${VERBOSE}" == "true" ]]; then
-	log_task "Execution mode: VERBOSE - detailed output will be shown"
-	set -x
-else
-	log_task "Execution mode: NORMAL - standard output"
-fi
+enable_module() {
+  local module_name="$1"
 
-# Log selected modules
-log_task "Enabled modules:"
-if [[ "$MODULE_SYSTEM" == "true" ]]; then
-	log_subtask "macOS System Defaults: ${COLOR_GREEN}✅${COLOR_RESET}"
-fi
-if [[ "$MODULE_CONFIG" == "true" ]]; then
-	log_subtask "Config Linking: ${COLOR_GREEN}✅${COLOR_RESET}"
-fi
-if [[ "$MODULE_BREW" == "true" ]]; then
-	log_subtask "Homebrew & Apps: ${COLOR_GREEN}✅${COLOR_RESET}"
-fi
-if [[ "$MODULE_SHELL" == "true" ]]; then
-	log_subtask "Shell Configuration: ${COLOR_GREEN}✅${COLOR_RESET}"
-fi
-if [[ "$MODULE_GIT" == "true" ]]; then
-	log_subtask "Git Configuration: ${COLOR_GREEN}✅${COLOR_RESET}"
-fi
-if [[ "$MODULE_TOOLS" == "true" ]]; then
-	log_subtask "Other Tools: ${COLOR_GREEN}✅${COLOR_RESET}"
-fi
+  mark_explicit_module_selection
 
-# Pre-authenticate for operations that require admin privileges if any modules need it
-# Modules that require sudo: System (xcode tools installation, spctl), Brew (installation), Shell (chsh, /etc/shells), Tools (yabai --load-sa)
-if [[ ("${DRY_RUN}" != "true") && ("${MODULE_SYSTEM}" == "true" || "${MODULE_BREW}" == "true" || "${MODULE_SHELL}" == "true" || "${MODULE_TOOLS}" == "true") ]]; then
-	log_task "Authenticating for system operations (if needed)..."
-	if sudo -v; then
-		# Keep sudo timestamp alive throughout script execution
-		(while true; do
-			sleep 60
-			sudo -n true
-			kill -0 "$$" || exit
-		done 2>/dev/null &)
-		log_subtask "Authentication successful"
-	else
-		log_error "Failed to authenticate. Please run the script again and enter your password when prompted."
-	fi
-fi
+  case "$module_name" in
+    system) MODULE_SYSTEM=true ;;
+    config) MODULE_CONFIG=true ;;
+    brew) MODULE_BREW=true ;;
+    shell) MODULE_SHELL=true ;;
+    git) MODULE_GIT=true ;;
+    tools) MODULE_TOOLS=true ;;
+    *)
+      log_error "Unknown module: ${module_name}"
+      ;;
+  esac
+}
 
-# ###############################################################################
-# SYSTEM CONFIGURATION MODULE
-# ###############################################################################
+parse_args() {
+  local arg
 
-if [[ "$MODULE_SYSTEM" == "true" ]]; then
-	# Install XCode Command Line Tools if needed (this should be first as other operations may depend on it)
-	log_main "Installing XCode Command Line Tools if needed..."
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		if ! xcode-select --print-path &>/dev/null; then
-			log_task "Installing XCode Command Line Tools"
-			# Prompt user to install the XCode Command Line Tools
-			if xcode-select --install &>/dev/null; then
-				log_subtask "XCode Command Line Tools install initiated. Please follow the prompts."
-			else
-				log_warn "XCode Command Line Tools install failed to initiate"
-			fi
-		else
-			log_task "XCode Command Line Tools already installed"
-		fi
-	fi
+  while [[ $# -gt 0 ]]; do
+    arg="$1"
+    case "$arg" in
+      --help)
+        show_help
+        exit 0
+        ;;
+      --modules)
+        list_modules
+        exit 0
+        ;;
+      --dry-run)
+        DRY_RUN=true
+        ;;
+      --verbose)
+        VERBOSE=true
+        ;;
+      --system)
+        enable_module system
+        ;;
+      --config)
+        enable_module config
+        ;;
+      --brew)
+        enable_module brew
+        ;;
+      --shell)
+        enable_module shell
+        ;;
+      --git)
+        enable_module git
+        ;;
+      --tools)
+        enable_module tools
+        ;;
+      *)
+        printf 'Unknown option: %s\n' "$arg"
+        printf 'Use --help for usage information.\n'
+        exit 1
+        ;;
+    esac
+    shift
+  done
+}
 
-	# Configure system-wide settings
-	log_main "Configuring system settings..."
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		# General system settings
-		defaults write -g _HIHideMenuBar -bool true                        # Auto hide the menubar
-		defaults write -g AppleKeyboardUIMode -int 2                       # Enable full keyboard access for all controls
-		defaults write -g ApplePressAndHoldEnabled -bool false             # Enable press-and-hold repeating
-		defaults write -g InitialKeyRepeat -int 10                         # Initial key repeat rate
-		defaults write -g KeyRepeat -int 1                                 # Subsequent key repeat rate
-		defaults write -g com.apple.swipescrolldirection -bool false       # Disable "Natural" scrolling
-		defaults write -g NSAutomaticDashSubstitutionEnabled -bool false   # Disable smart dash substitution
-		defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false # Disable smart period substitution
-		defaults write -g NSAutomaticQuoteSubstitutionEnabled -bool false  # Disable smart quote substitution
-		defaults write -g NSAutomaticCapitalizationEnabled -bool false     # Disable automatic capitalization
-		defaults write -g NSNavPanelExpandedStateForSaveMode -bool true    # Using expanded "save panel" by default
-		defaults write -g NSNavPanelExpandedStateForSaveMode2 -bool true   # Using expanded "save panel" by default
-		defaults write -g NSDocumentSaveNewDocumentsToCloud -bool false    # Save to disk (not to iCloud) by default
-		defaults write -g AppleWindowTabbingMode -string always            # Prefer tabs when opening documents
-		defaults write -g NSGlobalDomain NSToolbarTitleViewRolloverDelay 0 # Show icon immediately
-		# Dock settings
-		defaults write com.apple.dock tilesize -int 48                    # Set dock icon size
-		defaults write com.apple.dock orientation -string bottom          # Set dock to bottom
-		defaults write com.apple.dock autohide -bool true                 # Set dock to auto-hide
-		defaults write com.apple.dock show-recents -bool false            # Disable showing recents
-		defaults write com.apple.dock show-process-indicators -bool false # Disable light-dot for running apps
-		# Finder settings
-		defaults write com.apple.finder QuitMenuItem -bool true                                           # Allow quitting via ⌘Q
-		defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false                        # Disable extension change warning
-		defaults write com.apple.finder AppleShowAllExtensions -bool true                                 # Show all file extensions
-		defaults write com.apple.finder AppleShowAllFiles -bool true                                      # Show hidden files
-		defaults write com.apple.finder FXPreferredViewStyle -string clmv                                 # Layout as multi-column
-		defaults write com.apple.finder FXDefaultSearchScope -string SCcf                                 # Search in current folder by default
-		defaults write com.apple.finder CreateDesktop -bool false                                         # Keep desktop clean
-		defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false                               # Hide hard drives on desktop
-		defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false                           # Hide removable media on desktop
-		defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false                       # Hide external drives on desktop
-		defaults write com.apple.finder ShowMountedServersOnDesktop -bool false                           # Hide mounted servers on desktop
-		defaults write com.apple.finder NewWindowTarget -string PfHm                                      # New window use $HOME path
-		defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/"                       # Set home path
-		defaults write com.apple.finder QLEnableTextSelection -bool true                                  # Allow text selection in Quick Look
-		defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false # Show metadata in info panel
-		# Trackpad settings
-		defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true                  # Enable tap to click
-		defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true # Enable tap to click
-		# Other system settings
-		defaults write com.apple.LaunchServices LSQuarantine -bool false             # Disable quarantine for downloaded apps
-		defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true     # Avoid .DS_Store on USB
-		defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true # Avoid .DS_Store on network
-		defaults write com.apple.CrashReporter DialogType -string none               # Disable crash reporter
-		defaults write com.apple.frameworks.diskimages skip-verify -bool true        # Disable disk image verification
-		defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true # Disable disk image verification for locked
-		defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true # Disable disk image verification for remote
-		defaults write com.apple.AdLib forceLimitAdTracking -bool true               # Disable personalized advertising
-		defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false # Disable Apple personalized advertising
-		defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false     # Disable identifier for advertising
+enable_verbose_tracing() {
+  if [[ "$VERBOSE" == "true" ]]; then
+    set -x
+  fi
+}
 
-		# Restart affected services
-		execute_with_log killall Dock Finder
-	fi
+log_execution_mode() {
+  if [[ "$DRY_RUN" == "true" && "$VERBOSE" == "true" ]]; then
+    log_task "Execution mode: DRY RUN with VERBOSE output - no changes will be made"
+  elif [[ "$DRY_RUN" == "true" ]]; then
+    log_task "Execution mode: DRY RUN - no changes will be made"
+  elif [[ "$VERBOSE" == "true" ]]; then
+    log_task "Execution mode: VERBOSE - detailed output will be shown"
+  else
+    log_task "Execution mode: NORMAL - standard output"
+  fi
 
-	# Allow open applications from any source (Gatekeeper configuration)
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		log_task "Disabling Gatekeeper (password required)..."
-		execute_with_log sudo spctl --master-disable
-	else
-		log_task "DRY RUN: Would execute '${COLOR_CMD}sudo spctl${COLOR_RESET} ${COLOR_ARG}--master-disable${COLOR_RESET}'"
-	fi
-else
-	log_main "Skipping macOS system defaults configuration (module disabled)"
-fi
+  enable_verbose_tracing
+}
 
-# ###############################################################################
-# INSTALL HOMEBREW AND PACKAGE MANAGEMENT
-# ###############################################################################
+log_enabled_module() {
+  local module_name="$1"
+  local enabled="$2"
 
-if [[ "$MODULE_BREW" == "true" ]]; then
-	log_main "Installing Homebrew if needed..."
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		if ! command -v brew >/dev/null 2>&1; then
-			log_task "Installing Homebrew"
-			if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-				log_error "Unable to install Homebrew, script abort!"
-			fi
-		else
-			log_task "Homebrew already installed"
-		fi
+  if [[ "$enabled" == "true" ]]; then
+    log_subtask "${module_name}: ${COLOR_GREEN}✅${COLOR_RESET}"
+  fi
+}
 
-		log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
-	fi
-else
-	log_main "Skipping Homebrew installation (module disabled)"
-fi
+log_enabled_modules() {
+  log_task "Enabled modules:"
+  log_enabled_module "macOS System Defaults" "$MODULE_SYSTEM"
+  log_enabled_module "Config Linking" "$MODULE_CONFIG"
+  log_enabled_module "Homebrew & Apps" "$MODULE_BREW"
+  log_enabled_module "Shell Configuration" "$MODULE_SHELL"
+  log_enabled_module "Git Configuration" "$MODULE_GIT"
+  log_enabled_module "Other Tools" "$MODULE_TOOLS"
+}
 
-# ###############################################################################
-# CONFIGURATION AND DOTFILE SYMLINKING
-# ###############################################################################
+should_authenticate_for_sudo() {
+  [[ "$DRY_RUN" != "true" ]] &&
+    [[ "$MODULE_SYSTEM" == "true" || "$MODULE_BREW" == "true" || \
+      "$MODULE_SHELL" == "true" || "$MODULE_TOOLS" == "true" ]]
+}
 
-if [[ "$MODULE_CONFIG" == "true" ]]; then
-	log_main "Creating config symlinks..."
+keep_sudo_alive() {
+  while true; do
+    sleep 60
+    sudo -n true
+    kill -0 "$$" || exit
+  done 2>/dev/null &
+}
 
-	# Use find to get all first-level items in the config directory so both files
-	# and directories can be linked directly into $HOME/.config.
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		mkdir -p "$CONFIG_PATH"
-		while IFS= read -r -d '' item; do
-			if [[ -e "$item" || -L "$item" ]]; then
-				item_name=$(basename "$item")
-				target_item="$CONFIG_PATH/$item_name"
+authenticate_for_system_operations() {
+  if ! should_authenticate_for_sudo; then
+    return
+  fi
 
-				if [[ -e "$target_item" || -L "$target_item" ]]; then
-					log_subtask "Removing existing ${COLOR_PATH}$target_item${COLOR_RESET}"
-					rm -rf "$target_item"
-				fi
+  log_task "Authenticating for system operations (if needed)..."
+  if sudo -v; then
+    keep_sudo_alive
+    log_subtask "Authentication successful"
+  else
+    log_error "Failed to authenticate. Please run the script again and enter your password when prompted."
+  fi
+}
 
-				log_task "Creating symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
-				execute_with_log ln -s "$item" "$target_item"
-			else
-				log_warn "Config source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
-			fi
-		done < <(find "$DOTFILES_DIR/config" -mindepth 1 -maxdepth 1 -print0)
-	else
-		log_status "DRY RUN: Would create directory: ${COLOR_PATH}$CONFIG_PATH${COLOR_RESET}"
-		while IFS= read -r -d '' item; do
-			if [[ -e "$item" || -L "$item" ]]; then
-				item_name=$(basename "$item")
-				target_item="$CONFIG_PATH/$item_name"
-				log_status "DRY RUN: Would symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
-			else
-				log_warn "Config source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
-			fi
-		done < <(find "$DOTFILES_DIR/config" -mindepth 1 -maxdepth 1 -print0)
-	fi
+ensure_xcode_command_line_tools() {
+  if [[ "$DRY_RUN" == "true" ]]; then
+    return
+  fi
 
-	log_main "Creating dotfile symlinks..."
+  if ! xcode-select --print-path &>/dev/null; then
+    log_task "Installing XCode Command Line Tools"
+    if xcode-select --install &>/dev/null; then
+      log_subtask "XCode Command Line Tools install initiated. Please follow the prompts."
+    else
+      log_warn "XCode Command Line Tools install failed to initiate"
+    fi
+  else
+    log_task "XCode Command Line Tools already installed"
+  fi
+}
 
-	# Use find to get all first-level items in the link directory so both files and
-	# directories can be linked directly into $HOME.
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		# Actually create the symlinks
-		while IFS= read -r -d '' item; do
-			if [[ -e "$item" || -L "$item" ]]; then
-				item_name=$(basename "$item")
-				target_item="$HOME/$item_name"
+apply_system_defaults() {
+  if [[ "$DRY_RUN" == "true" ]]; then
+    return
+  fi
 
-				if [[ -e "$target_item" || -L "$target_item" ]]; then
-					log_subtask "Removing existing ${COLOR_PATH}$target_item${COLOR_RESET}"
-					rm -rf "$target_item" # Use rm -rf to handle both files and directories
-				fi
+  defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
+  apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
 
-				log_task "Creating symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
-				execute_with_log ln -s "$item" "$target_item"
-			else
-				log_warn "Link source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
-			fi
-		done < <(find "$DOTFILES_DIR/link" -mindepth 1 -maxdepth 1 -print0)
-	else
-		# In dry run mode, just show what would happen
-		while IFS= read -r -d '' item; do
-			if [[ -e "$item" || -L "$item" ]]; then
-				item_name=$(basename "$item")
-				target_item="$HOME/$item_name"
-				log_status "DRY RUN: Would symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
-			else
-				log_warn "Link source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
-			fi
-		done < <(find "$DOTFILES_DIR/link" -mindepth 1 -maxdepth 1 -print0)
-	fi
+  execute_with_log killall Dock Finder
+}
 
-	# Disable Last Login message
-	log_main "Configuring login settings..."
-	if [[ "${DRY_RUN}" != "true" ]]; then
-		log_task "Creating ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET} to disable Last Login message"
-		execute_with_log touch "$HOME/.hushlogin"
+configure_gatekeeper() {
+  if [[ "$DRY_RUN" != "true" ]]; then
+    log_task "Disabling Gatekeeper (password required)..."
+    execute_with_log sudo spctl --master-disable
+  else
+    log_task \
+      "DRY RUN: Would execute '${COLOR_CMD}sudo spctl${COLOR_RESET} ${COLOR_ARG}--master-disable${COLOR_RESET}'"
+  fi
+}
 
-		# SSH configuration
-		log_task "Configuring SSH settings..."
-		mkdir -p "$HOME/.ssh"
-		chmod 700 "$HOME/.ssh" # Ensure proper permissions for SSH directory
-		log_subtask "Creating SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
-		# Write SSH config with proper indentation
-		{
-			echo "Host *"
-			echo "  ServerAliveInterval 30"
-			echo "  TCPKeepAlive yes"
-			echo "  Compression yes"
-			echo "  ServerAliveCountMax 6"
-			echo "  AddKeysToAgent yes"
-			echo "  UseKeychain yes"
-			echo "  IdentityFile ~/.ssh/key"
-		} >>~/.ssh/config
-		log_subtask "Setting permissions for SSH config..."
-		chmod 600 "$HOME/.ssh/config" # Ensure proper permissions for SSH config
+run_system_module() {
+  if [[ "$MODULE_SYSTEM" != "true" ]]; then
+    log_main "Skipping macOS system defaults configuration (module disabled)"
+    return
+  fi
 
-		# Refresh font cache after configuration changes
-		log_task "Refreshing font cache..."
-		if command -v fc-cache >/dev/null 2>&1; then
-			execute_with_log fc-cache -f -v
-		else
-			log_warn "fc-cache command not found. Font cache refresh skipped."
-		fi
-	else
-		log_task "DRY RUN: Would touch ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
-		log_task "DRY RUN: Would create SSH directory and config with proper permissions"
-		log_subtask "DRY RUN: Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
-		log_task "DRY RUN: Would execute ${COLOR_CMD}fc-cache${COLOR_RESET} ${COLOR_ARG}-f -v${COLOR_RESET}"
-	fi
-else
-	log_main "Skipping config linking (module disabled)"
-fi
+  log_main "Installing XCode Command Line Tools if needed..."
+  ensure_xcode_command_line_tools
 
-# ###########################################################
-# Install and Configure Packages Module
-# ###########################################################
-if [[ "${DRY_RUN}" != "true" ]] && [[ ("$MODULE_BREW" == "true") || ("$MODULE_SHELL" == "true") || ("$MODULE_TOOLS" == "true") ]]; then
-	log_main "Installing and configuring packages..."
+  log_main "Configuring system settings..."
+  apply_system_defaults
+  configure_gatekeeper
+}
 
-	# Install Homebrew packages if module is enabled
-	if [[ "$MODULE_BREW" == "true" ]]; then
-		# Update environment to include Homebrew in PATH if just installed
-		log_task "Updating environment to include Homebrew in PATH..."
-		eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+run_homebrew_module() {
+  if [[ "$MODULE_BREW" != "true" ]]; then
+    log_main "Skipping Homebrew installation (module disabled)"
+    return
+  fi
 
-		log_task "Installing Homebrew packages..."
-		log_subtask "Using Brewfile: ${COLOR_PATH}$DOTFILES_DIR/Brewfile${COLOR_RESET}"
-		brew bundle install --file "$DOTFILES_DIR/Brewfile"
+  log_main "Installing Homebrew if needed..."
+  if [[ "$DRY_RUN" == "true" ]]; then
+    return
+  fi
 
-		# Clean up Homebrew after installation
-		log_task "Cleaning up Homebrew..."
-		execute_with_log brew cleanup
-		execute_with_log brew doctor
-	else
-		log_task "Skipping Homebrew packages installation (module disabled)"
-	fi
+  if ! command -v brew >/dev/null 2>&1; then
+    log_task "Installing Homebrew"
+    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+      log_error "Unable to install Homebrew, script abort!"
+    fi
+  else
+    log_task "Homebrew already installed"
+  fi
 
-	# Install fish plugins if shell module is enabled
-	if [[ "$MODULE_SHELL" == "true" ]]; then
-		# Set fish as default shell
-		log_task "Setting fish as default shell..."
-		fish_bin=$(which fish)
+  log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
+}
 
-		if ! grep -qs "${fish_bin}" "/etc/shells"; then
-			log_task "Adding fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}..." && echo "$fish_bin" | sudo tee -a /etc/shells
-			log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
-		else
-			log_subtask "Fish shell already in ${COLOR_PATH}/etc/shells${COLOR_RESET}"
-		fi
-		log_subtask "Changing default shell to fish (password may be required)..."
-		execute_with_log chsh -s "$fish_bin"
-	else
-		log_task "Skipping fish shell configuration (module disabled)"
-	fi
+remove_existing_target() {
+  local target_item="$1"
 
-	# Configure git if git module is enabled
-	if [[ "$MODULE_GIT" == "true" ]]; then
-		log_task "Configuring Git..."
+  if [[ -e "$target_item" || -L "$target_item" ]]; then
+    log_subtask "Removing existing ${COLOR_PATH}${target_item}${COLOR_RESET}"
+    rm -rf "$target_item"
+  fi
+}
 
-		# Core Git settings
-		git config --global core.editor "nvim"
-		git config --global core.excludesFile "$HOME/.gitignore_global"
-		git config --global core.attributesFile "$HOME/.gitattributes_global"
-		git config --global init.defaultbranch "main"
-		git config --global pull.rebase true
-		git config --global push.autoSetupRemote true
-		git config --global merge.conflictStyle zdiff3
-		git config --global fetch.writeCommitGraph true
-		git config --global rerere.enabled true
-		# Git UI and sorting
-		git config --global column.ui auto             # arrange _branch name_ (`git branch`) with multi-column, default is pager
-		git config --global branch.sort -committerdate # sort by last commit date descending
-		# GPG signing settings
-		git config --global gpg.format ssh                       # ssh format gpg signingKey
-		git config --global user.signingKey "$HOME/.ssh/key.pub" # gpg signingKey file
-		git config --global commit.gpgsign true                  # commit with gpgsign
-		# Maintenance settings
-		git config --global maintenance.auto false           # start maintenance cronJobs
-		git config --global maintenance.strategy incremental # gc: disabled, commit-graph: hourly, prefetch: hourly, loose-objects: daily, incremental-repack: daily
-		# Diff settings
-		git config --global diff.colormoved default
-		git config --global diff.nodiff.command true
-		git config --global diff.nodiff.binary true
-		# Difftastic configuration
-		git config --global diff.tool difftastic
-		git config --global diff.external "difft --color=always"
-		git config --global difftool.prompt false
-		git config --global difftool.difftastic.cmd "difft \"\$LOCAL\" \"\$REMOTE\""
-		git config --global pager.difftool true
-		# Delta configuration
-		git config --global core.pager "delta"
-		git config --global interactive.difffilter "delta --color-only"
-		git config --global delta.light false
-		git config --global delta.navigate true
-		git config --global delta.side-by-side true
-		git config --global delta.line-numbers true
-		git config --global delta.syntax-theme Dracula
-	else
-		log_task "Skipping Git configuration (module disabled)"
-	fi
+symlink_first_level_items() {
+  local source_dir="$1"
+  local target_dir="$2"
+  local source_label="$3"
+  local should_create_target_dir="$4"
+  local item=""
+  local item_name=""
+  local target_item=""
 
-	# Initialize other tools if tools module is enabled
-	if [[ "$MODULE_TOOLS" == "true" ]]; then
-		# My neovim config
-		log_task "Downloading neovim config..."
-		log_subtask "Destination: ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}"
-		git clone --recurse-submodules https://github.com/BBBoy01/nvim "$CONFIG_PATH/nvim"
+  if [[ "$DRY_RUN" != "true" ]]; then
+    if [[ "$should_create_target_dir" == "true" ]]; then
+      mkdir -p "$target_dir"
+    fi
+  else
+    if [[ "$should_create_target_dir" == "true" ]]; then
+      log_status "DRY RUN: Would create directory: ${COLOR_PATH}${target_dir}${COLOR_RESET}"
+    fi
+  fi
 
-		# Tmux tpm plugin manager
-		log_task "Installing Tmux Plugin Manager..."
-		log_subtask "Destination: ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}"
-		git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+  while IFS= read -r -d '' item; do
+    if [[ -e "$item" || -L "$item" ]]; then
+      item_name="$(basename "$item")"
+      target_item="${target_dir}/${item_name}"
 
-		# Neovim plugin test framework
-		log_task "Installing luarocks packages..."
-		luarocks --lua-version=5.1 install vusted
+      if [[ "$DRY_RUN" != "true" ]]; then
+        remove_existing_target "$target_item"
+        log_task \
+          "Creating symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
+        execute_with_log ln -s "$item" "$target_item"
+      else
+        log_status \
+          "DRY RUN: Would symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
+      fi
+    else
+      log_warn "${source_label} source does not exist: ${COLOR_PATH}${item}${COLOR_RESET}"
+    fi
+  done < <(find "$source_dir" -mindepth 1 -maxdepth 1 -print0)
+}
 
-		# Init rust
-		log_task "Installing Rust..."
-		log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
-		rustup default stable
+configure_ssh_settings() {
+  local ssh_config_path="$HOME/.ssh/config"
 
-		# JavaScript package management setup
-		log_task "Setting up JavaScript package management..."
-		log_subtask "Enabling corepack..."
-		execute_with_log corepack enable
-		log_subtask "Installing pnpm via corepack..."
-		execute_with_log corepack install -g pnpm@latest
+  log_task "Configuring SSH settings..."
+  mkdir -p "$HOME/.ssh"
+  chmod 700 "$HOME/.ssh"
+  log_subtask "Creating SSH config: ${COLOR_PATH}${ssh_config_path}${COLOR_RESET}"
 
-		# Install JavaScript development packages
-		log_task "Installing JavaScript development packages..."
-		execute_with_log pnpm i -g "vite" "@angular/cli" "prettier"
+  cat >>"$ssh_config_path" <<'EOF'
+Host *
+  ServerAliveInterval 30
+  TCPKeepAlive yes
+  Compression yes
+  ServerAliveCountMax 6
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/key
+EOF
 
-		# Init yabai
-		log_task "Starting yabai and skhd..."
-		log_subtask "Loading yabai scripting addition (password required)..."
-		execute_with_log sudo yabai --load-sa
-		execute_with_log yabai --start-service
-		execute_with_log skhd --start-service
-		log_subtask "Disable SIP for advanced yabai features."
-		execute_with_log echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 "$(which yabai)" | cut -d " " -f 1) $(which yabai) --load-sa" | sudo tee /private/etc/sudoers.d/yabai
-	else
-		log_task "Skipping other tools initialization (module disabled)"
-	fi
-fi
+  log_subtask "Setting permissions for SSH config..."
+  chmod 600 "$ssh_config_path"
+}
 
-# ###############################################################################
-# FINALIZE AND CLEANUP
-# ###############################################################################
+refresh_font_cache() {
+  log_task "Refreshing font cache..."
+  if command -v fc-cache >/dev/null 2>&1; then
+    execute_with_log fc-cache -f -v
+  else
+    log_warn "fc-cache command not found. Font cache refresh skipped."
+  fi
+}
 
-# Finalize - only shown if at least one module was enabled
-if [[ ("$MODULE_SYSTEM" == "true") || ("$MODULE_CONFIG" == "true") || ("$MODULE_BREW" == "true") || ("$MODULE_SHELL" == "true") || ("$MODULE_GIT" == "true") || ("$MODULE_TOOLS" == "true") ]]; then
-	log_main "Setup completed successfully!"
-	log_main "Please sign out and sign in for all system configurations to take effect"
+configure_login_settings() {
+  if [[ "$DRY_RUN" != "true" ]]; then
+    log_task "Creating ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET} to disable Last Login message"
+    execute_with_log touch "$HOME/.hushlogin"
+    configure_ssh_settings
+    refresh_font_cache
+  else
+    log_task "DRY RUN: Would touch ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
+    log_task "DRY RUN: Would create SSH directory and config with proper permissions"
+    log_subtask "DRY RUN: Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
+    log_task "DRY RUN: Would execute ${COLOR_CMD}fc-cache${COLOR_RESET} ${COLOR_ARG}-f -v${COLOR_RESET}"
+  fi
+}
 
-	# Show summary of enabled modules
-	log_task "Summary of executed modules:"
-	if [[ "$MODULE_SYSTEM" == "true" ]]; then
-		log_subtask "✅ macOS System Defaults"
-	fi
-	if [[ "$MODULE_CONFIG" == "true" ]]; then
-		log_subtask "✅ Config Linking"
-	fi
-	if [[ "$MODULE_BREW" == "true" ]]; then
-		log_subtask "✅ Homebrew & Apps"
-	fi
-	if [[ "$MODULE_SHELL" == "true" ]]; then
-		log_subtask "✅ Shell Configuration"
-	fi
-	if [[ "$MODULE_GIT" == "true" ]]; then
-		log_subtask "✅ Git Configuration"
-	fi
-	if [[ "$MODULE_TOOLS" == "true" ]]; then
-		log_subtask "✅ Other Tools"
-	fi
-else
-	log_main "No modules were selected for execution. Use --help for usage information."
-fi
+run_config_module() {
+  if [[ "$MODULE_CONFIG" != "true" ]]; then
+    log_main "Skipping config linking (module disabled)"
+    return
+  fi
+
+  log_main "Creating config symlinks..."
+  symlink_first_level_items "$DOTFILES_DIR/config" "$CONFIG_PATH" "Config" "true"
+
+  log_main "Creating dotfile symlinks..."
+  symlink_first_level_items "$DOTFILES_DIR/link" "$HOME" "Link" "false"
+
+  log_main "Configuring login settings..."
+  configure_login_settings
+}
+
+eval_homebrew_shellenv() {
+  eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+}
+
+install_homebrew_packages() {
+  if [[ "$MODULE_BREW" != "true" ]]; then
+    log_task "Skipping Homebrew packages installation (module disabled)"
+    return
+  fi
+
+  log_task "Updating environment to include Homebrew in PATH..."
+  eval_homebrew_shellenv
+
+  log_task "Installing Homebrew packages..."
+  log_subtask "Using Brewfile: ${COLOR_PATH}$DOTFILES_DIR/Brewfile${COLOR_RESET}"
+  brew bundle install --file "$DOTFILES_DIR/Brewfile"
+
+  log_task "Cleaning up Homebrew..."
+  execute_with_log brew cleanup
+  execute_with_log brew doctor
+}
+
+configure_shell_module() {
+  local fish_bin=""
+
+  if [[ "$MODULE_SHELL" != "true" ]]; then
+    log_task "Skipping fish shell configuration (module disabled)"
+    return
+  fi
+
+  fish_bin="$(command -v fish)"
+  if [[ -z "$fish_bin" ]]; then
+    log_error "fish is not installed. Enable --brew first or install fish manually."
+  fi
+
+  log_task "Setting fish as default shell..."
+  if ! grep -qs "${fish_bin}" "/etc/shells"; then
+    log_task "Adding fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}..."
+    printf '%s\n' "$fish_bin" | sudo tee -a /etc/shells >/dev/null
+    log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+  else
+    log_subtask "Fish shell already in ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+  fi
+
+  log_subtask "Changing default shell to fish (password may be required)..."
+  execute_with_log chsh -s "$fish_bin"
+}
+
+configure_git_module() {
+  if [[ "$MODULE_GIT" != "true" ]]; then
+    log_task "Skipping Git configuration (module disabled)"
+    return
+  fi
+
+  log_task "Configuring Git..."
+  apply_git_config_entries "${GIT_CONFIG_SETTINGS[@]}"
+}
+
+write_yabai_sudoers_rule() {
+  local yabai_path=""
+  local yabai_hash=""
+  local sudoers_rule=""
+
+  yabai_path="$(command -v yabai)"
+  yabai_hash="$(shasum -a 256 "$yabai_path" | cut -d " " -f 1)"
+  sudoers_rule="$(whoami) ALL=(root) NOPASSWD: sha256:${yabai_hash} ${yabai_path} --load-sa"
+
+  printf '%s\n' "$sudoers_rule" | sudo tee /private/etc/sudoers.d/yabai >/dev/null
+}
+
+install_neovim_config() {
+  log_task "Downloading neovim config..."
+  log_subtask "Destination: ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}"
+  git clone --recurse-submodules https://github.com/BBBoy01/nvim "$CONFIG_PATH/nvim"
+}
+
+install_tmux_plugin_manager() {
+  log_task "Installing Tmux Plugin Manager..."
+  log_subtask "Destination: ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}"
+  git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+}
+
+install_luarocks_packages() {
+  log_task "Installing luarocks packages..."
+  luarocks --lua-version=5.1 install vusted
+}
+
+install_rust_toolchain() {
+  log_task "Installing Rust..."
+  log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
+  rustup default stable
+}
+
+setup_javascript_tooling() {
+  log_task "Setting up JavaScript package management..."
+  log_subtask "Enabling corepack..."
+  execute_with_log corepack enable
+  log_subtask "Installing pnpm via corepack..."
+  execute_with_log corepack install -g pnpm@latest
+
+  log_task "Installing JavaScript development packages..."
+  execute_with_log pnpm i -g "vite" "@angular/cli" "prettier"
+}
+
+start_window_manager_services() {
+  log_task "Starting yabai and skhd..."
+  log_subtask "Loading yabai scripting addition (password required)..."
+  execute_with_log sudo yabai --load-sa
+  execute_with_log yabai --start-service
+  execute_with_log skhd --start-service
+  log_subtask "Disable SIP for advanced yabai features."
+  write_yabai_sudoers_rule
+}
+
+configure_tools_module() {
+  if [[ "$MODULE_TOOLS" != "true" ]]; then
+    log_task "Skipping other tools initialization (module disabled)"
+    return
+  fi
+
+  install_neovim_config
+  install_tmux_plugin_manager
+  install_luarocks_packages
+  install_rust_toolchain
+  setup_javascript_tooling
+  start_window_manager_services
+}
+
+run_post_install_modules() {
+  if [[ "$DRY_RUN" == "true" ]]; then
+    return
+  fi
+
+  if [[ "$MODULE_BREW" != "true" && "$MODULE_SHELL" != "true" && \
+    "$MODULE_GIT" != "true" && "$MODULE_TOOLS" != "true" ]]; then
+    return
+  fi
+
+  log_main "Installing and configuring packages..."
+  install_homebrew_packages
+  configure_shell_module
+  configure_git_module
+  configure_tools_module
+}
+
+log_summary_module() {
+  local module_name="$1"
+  local enabled="$2"
+
+  if [[ "$enabled" == "true" ]]; then
+    log_subtask "✅ ${module_name}"
+  fi
+}
+
+finalize_setup() {
+  if [[ "$MODULE_SYSTEM" == "true" || "$MODULE_CONFIG" == "true" || \
+    "$MODULE_BREW" == "true" || "$MODULE_SHELL" == "true" || \
+    "$MODULE_GIT" == "true" || "$MODULE_TOOLS" == "true" ]]; then
+    log_main "Setup completed successfully!"
+    log_main "Please sign out and sign in for all system configurations to take effect"
+
+    log_task "Summary of executed modules:"
+    log_summary_module "macOS System Defaults" "$MODULE_SYSTEM"
+    log_summary_module "Config Linking" "$MODULE_CONFIG"
+    log_summary_module "Homebrew & Apps" "$MODULE_BREW"
+    log_summary_module "Shell Configuration" "$MODULE_SHELL"
+    log_summary_module "Git Configuration" "$MODULE_GIT"
+    log_summary_module "Other Tools" "$MODULE_TOOLS"
+  else
+    log_main "No modules were selected for execution. Use --help for usage information."
+  fi
+}
+
+main() {
+  parse_args "$@"
+
+  log_main "Starting setup script..."
+  log_execution_mode
+  log_enabled_modules
+  authenticate_for_system_operations
+
+  run_system_module
+  run_homebrew_module
+  run_config_module
+  run_post_install_modules
+  finalize_setup
+}
+
+main "$@"
