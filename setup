@@ -430,60 +430,71 @@ fi
 
 if [[ "$MODULE_CONFIG" == "true" ]]; then
 	log_main "Creating config symlinks..."
-	mkdir -p "$CONFIG_PATH"
 
-	# Create symlinks for config folders
-	for folder_name in "$DOTFILES_DIR/config"/*; do
-		if [[ -d "$folder_name" ]]; then
-			folder=$(basename "$folder_name")
-			target_folder="$CONFIG_PATH/$folder"
+	# Use find to get all first-level items in the config directory so both files
+	# and directories can be linked directly into $HOME/.config.
+	if [[ "${DRY_RUN}" != "true" ]]; then
+		mkdir -p "$CONFIG_PATH"
+		while IFS= read -r -d '' item; do
+			if [[ -e "$item" || -L "$item" ]]; then
+				item_name=$(basename "$item")
+				target_item="$CONFIG_PATH/$item_name"
 
-			if [[ "${DRY_RUN}" != "true" ]]; then
-				if [[ -e "$target_folder" ]]; then
-					log_subtask "Removing existing ${COLOR_PATH}$target_folder${COLOR_RESET}"
-					rm -rf "$target_folder"
+				if [[ -e "$target_item" || -L "$target_item" ]]; then
+					log_subtask "Removing existing ${COLOR_PATH}$target_item${COLOR_RESET}"
+					rm -rf "$target_item"
 				fi
 
-				log_task "Creating symlink: ${COLOR_PATH}$folder_name${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_folder${COLOR_RESET}"
-				execute_with_log ln -s "$folder_name" "$target_folder"
+				log_task "Creating symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
+				execute_with_log ln -s "$item" "$target_item"
 			else
-				log_status "DRY RUN: Would symlink: ${COLOR_PATH}$folder_name${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_folder${COLOR_RESET}"
+				log_warn "Config source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
 			fi
-		else
-			log_warn "Skipping non-directory: $folder_name"
-		fi
-	done
+		done < <(find "$DOTFILES_DIR/config" -mindepth 1 -maxdepth 1 -print0)
+	else
+		log_status "DRY RUN: Would create directory: ${COLOR_PATH}$CONFIG_PATH${COLOR_RESET}"
+		while IFS= read -r -d '' item; do
+			if [[ -e "$item" || -L "$item" ]]; then
+				item_name=$(basename "$item")
+				target_item="$CONFIG_PATH/$item_name"
+				log_status "DRY RUN: Would symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
+			else
+				log_warn "Config source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
+			fi
+		done < <(find "$DOTFILES_DIR/config" -mindepth 1 -maxdepth 1 -print0)
+	fi
 
 	log_main "Creating dotfile symlinks..."
 
-	# Use find to get all items in the link directory, handling cases where the glob might not expand
+	# Use find to get all first-level items in the link directory so both files and
+	# directories can be linked directly into $HOME.
 	if [[ "${DRY_RUN}" != "true" ]]; then
 		# Actually create the symlinks
-		while IFS= read -r -d '' file; do
-			if [[ -e "$file" ]]; then
-				filename=$(basename "$file")
-				target_file="$HOME/$filename"
+		while IFS= read -r -d '' item; do
+			if [[ -e "$item" || -L "$item" ]]; then
+				item_name=$(basename "$item")
+				target_item="$HOME/$item_name"
 
-				if [[ -e "$target_file" ]]; then
-					log_subtask "Removing existing ${COLOR_PATH}$target_file${COLOR_RESET}"
-					rm -rf "$target_file" # Use rm -rf to handle both files and directories
+				if [[ -e "$target_item" || -L "$target_item" ]]; then
+					log_subtask "Removing existing ${COLOR_PATH}$target_item${COLOR_RESET}"
+					rm -rf "$target_item" # Use rm -rf to handle both files and directories
 				fi
 
-				log_task "Creating symlink: ${COLOR_PATH}$file${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_file${COLOR_RESET}"
-				execute_with_log ln -s "$file" "$target_file"
+				log_task "Creating symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
+				execute_with_log ln -s "$item" "$target_item"
 			else
-				log_warn "File does not exist: ${COLOR_PATH}$file${COLOR_RESET}"
+				log_warn "Link source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
 			fi
 		done < <(find "$DOTFILES_DIR/link" -mindepth 1 -maxdepth 1 -print0)
 	else
 		# In dry run mode, just show what would happen
-		while IFS= read -r -d '' file; do
-			if [[ -e "$file" ]]; then
-				filename=$(basename "$file")
-				target_file="$HOME/$filename"
-				log_status "DRY RUN: Would symlink: ${COLOR_PATH}$file${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_file${COLOR_RESET}"
+		while IFS= read -r -d '' item; do
+			if [[ -e "$item" || -L "$item" ]]; then
+				item_name=$(basename "$item")
+				target_item="$HOME/$item_name"
+				log_status "DRY RUN: Would symlink: ${COLOR_PATH}$item${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}$target_item${COLOR_RESET}"
 			else
-				log_warn "File does not exist: ${COLOR_PATH}$file${COLOR_RESET}"
+				log_warn "Link source does not exist: ${COLOR_PATH}$item${COLOR_RESET}"
 			fi
 		done < <(find "$DOTFILES_DIR/link" -mindepth 1 -maxdepth 1 -print0)
 	fi
@@ -674,12 +685,24 @@ if [[ ("$MODULE_SYSTEM" == "true") || ("$MODULE_CONFIG" == "true") || ("$MODULE_
 
 	# Show summary of enabled modules
 	log_task "Summary of executed modules:"
-	[[ "$MODULE_SYSTEM" == "true" ]] && log_subtask "✅ macOS System Defaults"
-	[[ "$MODULE_CONFIG" == "true" ]] && log_subtask "✅ Config Linking"
-	[[ "$MODULE_BREW" == "true" ]] && log_subtask "✅ Homebrew & Apps"
-	[[ "$MODULE_SHELL" == "true" ]] && log_subtask "✅ Shell Configuration"
-	[[ "$MODULE_GIT" == "true" ]] && log_subtask "✅ Git Configuration"
-	[[ "$MODULE_TOOLS" == "true" ]] && log_subtask "✅ Other Tools"
+	if [[ "$MODULE_SYSTEM" == "true" ]]; then
+		log_subtask "✅ macOS System Defaults"
+	fi
+	if [[ "$MODULE_CONFIG" == "true" ]]; then
+		log_subtask "✅ Config Linking"
+	fi
+	if [[ "$MODULE_BREW" == "true" ]]; then
+		log_subtask "✅ Homebrew & Apps"
+	fi
+	if [[ "$MODULE_SHELL" == "true" ]]; then
+		log_subtask "✅ Shell Configuration"
+	fi
+	if [[ "$MODULE_GIT" == "true" ]]; then
+		log_subtask "✅ Git Configuration"
+	fi
+	if [[ "$MODULE_TOOLS" == "true" ]]; then
+		log_subtask "✅ Other Tools"
+	fi
 else
 	log_main "No modules were selected for execution. Use --help for usage information."
 fi

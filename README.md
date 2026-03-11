@@ -24,7 +24,7 @@ chmod +x setup
 
 The setup script supports selective module execution:
 
-- `--config`: Link config files and dotfiles
+- `--config`: Link config files and dotfiles (`config/` 与 `link/` 第一层都支持文件与目录，目录会整体软链接)
 - `--brew`: Install packages via Homebrew
 - `--shell`: Configure Fish shell
 - `--git`: Configure Git settings
@@ -32,6 +32,8 @@ The setup script supports selective module execution:
 - `--system`: Configure macOS system settings
 - `--dry-run`: Preview changes without executing
 - `--verbose`: Enable detailed output
+
+`config/<name>` 会链接到 `~/.config/<name>`，`link/<name>` 会链接到 `~/<name>`。
 
 **Default**: All modules run when no flags specified
 
