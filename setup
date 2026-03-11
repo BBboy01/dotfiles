@@ -59,7 +59,7 @@ readonly -a SYSTEM_DEFAULTS=(
   $'-g\tNSNavPanelExpandedStateForSaveMode2\t-bool\ttrue'
   $'-g\tNSDocumentSaveNewDocumentsToCloud\t-bool\tfalse'
   $'-g\tAppleWindowTabbingMode\t-string\talways'
-  $'-g\tNSGlobalDomain NSToolbarTitleViewRolloverDelay\t-int\t0'
+  $'-g\tNSToolbarTitleViewRolloverDelay\t-int\t0'
   $'com.apple.dock\ttilesize\t-int\t48'
   $'com.apple.dock\torientation\t-string\tbottom'
   $'com.apple.dock\tautohide\t-bool\ttrue'

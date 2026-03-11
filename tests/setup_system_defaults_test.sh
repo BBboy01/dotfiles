@@ -66,14 +66,17 @@ assert_system_defaults_are_written() {
 	local fake_home
 	local mock_bin
 	local expected_path_line
+	local expected_rollover_line
 
 	fixture=$(create_fixture)
 	IFS=$'\t' read -r fake_home mock_bin <<<"$fixture"
 	expected_path_line=$(printf 'com.apple.finder\tNewWindowTargetPath\t-string\tfile://%s/\t' "$fake_home")
+	expected_rollover_line=$'-g\tNSToolbarTitleViewRolloverDelay\t-int\t0\t'
 
 	PATH="$mock_bin:$PATH" HOME="$fake_home" bash "$fake_home/.dotfiles/setup" --system >/dev/null
 
 	assert_file_contains "$TMP_DIR/defaults.log" $'-g\t_HIHideMenuBar\t-bool\ttrue\t'
+	assert_file_contains "$TMP_DIR/defaults.log" "$expected_rollover_line"
 	assert_file_contains "$TMP_DIR/defaults.log" $'com.apple.dock\ttilesize\t-int\t48\t'
 	assert_file_contains "$TMP_DIR/defaults.log" "$expected_path_line"
 	assert_file_contains "$TMP_DIR/killall.log" $'Dock\tFinder\t'
