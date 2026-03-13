@@ -1,0 +1,6 @@
+*
+!.gitignore
+!agents/
+!agents/**
+!AGENTS.md
+!config.toml
