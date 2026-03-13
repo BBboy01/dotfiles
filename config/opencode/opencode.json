@@ -16,9 +16,9 @@
         "--no-usage-statistics"
       ]
     },
-    "playwright": {
+    "sequential-thinking": {
       "type": "local",
-      "command": ["bunx", "@playwright/mcp@latest"]
+      "command": ["bunx", "@modelcontextprotocol/server-sequential-thinking"]
     }
   }
 }

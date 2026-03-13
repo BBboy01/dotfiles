@@ -56,6 +56,6 @@ args = ["-y", "gitnexus@latest", "mcp"]
 command = "bunx"
 args = ["chrome-devtools-mcp@latest", "--autoConnect", "--no-usage-statistics"]
 
-[mcp_servers.playwright]
+[mcp_servers.sequential-thinking]
 command = "bunx"
-args = ["@playwright/mcp@latest"]
+args = ["@modelcontextprotocol/server-sequential-thinking"]
