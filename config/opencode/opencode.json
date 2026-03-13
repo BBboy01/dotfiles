@@ -3,11 +3,16 @@
   "permission": "allow",
   "plugin": ["oh-my-opencode"],
   "mcp": {
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["bunx", "@modelcontextprotocol/server-sequential-thinking"]
+    },
     "gitnexus": {
       "type": "local",
       "command": ["npx", "-y", "gitnexus@latest", "mcp"]
     },
     "chrome-devtools": {
+      "enabled": false,
       "type": "local",
       "command": [
         "bunx",
@@ -15,10 +20,6 @@
         "--autoConnect",
         "--no-usage-statistics"
       ]
-    },
-    "sequential-thinking": {
-      "type": "local",
-      "command": ["bunx", "@modelcontextprotocol/server-sequential-thinking"]
     }
   }
 }
