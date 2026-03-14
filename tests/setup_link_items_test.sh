@@ -131,6 +131,10 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 	HOME="$TMP_DIR/home" bash -lc "
 		set -euo pipefail
 		source '$ROOT_DIR/setup'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleIconAppearanceTheme\t-string\tRegularDark'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tNSGlassDiffusionSetting\t-int\t1'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleScrollerPagingBehavior\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.AppleMultitouchTrackpad\tTrackpadRightClick\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
