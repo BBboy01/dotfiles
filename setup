@@ -33,6 +33,9 @@ readonly INDENT_LVL3="      "
 
 readonly DEFAULTS_FIELD_SEPARATOR=$'\t'
 readonly GIT_CONFIG_FIELD_SEPARATOR=$'\t'
+readonly SYMBOLIC_HOTKEYS_PLIST_PATH="$HOME/Library/Preferences/com.apple.symbolichotkeys.plist"
+readonly CAPS_LOCK_KEY_CODE=30064771129
+readonly CONTROL_KEY_CODE=30064771296
 
 DRY_RUN=false
 VERBOSE=false
@@ -131,6 +134,21 @@ readonly -a PMSET_SETTINGS=(
   $'-b\tlowpowermode\t0'
   $'-b\tlessbright\t0'
   $'-b\tdisplaysleep\t5'
+)
+
+readonly -a DISABLED_SYMBOLIC_HOTKEY_IDS=(
+  52
+  53
+  54
+  55
+  56
+  28
+  29
+  30
+  31
+  184
+  64
+  65
 )
 
 readonly -a GIT_CONFIG_SETTINGS=(
@@ -398,6 +416,95 @@ configure_first_day_of_week() {
 }
 
 #######################################
+# Print the current keyboard modifier mapping domains.
+# Falls back to the built-in keyboard domain when detection fails.
+#######################################
+keyboard_modifier_mapping_domains() {
+  local detected_domains=""
+
+  detected_domains="$(
+    ioreg -n AppleHIDKeyboardEventDriverV2 -r -l 2>/dev/null \
+      | awk '
+        /"VendorID" = / { vendor = $3 }
+        /"ProductID" = / {
+          product = $3
+          if (vendor != "") {
+            printf "com.apple.keyboard.modifiermapping.%s-%s-0\n", vendor, product
+          }
+        }
+      ' \
+      | sort -u
+  )"
+
+  if [[ -n "${detected_domains}" ]]; then
+    printf '%s\n' "${detected_domains}"
+    return
+  fi
+
+  printf '%s\n' "com.apple.keyboard.modifiermapping.0-0-0"
+}
+
+#######################################
+# Map Caps Lock to Control for each detected keyboard.
+#######################################
+configure_modifier_keys() {
+  local modifier_domain=""
+
+  log_task "Configuring Caps Lock to act as Control..."
+
+  while IFS= read -r modifier_domain; do
+    [[ -n "${modifier_domain}" ]] || continue
+    execute_with_log \
+      defaults \
+      -currentHost \
+      write \
+      -g \
+      "${modifier_domain}" \
+      -array \
+      "{HIDKeyboardModifierMappingSrc = ${CAPS_LOCK_KEY_CODE}; HIDKeyboardModifierMappingDst = ${CONTROL_KEY_CODE};}"
+  done < <(keyboard_modifier_mapping_domains)
+}
+
+#######################################
+# Check whether a symbolic hotkey exists in the plist.
+# Arguments:
+#   $1: Symbolic hotkey ID
+#######################################
+symbolic_hotkey_exists() {
+  local hotkey_id="$1"
+
+  /usr/libexec/PlistBuddy \
+    -c "Print :AppleSymbolicHotKeys:${hotkey_id}" \
+    "${SYMBOLIC_HOTKEYS_PLIST_PATH}" >/dev/null 2>&1
+}
+
+#######################################
+# Disable the requested keyboard shortcut groups for Dock, Display,
+# Screenshots, and Spotlight.
+#######################################
+disable_symbolic_hotkeys() {
+  local hotkey_id=""
+
+  log_task "Disabling keyboard shortcuts for Dock, Display, Screenshots, and Spotlight..."
+
+  if [[ ! -f "${SYMBOLIC_HOTKEYS_PLIST_PATH}" ]]; then
+    log_warn "Skipping keyboard shortcut updates because ${SYMBOLIC_HOTKEYS_PLIST_PATH} does not exist"
+    return
+  fi
+
+  for hotkey_id in "${DISABLED_SYMBOLIC_HOTKEY_IDS[@]}"; do
+    if symbolic_hotkey_exists "${hotkey_id}"; then
+      execute_with_log \
+        /usr/libexec/PlistBuddy \
+        -c "Set :AppleSymbolicHotKeys:${hotkey_id}:enabled false" \
+        "${SYMBOLIC_HOTKEYS_PLIST_PATH}"
+    else
+      log_warn "Skipping unknown keyboard shortcut ID: ${hotkey_id}"
+    fi
+  done
+}
+
+#######################################
 # Apply a list of Git global config key/value pairs.
 # Globals:
 #   GIT_CONFIG_FIELD_SEPARATOR
@@ -631,6 +738,8 @@ apply_system_defaults() {
   clear_dock_persistent_apps
   apply_pmset_entries "${PMSET_SETTINGS[@]}"
   configure_first_day_of_week
+  disable_symbolic_hotkeys
+  configure_modifier_keys
   configure_screen_lock_settings
 
   execute_with_log killall Dock Finder

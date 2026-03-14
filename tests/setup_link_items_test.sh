@@ -486,6 +486,71 @@ assert_configure_first_day_of_week_sets_monday() {
 	assert_file_contains "$log_file" "exec defaults write NSGlobalDomain AppleFirstWeekday -dict gregorian 2"
 }
 
+assert_disable_symbolic_hotkeys_turns_off_requested_categories() {
+	local fake_home
+	local log_file
+
+	fake_home="$TMP_DIR/home"
+	log_file="$TMP_DIR/symbolic-hotkeys.log"
+	mkdir -p "$fake_home/Library/Preferences"
+	: > "$fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+
+	HOME="$fake_home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		symbolic_hotkey_exists() {
+			return 0
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		log_warn() {
+			printf 'warn %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		disable_symbolic_hotkeys
+	"
+
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:52:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:53:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:56:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:28:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:31:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:184:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:64:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_contains "$log_file" "exec /usr/libexec/PlistBuddy -c Set :AppleSymbolicHotKeys:65:enabled false $fake_home/Library/Preferences/com.apple.symbolichotkeys.plist"
+	assert_file_not_contains "$log_file" "AppleSymbolicHotKeys:60"
+}
+
+assert_configure_modifier_keys_maps_caps_lock_to_control() {
+	local fake_home
+	local log_file
+
+	fake_home="$TMP_DIR/home"
+	log_file="$TMP_DIR/modifier-keys.log"
+
+	HOME="$fake_home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		keyboard_modifier_mapping_domains() {
+			printf '%s\n' 'com.apple.keyboard.modifiermapping.0-0-0'
+			printf '%s\n' 'com.apple.keyboard.modifiermapping.1452-641-0'
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		configure_modifier_keys
+	"
+
+	assert_file_contains "$log_file" "exec defaults -currentHost write -g com.apple.keyboard.modifiermapping.0-0-0 -array {HIDKeyboardModifierMappingSrc = 30064771129; HIDKeyboardModifierMappingDst = 30064771296;}"
+	assert_file_contains "$log_file" "exec defaults -currentHost write -g com.apple.keyboard.modifiermapping.1452-641-0 -array {HIDKeyboardModifierMappingSrc = 30064771129; HIDKeyboardModifierMappingDst = 30064771296;}"
+}
+
 assert_finalize_setup_reports_manual_system_steps() {
 	local log_file
 
@@ -792,6 +857,8 @@ assert_configure_screen_lock_skips_when_already_immediate
 assert_configure_screen_lock_handles_empty_status_output
 assert_configure_screen_lock_skips_when_status_is_reported_on_stderr
 assert_configure_first_day_of_week_sets_monday
+assert_disable_symbolic_hotkeys_turns_off_requested_categories
+assert_configure_modifier_keys_maps_caps_lock_to_control
 assert_finalize_setup_reports_manual_system_steps
 assert_finalize_setup_skips_manual_system_steps_when_system_module_disabled
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
