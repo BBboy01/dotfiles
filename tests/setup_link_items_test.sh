@@ -113,6 +113,25 @@ assert_dry_run_reports_without_creating_links() {
 	test ! -d "$fake_home/.ssh"
 }
 
+assert_dry_run_system_module_skips_spctl_and_reports_manual_steps() {
+	local fake_home
+	local fake_dotfiles
+	local output_file
+	local stripped_output
+
+	fake_home=$(create_fixture system-dry-run)
+	fake_dotfiles="$fake_home/.dotfiles"
+	output_file="$TMP_DIR/system-dry-run-output.txt"
+	stripped_output="$TMP_DIR/system-dry-run-output-stripped.txt"
+
+	HOME="$fake_home" bash "$fake_dotfiles/setup" --system --dry-run > "$output_file"
+	strip_ansi < "$output_file" > "$stripped_output"
+
+	assert_file_not_contains "$stripped_output" "spctl --master-disable"
+	assert_file_contains "$stripped_output" "Manual steps you may still need to complete:"
+	assert_file_contains "$stripped_output" "Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
+}
+
 assert_eval_homebrew_shellenv_allows_brew_exports() {
 	if [[ ! -x /opt/homebrew/bin/brew ]]; then
 		return
@@ -306,8 +325,39 @@ assert_configure_screen_lock_requests_immediate_password_prompt() {
 	assert_file_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
 }
 
+assert_finalize_setup_reports_manual_system_steps() {
+	local log_file
+
+	log_file="$TMP_DIR/finalize.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		log_main() {
+			printf 'main %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			printf 'task %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		MODULE_SYSTEM=true
+		MODULE_CONFIG=false
+		MODULE_BREW=false
+		MODULE_SHELL=false
+		MODULE_GIT=false
+		MODULE_TOOLS=false
+		finalize_setup
+	"
+
+	assert_file_contains "$log_file" "task Manual steps you may still need to complete:"
+	assert_file_contains "$log_file" "subtask Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
+assert_dry_run_system_module_skips_spctl_and_reports_manual_steps
 assert_eval_homebrew_shellenv_allows_brew_exports
 assert_system_preferences_include_battery_and_trackpad_tweaks
 assert_system_preferences_skip_default_battery_and_drag_settings
@@ -315,3 +365,4 @@ assert_apply_current_host_defaults_writes_menu_bar_controls
 assert_apply_system_defaults_refreshes_menu_bar_processes
 assert_apply_pmset_entries_writes_supported_battery_settings
 assert_configure_screen_lock_requests_immediate_password_prompt
+assert_finalize_setup_reports_manual_system_steps

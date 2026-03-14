@@ -604,16 +604,6 @@ apply_system_defaults() {
   refresh_ui_process_if_running SystemUIServer
 }
 
-configure_gatekeeper() {
-  if [[ "$DRY_RUN" != "true" ]]; then
-    log_task "Disabling Gatekeeper (password required)..."
-    execute_with_log sudo spctl --master-disable
-  else
-    log_task \
-      "DRY RUN: Would execute '${COLOR_CMD}sudo spctl${COLOR_RESET} ${COLOR_ARG}--master-disable${COLOR_RESET}'"
-  fi
-}
-
 run_system_module() {
   if [[ "$MODULE_SYSTEM" != "true" ]]; then
     log_main "Skipping macOS system defaults configuration (module disabled)"
@@ -625,7 +615,6 @@ run_system_module() {
 
   log_main "Configuring system settings..."
   apply_system_defaults
-  configure_gatekeeper
 }
 
 run_homebrew_module() {
@@ -915,6 +904,15 @@ log_summary_module() {
   fi
 }
 
+log_manual_steps() {
+  if [[ "$MODULE_SYSTEM" != "true" ]]; then
+    return
+  fi
+
+  log_task "Manual steps you may still need to complete:"
+  log_subtask "Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
+}
+
 finalize_setup() {
   if [[ "$MODULE_SYSTEM" == "true" || "$MODULE_CONFIG" == "true" || \
     "$MODULE_BREW" == "true" || "$MODULE_SHELL" == "true" || \
@@ -929,6 +927,7 @@ finalize_setup() {
     log_summary_module "Shell Configuration" "$MODULE_SHELL"
     log_summary_module "Git Configuration" "$MODULE_GIT"
     log_summary_module "Other Tools" "$MODULE_TOOLS"
+    log_manual_steps
   else
     log_main "No modules were selected for execution. Use --help for usage information."
   fi
