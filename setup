@@ -866,11 +866,6 @@ install_tmux_plugin_manager() {
   git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 }
 
-install_luarocks_packages() {
-  log_task "Installing luarocks packages..."
-  luarocks --lua-version=5.1 install vusted
-}
-
 install_rust_toolchain() {
   log_task "Installing Rust..."
   log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
@@ -903,7 +898,6 @@ configure_tools_module() {
 
   install_neovim_config
   install_tmux_plugin_manager
-  install_luarocks_packages
   install_rust_toolchain
   setup_javascript_tooling
   start_window_manager_services

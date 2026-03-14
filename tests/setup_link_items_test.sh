@@ -636,6 +636,44 @@ assert_configure_shell_module_skips_chsh_when_shell_matches() {
 	assert_file_not_contains "$stripped_log_file" "exec chsh -s /opt/homebrew/bin/fish"
 }
 
+assert_configure_tools_module_skips_luarocks_packages() {
+	local log_file
+
+	log_file="$TMP_DIR/tools-module.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -c "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		install_neovim_config() {
+			printf 'step neovim\n' >> \"\$LOG_FILE\"
+		}
+		install_tmux_plugin_manager() {
+			printf 'step tmux\n' >> \"\$LOG_FILE\"
+		}
+		install_rust_toolchain() {
+			printf 'step rust\n' >> \"\$LOG_FILE\"
+		}
+		setup_javascript_tooling() {
+			printf 'step javascript\n' >> \"\$LOG_FILE\"
+		}
+		start_window_manager_services() {
+			printf 'step window-manager\n' >> \"\$LOG_FILE\"
+		}
+		luarocks() {
+			printf 'luarocks %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		MODULE_TOOLS=true
+		configure_tools_module
+	"
+
+	assert_file_contains "$log_file" "step neovim"
+	assert_file_contains "$log_file" "step tmux"
+	assert_file_contains "$log_file" "step rust"
+	assert_file_contains "$log_file" "step javascript"
+	assert_file_contains "$log_file" "step window-manager"
+	assert_file_not_contains "$log_file" "luarocks --lua-version=5.1 install vusted"
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
 assert_dry_run_system_module_skips_spctl_and_reports_manual_steps
@@ -655,3 +693,4 @@ assert_setup_javascript_tooling_skips_global_pnpm_packages
 assert_install_neovim_config_skips_existing_target
 assert_install_tmux_plugin_manager_skips_existing_target
 assert_configure_shell_module_skips_chsh_when_shell_matches
+assert_configure_tools_module_skips_luarocks_packages
