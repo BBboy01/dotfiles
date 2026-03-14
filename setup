@@ -50,6 +50,8 @@ readonly -a SYSTEM_DEFAULTS=(
   $'-g\tApplePressAndHoldEnabled\t-bool\tfalse'
   $'-g\tInitialKeyRepeat\t-int\t10'
   $'-g\tKeyRepeat\t-int\t1'
+  $'com.apple.HIToolbox\tAppleDictationAutoEnable\t-int\t0'
+  $'com.apple.HIToolbox\tAppleFnUsageType\t-int\t0'
   $'-g\tAppleIconAppearanceTheme\t-string\tRegularDark'
   $'-g\tNSGlassDiffusionSetting\t-int\t1'
   $'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
