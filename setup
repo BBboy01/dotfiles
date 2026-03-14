@@ -360,8 +360,18 @@ apply_pmset_entries() {
 #######################################
 # Configure screen lock to require the password immediately.
 #######################################
+screen_lock_is_immediate() {
+  sysadminctl -screenLock status 2>/dev/null | grep -Fq 'screenLock delay is immediate'
+}
+
 configure_screen_lock_settings() {
   log_task "Configuring screen lock to require the password immediately..."
+
+  if screen_lock_is_immediate; then
+    log_subtask "Screen lock already requires the password immediately"
+    return
+  fi
+
   execute_with_log sysadminctl -screenLock immediate -password -
 }
 

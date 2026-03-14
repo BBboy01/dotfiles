@@ -306,7 +306,7 @@ assert_apply_pmset_entries_writes_supported_battery_settings() {
 	assert_file_not_contains "$log_file" "warn "
 }
 
-assert_configure_screen_lock_requests_immediate_password_prompt() {
+assert_configure_screen_lock_requests_immediate_password_prompt_when_needed() {
 	local log_file
 
 	log_file="$TMP_DIR/screen-lock.log"
@@ -314,6 +314,13 @@ assert_configure_screen_lock_requests_immediate_password_prompt() {
 	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
 		set -euo pipefail
 		source '$ROOT_DIR/setup'
+		sysadminctl() {
+			if [[ \"\$1 \$2\" == '-screenLock status' ]]; then
+				printf '%s\n' 'screenLock delay is off'
+				return
+			fi
+			command sysadminctl \"\$@\"
+		}
 		execute_with_log() {
 			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
 		}
@@ -324,6 +331,37 @@ assert_configure_screen_lock_requests_immediate_password_prompt() {
 	"
 
 	assert_file_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
+}
+
+assert_configure_screen_lock_skips_when_already_immediate() {
+	local log_file
+
+	log_file="$TMP_DIR/screen-lock-immediate.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		sysadminctl() {
+			if [[ \"\$1 \$2\" == '-screenLock status' ]]; then
+				printf '%s\n' 'screenLock delay is immediate'
+				return
+			fi
+			command sysadminctl \"\$@\"
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		configure_screen_lock_settings
+	"
+
+	assert_file_contains "$log_file" "subtask Screen lock already requires the password immediately"
+	assert_file_not_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
 }
 
 assert_finalize_setup_reports_manual_system_steps() {
@@ -478,7 +516,8 @@ assert_system_preferences_skip_default_battery_and_drag_settings
 assert_apply_current_host_defaults_writes_menu_bar_controls
 assert_apply_system_defaults_refreshes_menu_bar_processes
 assert_apply_pmset_entries_writes_supported_battery_settings
-assert_configure_screen_lock_requests_immediate_password_prompt
+assert_configure_screen_lock_requests_immediate_password_prompt_when_needed
+assert_configure_screen_lock_skips_when_already_immediate
 assert_finalize_setup_reports_manual_system_steps
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
 assert_setup_javascript_tooling_skips_global_pnpm_packages
