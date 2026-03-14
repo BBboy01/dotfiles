@@ -166,6 +166,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tNSGlassDiffusionSetting\t-int\t1'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleScrollerPagingBehavior\t-bool\ttrue'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tcom.apple.swipescrolldirection\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.HIToolbox\tAppleDictationAutoEnable\t-int\t0'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.HIToolbox\tAppleFnUsageType\t-int\t0'

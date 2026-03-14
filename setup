@@ -57,7 +57,7 @@ readonly -a SYSTEM_DEFAULTS=(
   $'-g\tNSGlassDiffusionSetting\t-int\t1'
   $'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
   $'-g\tAppleScrollerPagingBehavior\t-bool\ttrue'
-  $'-g\tcom.apple.swipescrolldirection\t-bool\tfalse'
+  $'-g\tcom.apple.swipescrolldirection\t-bool\ttrue'
   $'-g\tNSAutomaticDashSubstitutionEnabled\t-bool\tfalse'
   $'-g\tNSAutomaticPeriodSubstitutionEnabled\t-bool\tfalse'
   $'-g\tNSAutomaticQuoteSubstitutionEnabled\t-bool\tfalse'
