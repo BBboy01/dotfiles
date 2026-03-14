@@ -83,6 +83,11 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.finder\tNewWindowTarget\t-string\tPfHm'
   $'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
   $'com.apple.finder\tQLEnableTextSelection\t-bool\ttrue'
+  $'com.apple.WindowManager\tHideDesktop\t-bool\ttrue'
+  $'com.apple.WindowManager\tStandardHideDesktopIcons\t-bool\ttrue'
+  $'com.apple.WindowManager\tAutoHide\t-bool\ttrue'
+  $'com.apple.WindowManager\tStandardHideWidgets\t-bool\ttrue'
+  $'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
   $'com.apple.AppleMultitouchTrackpad\tClicking\t-bool\ttrue'
   $'com.apple.AppleMultitouchTrackpad\tTrackpadRightClick\t-bool\ttrue'
   $'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
