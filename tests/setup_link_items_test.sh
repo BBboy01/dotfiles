@@ -601,6 +601,41 @@ assert_install_tmux_plugin_manager_skips_existing_target() {
 	assert_file_not_contains "$stripped_log_file" "git clone https://github.com/tmux-plugins/tpm $fake_home/.tmux/plugins/tpm"
 }
 
+assert_configure_shell_module_skips_chsh_when_shell_matches() {
+	local log_file
+	local stripped_log_file
+
+	log_file="$TMP_DIR/shell-module.log"
+	stripped_log_file="$TMP_DIR/shell-module-stripped.log"
+
+	HOME="$TMP_DIR/home" SHELL=/opt/homebrew/bin/fish LOG_FILE="$log_file" bash -c "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		grep() {
+			return 0
+		}
+		log_task() {
+			printf 'task %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		MODULE_SHELL=true
+		configure_shell_module
+	"
+
+	strip_ansi < "$log_file" > "$stripped_log_file"
+
+	assert_file_contains "$stripped_log_file" "subtask Fish shell already in "
+	assert_file_contains "$stripped_log_file" "/etc/shells"
+	assert_file_contains "$stripped_log_file" "subtask Default shell already set to "
+	assert_file_contains "$stripped_log_file" "/opt/homebrew/bin/fish"
+	assert_file_not_contains "$stripped_log_file" "exec chsh -s /opt/homebrew/bin/fish"
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
 assert_dry_run_system_module_skips_spctl_and_reports_manual_steps
@@ -619,3 +654,4 @@ assert_install_homebrew_packages_continues_when_brew_doctor_fails
 assert_setup_javascript_tooling_skips_global_pnpm_packages
 assert_install_neovim_config_skips_existing_target
 assert_install_tmux_plugin_manager_skips_existing_target
+assert_configure_shell_module_skips_chsh_when_shell_matches

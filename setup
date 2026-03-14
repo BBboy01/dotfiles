@@ -789,6 +789,7 @@ install_homebrew_packages() {
 
 configure_shell_module() {
   local fish_bin=""
+  local current_shell=""
 
   if [[ "$MODULE_SHELL" != "true" ]]; then
     log_task "Skipping fish shell configuration (module disabled)"
@@ -807,6 +808,12 @@ configure_shell_module() {
     log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
   else
     log_subtask "Fish shell already in ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+  fi
+
+  current_shell="${SHELL:-}"
+  if [[ "$current_shell" == "$fish_bin" ]]; then
+    log_subtask "Default shell already set to ${COLOR_PATH}${fish_bin}${COLOR_RESET}"
+    return
   fi
 
   log_subtask "Changing default shell to fish (password may be required)..."
