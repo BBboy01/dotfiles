@@ -128,7 +128,6 @@ readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
 )
 
 readonly -a PMSET_SETTINGS=(
-  $'-b\tlowpowermode\t0'
   $'-b\tlessbright\t0'
   $'-b\tdisplaysleep\t5'
 )
