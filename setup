@@ -126,6 +126,7 @@ readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
 readonly -a PMSET_SETTINGS=(
   $'-b\tlowpowermode\t0'
   $'-b\tlessbright\t0'
+  $'-b\tdisplaysleep\t5'
 )
 
 readonly -a GIT_CONFIG_SETTINGS=(
@@ -299,14 +300,37 @@ refresh_ui_process_if_running() {
 }
 
 #######################################
-# Check whether pmset supports a given setting.
+# Check whether the current machine has an internal battery.
+# Returns:
+#   0 if an internal battery is present, non-zero otherwise
+#######################################
+pmset_has_internal_battery() {
+  pmset -g batt | grep -Eq 'InternalBattery|Battery'
+}
+
+#######################################
+# Check whether pmset supports a given setting for the requested scope.
 # Arguments:
-#   $1: pmset setting name
+#   $1: pmset scope such as -b or -a
+#   $2: pmset setting name
 #######################################
 pmset_supports_setting() {
-  local setting="$1"
+  local scope="$1"
+  local setting="$2"
 
-  pmset -g cap | grep -Eq "(^|[[:space:]])${setting}($|[[:space:]])"
+  if pmset -g cap | grep -Eq "(^|[[:space:]])${setting}($|[[:space:]])"; then
+    return 0
+  fi
+
+  if [[ "${scope}" == "-b" ]] && pmset_has_internal_battery; then
+    case "${setting}" in
+      displaysleep | lessbright)
+        return 0
+        ;;
+    esac
+  fi
+
+  return 1
 }
 
 #######################################
@@ -325,12 +349,20 @@ apply_pmset_entries() {
   for entry in "$@"; do
     IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r scope setting value <<<"${entry}"
 
-    if pmset_supports_setting "${setting}"; then
+    if pmset_supports_setting "${scope}" "${setting}"; then
       execute_with_log sudo pmset "${scope}" "${setting}" "${value}"
     else
       log_warn "Skipping unsupported power setting: ${setting}"
     fi
   done
+}
+
+#######################################
+# Configure screen lock to require the password immediately.
+#######################################
+configure_screen_lock_settings() {
+  log_task "Configuring screen lock to require the password immediately..."
+  execute_with_log sysadminctl -screenLock immediate -password -
 }
 
 #######################################
@@ -565,6 +597,7 @@ apply_system_defaults() {
   apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
   apply_current_host_defaults_entries "${CURRENT_HOST_SYSTEM_DEFAULTS[@]}"
   apply_pmset_entries "${PMSET_SETTINGS[@]}"
+  configure_screen_lock_settings
 
   execute_with_log killall Dock Finder
   refresh_ui_process_if_running ControlCenter

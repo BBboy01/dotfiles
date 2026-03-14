@@ -158,6 +158,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
 		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tlowpowermode\t0'
 		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tlessbright\t0'
+		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tdisplaysleep\t5'
 	"
 }
 
@@ -228,9 +229,16 @@ assert_apply_system_defaults_refreshes_menu_bar_processes() {
 		pgrep() {
 			return 0
 		}
+		log_task() {
+			:
+		}
 		pmset() {
 			if [[ \"\$1 \$2\" == '-g cap' ]]; then
-				printf '%s\n' 'Capabilities for Battery Power:' ' lowpowermode' ' lessbright'
+				printf '%s\n' 'Capabilities for AC Power:' ' lowpowermode'
+				return
+			fi
+			if [[ \"\$1 \$2\" == '-g batt' ]]; then
+				printf '%s\n' 'Now drawing from \"AC Power\"' ' -InternalBattery-0 (id=1234567)\t95%; charging;'
 				return
 			fi
 			return 1
@@ -260,7 +268,11 @@ assert_apply_pmset_entries_writes_supported_battery_settings() {
 		}
 		pmset() {
 			if [[ \"\$1 \$2\" == '-g cap' ]]; then
-				printf '%s\n' 'Capabilities for Battery Power:' ' lowpowermode' ' lessbright'
+				printf '%s\n' 'Capabilities for AC Power:' ' lowpowermode'
+				return
+			fi
+			if [[ \"\$1 \$2\" == '-g batt' ]]; then
+				printf '%s\n' 'Now drawing from \"AC Power\"' ' -InternalBattery-0 (id=1234567)\t95%; charging;'
 				return
 			fi
 			return 1
@@ -270,7 +282,28 @@ assert_apply_pmset_entries_writes_supported_battery_settings() {
 
 	assert_file_contains "$log_file" "exec sudo pmset -b lowpowermode 0"
 	assert_file_contains "$log_file" "exec sudo pmset -b lessbright 0"
+	assert_file_contains "$log_file" "exec sudo pmset -b displaysleep 5"
 	assert_file_not_contains "$log_file" "warn "
+}
+
+assert_configure_screen_lock_requests_immediate_password_prompt() {
+	local log_file
+
+	log_file="$TMP_DIR/screen-lock.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		configure_screen_lock_settings
+	"
+
+	assert_file_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
 }
 
 assert_normal_run_links_files_and_directories
@@ -281,3 +314,4 @@ assert_system_preferences_skip_default_battery_and_drag_settings
 assert_apply_current_host_defaults_writes_menu_bar_controls
 assert_apply_system_defaults_refreshes_menu_bar_processes
 assert_apply_pmset_entries_writes_supported_battery_settings
+assert_configure_screen_lock_requests_immediate_password_prompt
