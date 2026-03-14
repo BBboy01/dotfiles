@@ -80,6 +80,7 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.finder\tShowRemovableMediaOnDesktop\t-bool\tfalse'
   $'com.apple.finder\tShowExternalHardDrivesOnDesktop\t-bool\tfalse'
   $'com.apple.finder\tShowMountedServersOnDesktop\t-bool\tfalse'
+  $'com.apple.finder\tShowRecentTags\t-bool\tfalse'
   $'com.apple.finder\tNewWindowTarget\t-string\tPfHm'
   $'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
   $'com.apple.finder\tQLEnableTextSelection\t-bool\ttrue'

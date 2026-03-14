@@ -178,6 +178,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tAutoHide\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tStandardHideWidgets\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.finder\tShowRecentTags\t-bool\tfalse'
 		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tlowpowermode\t0'
 		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tlessbright\t0'
 		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tdisplaysleep\t5'
