@@ -825,6 +825,12 @@ write_yabai_sudoers_rule() {
 install_neovim_config() {
   log_task "Downloading neovim config..."
   log_subtask "Destination: ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}"
+
+  if [[ -e "$CONFIG_PATH/nvim" ]]; then
+    log_warn "Neovim config already exists at ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}, skipping clone."
+    return
+  fi
+
   git clone --recurse-submodules https://github.com/BBBoy01/nvim "$CONFIG_PATH/nvim"
 }
 

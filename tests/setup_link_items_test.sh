@@ -432,6 +432,43 @@ assert_setup_javascript_tooling_skips_global_pnpm_packages() {
 	assert_file_contains "$log_file" "pnpm_home=unset"
 }
 
+assert_install_neovim_config_skips_existing_target() {
+	local fake_home
+	local log_file
+	local stripped_log_file
+
+	fake_home="$TMP_DIR/home"
+	log_file="$TMP_DIR/neovim-config.log"
+	stripped_log_file="$TMP_DIR/neovim-config-stripped.log"
+	mkdir -p "$fake_home/.config/nvim"
+	printf 'existing config\n' > "$fake_home/.config/nvim/init.lua"
+
+	HOME="$fake_home" LOG_FILE="$log_file" bash -c "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		log_task() {
+			printf 'task %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_warn() {
+			printf 'warn %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		git() {
+			printf 'git %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		install_neovim_config
+	"
+
+	strip_ansi < "$log_file" > "$stripped_log_file"
+
+	assert_file_contains "$stripped_log_file" "warn Neovim config already exists at "
+	assert_file_contains "$stripped_log_file" "$fake_home/.config/nvim"
+	assert_file_contains "$stripped_log_file" "skipping clone."
+	assert_file_not_contains "$stripped_log_file" "git clone --recurse-submodules https://github.com/BBBoy01/nvim $fake_home/.config/nvim"
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
 assert_dry_run_system_module_skips_spctl_and_reports_manual_steps
@@ -445,3 +482,4 @@ assert_configure_screen_lock_requests_immediate_password_prompt
 assert_finalize_setup_reports_manual_system_steps
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
 assert_setup_javascript_tooling_skips_global_pnpm_packages
+assert_install_neovim_config_skips_existing_target
