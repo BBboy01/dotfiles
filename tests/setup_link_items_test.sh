@@ -157,7 +157,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tBluetooth\t-int\t24'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tFocusModes\t-int\t8'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
-		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tSpotlight\t-int\t2'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tSpotlight\t-int\t8'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tTimer\t-int\t2'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tVoiceControl\t-int\t8'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tWeather\t-int\t8'
@@ -231,7 +231,7 @@ assert_apply_current_host_defaults_writes_menu_bar_controls() {
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Bluetooth -int 24"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter FocusModes -int 8"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter KeyboardBrightness -int 8"
-	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Spotlight -int 2"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Spotlight -int 8"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Timer -int 2"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter VoiceControl -int 8"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Weather -int 8"

@@ -120,7 +120,7 @@ readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
   $'com.apple.controlcenter\tBluetooth\t-int\t24'
   $'com.apple.controlcenter\tFocusModes\t-int\t8'
   $'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
-  $'com.apple.controlcenter\tSpotlight\t-int\t2'
+  $'com.apple.controlcenter\tSpotlight\t-int\t8'
   $'com.apple.controlcenter\tTimer\t-int\t2'
   $'com.apple.controlcenter\tVoiceControl\t-int\t8'
   $'com.apple.controlcenter\tWeather\t-int\t8'
