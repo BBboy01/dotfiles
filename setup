@@ -845,30 +845,12 @@ install_rust_toolchain() {
   rustup default stable
 }
 
-prepare_pnpm_home() {
-  export PNPM_HOME="$HOME/Library/pnpm"
-
-  if [[ ! -d "$PNPM_HOME" ]]; then
-    log_subtask "Creating pnpm home directory: ${COLOR_PATH}$PNPM_HOME${COLOR_RESET}"
-    mkdir -p "$PNPM_HOME"
-  fi
-
-  if [[ ":$PATH:" != *":${PNPM_HOME}:"* ]]; then
-    export PATH="${PNPM_HOME}:$PATH"
-  fi
-}
-
 setup_javascript_tooling() {
   log_task "Setting up JavaScript package management..."
   log_subtask "Enabling corepack..."
   execute_with_log corepack enable
   log_subtask "Installing pnpm via corepack..."
   execute_with_log corepack install -g pnpm@latest
-  log_subtask "Preparing pnpm global bin directory..."
-  prepare_pnpm_home
-
-  log_task "Installing JavaScript development packages..."
-  execute_with_log pnpm i -g "vite" "@angular/cli" "prettier"
 }
 
 start_window_manager_services() {

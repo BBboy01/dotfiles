@@ -404,13 +404,14 @@ assert_install_homebrew_packages_continues_when_brew_doctor_fails() {
 	assert_file_contains "$log_file" "after install_homebrew_packages"
 }
 
-assert_setup_javascript_tooling_prepares_pnpm_home_for_global_installs() {
+assert_setup_javascript_tooling_skips_global_pnpm_packages() {
 	local log_file
 
 	log_file="$TMP_DIR/pnpm-home.log"
 
 	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -c "
 		set -euo pipefail
+		unset PNPM_HOME
 		source '$ROOT_DIR/setup'
 		log_task() {
 			:
@@ -420,24 +421,15 @@ assert_setup_javascript_tooling_prepares_pnpm_home_for_global_installs() {
 		}
 		execute_with_log() {
 			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
-			if [[ \"\$1 \$2\" == 'pnpm i' ]]; then
-				test \"\${PNPM_HOME:-}\" = \"\$HOME/Library/pnpm\"
-				case \":\$PATH:\" in
-					*\":\${PNPM_HOME}:\"*) ;;
-					*)
-						return 1
-						;;
-				esac
-			fi
 		}
 		setup_javascript_tooling
-		printf 'pnpm_home=%s\n' \"\$PNPM_HOME\" >> \"\$LOG_FILE\"
+		printf 'pnpm_home=%s\n' \"\${PNPM_HOME-unset}\" >> \"\$LOG_FILE\"
 	"
 
 	assert_file_contains "$log_file" "exec corepack enable"
 	assert_file_contains "$log_file" "exec corepack install -g pnpm@latest"
-	assert_file_contains "$log_file" "exec pnpm i -g vite @angular/cli prettier"
-	assert_file_contains "$log_file" "pnpm_home=$TMP_DIR/home/Library/pnpm"
+	assert_file_not_contains "$log_file" "exec pnpm i -g vite @angular/cli prettier"
+	assert_file_contains "$log_file" "pnpm_home=unset"
 }
 
 assert_normal_run_links_files_and_directories
@@ -452,4 +444,4 @@ assert_apply_pmset_entries_writes_supported_battery_settings
 assert_configure_screen_lock_requests_immediate_password_prompt
 assert_finalize_setup_reports_manual_system_steps
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
-assert_setup_javascript_tooling_prepares_pnpm_home_for_global_installs
+assert_setup_javascript_tooling_skips_global_pnpm_packages
