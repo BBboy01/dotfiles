@@ -10,7 +10,7 @@ SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_NAME
 readonly DOTFILES_DIR="$HOME/.dotfiles"
 readonly CONFIG_PATH="$HOME/.config"
-readonly HOMEBREW_PREFIX="/opt/homebrew"
+readonly BREW_PREFIX="/opt/homebrew"
 
 readonly COLOR_TIMESTAMP='\033[0;36m'
 readonly COLOR_INFO='\033[0;32m'
@@ -607,7 +607,7 @@ run_config_module() {
 }
 
 eval_homebrew_shellenv() {
-  eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+  eval "$("${BREW_PREFIX}/bin/brew" shellenv)"
 }
 
 install_homebrew_packages() {
@@ -794,4 +794,6 @@ main() {
   finalize_setup
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

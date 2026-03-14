@@ -104,5 +104,20 @@ assert_dry_run_reports_without_creating_links() {
 	test ! -d "$fake_home/.ssh"
 }
 
+assert_eval_homebrew_shellenv_allows_brew_exports() {
+	if [[ ! -x /opt/homebrew/bin/brew ]]; then
+		return
+	fi
+
+	HOME="$TMP_DIR/home" SHELL=/bin/bash bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		eval_homebrew_shellenv
+		test \"\${HOMEBREW_PREFIX}\" = '/opt/homebrew'
+		test \"\${HOMEBREW_CELLAR}\" = '/opt/homebrew/Cellar'
+	"
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
+assert_eval_homebrew_shellenv_allows_brew_exports
