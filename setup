@@ -100,6 +100,11 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.AdLib\tallowIdentifierForAdvertising\t-bool\tfalse'
 )
 
+readonly -a PMSET_SETTINGS=(
+  $'-b\tlowpowermode\t0'
+  $'-b\tlessbright\t0'
+)
+
 readonly -a GIT_CONFIG_SETTINGS=(
   $'core.editor\tnvim'
   $'core.excludesFile\t'"$HOME/.gitignore_global"
@@ -217,6 +222,41 @@ apply_defaults_entries() {
   for entry in "$@"; do
     IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
     write_default_setting "${domain}" "${key}" "${flag}" "${value}"
+  done
+}
+
+#######################################
+# Check whether pmset supports a given setting.
+# Arguments:
+#   $1: pmset setting name
+#######################################
+pmset_supports_setting() {
+  local setting="$1"
+
+  pmset -g cap | grep -Eq "(^|[[:space:]])${setting}($|[[:space:]])"
+}
+
+#######################################
+# Apply a list of pmset scope/key/value entries.
+# Globals:
+#   DEFAULTS_FIELD_SEPARATOR
+# Arguments:
+#   Array entries as positional parameters
+#######################################
+apply_pmset_entries() {
+  local entry=""
+  local scope=""
+  local setting=""
+  local value=""
+
+  for entry in "$@"; do
+    IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r scope setting value <<<"${entry}"
+
+    if pmset_supports_setting "${setting}"; then
+      execute_with_log sudo pmset "${scope}" "${setting}" "${value}"
+    else
+      log_warn "Skipping unsupported power setting: ${setting}"
+    fi
   done
 }
 
@@ -450,6 +490,7 @@ apply_system_defaults() {
 
   defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
   apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
+  apply_pmset_entries "${PMSET_SETTINGS[@]}"
 
   execute_with_log killall Dock Finder
 }

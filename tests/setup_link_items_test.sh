@@ -138,6 +138,8 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tcom.apple.trackpad.forceClick\t-bool\tfalse'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
+		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tlowpowermode\t0'
+		printf '%s\n' \"\${PMSET_SETTINGS[@]}\" | grep -Fq -- \$'-b\tlessbright\t0'
 	"
 }
 
@@ -155,7 +157,35 @@ assert_system_preferences_skip_default_battery_and_drag_settings() {
 	assert_file_not_contains "$setup_copy" $'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerDrag\t-bool\ttrue'
 	assert_file_not_contains "$setup_copy" $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerDrag\t-bool\ttrue'
 	assert_file_not_contains "$setup_copy" $'com.apple.controlcenter\tBatteryShowPercentage\t-bool\ttrue'
-	assert_file_not_contains "$setup_copy" $'-a\tlowpowermode\t0'
+}
+
+assert_apply_pmset_entries_writes_supported_battery_settings() {
+	local log_file
+
+	log_file="$TMP_DIR/pmset.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_warn() {
+			printf 'warn %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		pmset() {
+			if [[ \"\$1 \$2\" == '-g cap' ]]; then
+				printf '%s\n' 'Capabilities for Battery Power:' ' lowpowermode' ' lessbright'
+				return
+			fi
+			return 1
+		}
+		apply_pmset_entries \"\${PMSET_SETTINGS[@]}\"
+	"
+
+	assert_file_contains "$log_file" "exec sudo pmset -b lowpowermode 0"
+	assert_file_contains "$log_file" "exec sudo pmset -b lessbright 0"
+	assert_file_not_contains "$log_file" "warn "
 }
 
 assert_normal_run_links_files_and_directories
@@ -163,3 +193,4 @@ assert_dry_run_reports_without_creating_links
 assert_eval_homebrew_shellenv_allows_brew_exports
 assert_system_preferences_include_battery_and_trackpad_tweaks
 assert_system_preferences_skip_default_battery_and_drag_settings
+assert_apply_pmset_entries_writes_supported_battery_settings
