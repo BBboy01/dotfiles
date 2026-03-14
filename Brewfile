@@ -2,6 +2,8 @@ tap "koekeishiya/formulae"
 tap "oven-sh/bun"
 tap "productdevbook/tap"
 tap "tw93/tap"
+tap "anomalyco/tap"
+tap "manaflow-ai/cmux"
 
 brew "git"
 brew "difftastic"
@@ -14,6 +16,7 @@ brew "genact" # nonsense activity generator -- pretend to be busy
 brew "gum"  # markdown renderer
 brew "chafa"  # terminal image renderer
 brew "imagemagick"  # image file processor
+brew "resvg"  # svg renderer
 brew "sox"  # audio file processor
 brew "ffmpeg"  # video file processor
 brew "wrk"  # HTTP benchmarking tool
@@ -61,10 +64,16 @@ brew "golang"
 brew "ruby"
 brew "tree-sitter-cli"
 brew "neovim"
+brew "ollama"
+brew "opencode"
+brew "codex"
 
 cask "font-hack-nerd-font"
 cask "font-cascadia-mono"
+cask "codex-app"
+cask "claude-code"
 cask "ghostty"
+cask "cmux"
 cask "alacritty"
 cask "kitty"
 cask "neovide-app"
@@ -86,7 +95,6 @@ cask "arc"
 cask "firefox@developer-edition"
 cask "google-chrome"
 cask "iina"
-cask "folo"
 cask "figma"
 cask "blender"
 cask "adobe-creative-cloud"
