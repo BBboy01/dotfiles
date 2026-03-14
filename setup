@@ -109,6 +109,20 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.AdLib\tallowIdentifierForAdvertising\t-bool\tfalse'
 )
 
+# Control Center module display modes mirror the current values returned by
+# `defaults -currentHost read com.apple.controlcenter` on this machine.
+readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
+  $'com.apple.controlcenter\tAirDrop\t-int\t8'
+  $'com.apple.controlcenter\tBattery\t-int\t4'
+  $'com.apple.controlcenter\tBluetooth\t-int\t24'
+  $'com.apple.controlcenter\tFocusModes\t-int\t8'
+  $'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
+  $'com.apple.controlcenter\tTimer\t-int\t2'
+  $'com.apple.controlcenter\tVoiceControl\t-int\t8'
+  $'com.apple.controlcenter\tWeather\t-int\t8'
+  $'com.apple.controlcenter\tWiFi\t-int\t24'
+)
+
 readonly -a PMSET_SETTINGS=(
   $'-b\tlowpowermode\t0'
   $'-b\tlessbright\t0'
@@ -232,6 +246,56 @@ apply_defaults_entries() {
     IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
     write_default_setting "${domain}" "${key}" "${flag}" "${value}"
   done
+}
+
+#######################################
+# Write a single macOS defaults entry in the current host domain.
+# Arguments:
+#   $1: Domain
+#   $2: Key
+#   $3: Flag such as -bool, -int, or -string
+#   $4: Value
+#######################################
+write_current_host_default_setting() {
+  local domain="$1"
+  local key="$2"
+  local flag="$3"
+  local value="$4"
+
+  defaults -currentHost write "${domain}" "${key}" "${flag}" "${value}"
+}
+
+#######################################
+# Apply a list of current-host "domain key flag value" defaults entries.
+# Globals:
+#   DEFAULTS_FIELD_SEPARATOR
+# Arguments:
+#   Array entries as positional parameters
+#######################################
+apply_current_host_defaults_entries() {
+  local entry=""
+  local domain=""
+  local key=""
+  local flag=""
+  local value=""
+
+  for entry in "$@"; do
+    IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
+    write_current_host_default_setting "${domain}" "${key}" "${flag}" "${value}"
+  done
+}
+
+#######################################
+# Restart a UI process only when it is currently running.
+# Arguments:
+#   $1: Process name
+#######################################
+refresh_ui_process_if_running() {
+  local process_name="$1"
+
+  if pgrep -x "${process_name}" >/dev/null 2>&1; then
+    execute_with_log killall "${process_name}"
+  fi
 }
 
 #######################################
@@ -499,9 +563,12 @@ apply_system_defaults() {
 
   defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
   apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
+  apply_current_host_defaults_entries "${CURRENT_HOST_SYSTEM_DEFAULTS[@]}"
   apply_pmset_entries "${PMSET_SETTINGS[@]}"
 
   execute_with_log killall Dock Finder
+  refresh_ui_process_if_running ControlCenter
+  refresh_ui_process_if_running SystemUIServer
 }
 
 configure_gatekeeper() {

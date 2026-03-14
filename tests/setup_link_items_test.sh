@@ -131,6 +131,15 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 	HOME="$TMP_DIR/home" bash -lc "
 		set -euo pipefail
 		source '$ROOT_DIR/setup'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tAirDrop\t-int\t8'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tBattery\t-int\t4'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tBluetooth\t-int\t24'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tFocusModes\t-int\t8'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tTimer\t-int\t2'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tVoiceControl\t-int\t8'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tWeather\t-int\t8'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tWiFi\t-int\t24'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleIconAppearanceTheme\t-string\tRegularDark'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tNSGlassDiffusionSetting\t-int\t1'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
@@ -154,8 +163,10 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 
 assert_system_preferences_skip_default_battery_and_drag_settings() {
 	local setup_copy
+	local current_host_copy
 
 	setup_copy="$TMP_DIR/setup-values.txt"
+	current_host_copy="$TMP_DIR/current-host-values.txt"
 
 	HOME="$TMP_DIR/home" bash -lc "
 		set -euo pipefail
@@ -163,9 +174,74 @@ assert_system_preferences_skip_default_battery_and_drag_settings() {
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\"
 	" > "$setup_copy"
 
+	HOME="$TMP_DIR/home" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\"
+	" > "$current_host_copy"
+
 	assert_file_not_contains "$setup_copy" $'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerDrag\t-bool\ttrue'
 	assert_file_not_contains "$setup_copy" $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerDrag\t-bool\ttrue'
 	assert_file_not_contains "$setup_copy" $'com.apple.controlcenter\tBatteryShowPercentage\t-bool\ttrue'
+	assert_file_not_contains "$current_host_copy" $'com.apple.controlcenter\tBatteryShowPercentage\t-bool\ttrue'
+}
+
+assert_apply_current_host_defaults_writes_menu_bar_controls() {
+	local log_file
+
+	log_file="$TMP_DIR/current-host-defaults.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		defaults() {
+			printf 'defaults %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		apply_current_host_defaults_entries \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\"
+	"
+
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter AirDrop -int 8"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Battery -int 4"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Bluetooth -int 24"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter FocusModes -int 8"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter KeyboardBrightness -int 8"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Timer -int 2"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter VoiceControl -int 8"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Weather -int 8"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter WiFi -int 24"
+}
+
+assert_apply_system_defaults_refreshes_menu_bar_processes() {
+	local log_file
+
+	log_file="$TMP_DIR/system-defaults.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		defaults() {
+			printf 'defaults %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		pgrep() {
+			return 0
+		}
+		pmset() {
+			if [[ \"\$1 \$2\" == '-g cap' ]]; then
+				printf '%s\n' 'Capabilities for Battery Power:' ' lowpowermode' ' lessbright'
+				return
+			fi
+			return 1
+		}
+		DRY_RUN=false
+		apply_system_defaults
+	"
+
+	assert_file_contains "$log_file" "exec killall Dock Finder"
+	assert_file_contains "$log_file" "exec killall ControlCenter"
+	assert_file_contains "$log_file" "exec killall SystemUIServer"
 }
 
 assert_apply_pmset_entries_writes_supported_battery_settings() {
@@ -202,4 +278,6 @@ assert_dry_run_reports_without_creating_links
 assert_eval_homebrew_shellenv_allows_brew_exports
 assert_system_preferences_include_battery_and_trackpad_tweaks
 assert_system_preferences_skip_default_battery_and_drag_settings
+assert_apply_current_host_defaults_writes_menu_bar_controls
+assert_apply_system_defaults_refreshes_menu_bar_processes
 assert_apply_pmset_entries_writes_supported_battery_settings
