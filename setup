@@ -850,6 +850,12 @@ install_neovim_config() {
 install_tmux_plugin_manager() {
   log_task "Installing Tmux Plugin Manager..."
   log_subtask "Destination: ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}"
+
+  if [[ -e "$HOME/.tmux/plugins/tpm" ]]; then
+    log_warn "Tmux Plugin Manager already exists at ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}, skipping clone."
+    return
+  fi
+
   git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 }
 
