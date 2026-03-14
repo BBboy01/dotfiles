@@ -364,6 +364,63 @@ assert_configure_screen_lock_skips_when_already_immediate() {
 	assert_file_not_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
 }
 
+assert_configure_screen_lock_handles_empty_status_output() {
+	local log_file
+
+	log_file="$TMP_DIR/screen-lock-empty-status.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		sysadminctl() {
+			if [[ \"\$1 \$2\" == '-screenLock status' ]]; then
+				return 0
+			fi
+			command sysadminctl \"\$@\"
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		configure_screen_lock_settings
+	"
+
+	assert_file_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
+}
+
+assert_configure_screen_lock_skips_when_status_is_reported_on_stderr() {
+	local log_file
+
+	log_file="$TMP_DIR/screen-lock-stderr-status.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		sysadminctl() {
+			if [[ \"\$1 \$2\" == '-screenLock status' ]]; then
+				printf '%s\n' '2026-03-14 20:21:36.486 sysadminctl[19996:2556049] screenLock delay is immediate' >&2
+				return 0
+			fi
+			command sysadminctl \"\$@\"
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		configure_screen_lock_settings
+	"
+
+	assert_file_contains "$log_file" "subtask Screen lock already requires the password immediately"
+	assert_file_not_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
+}
+
 assert_finalize_setup_reports_manual_system_steps() {
 	local log_file
 
@@ -518,6 +575,8 @@ assert_apply_system_defaults_refreshes_menu_bar_processes
 assert_apply_pmset_entries_writes_supported_battery_settings
 assert_configure_screen_lock_requests_immediate_password_prompt_when_needed
 assert_configure_screen_lock_skips_when_already_immediate
+assert_configure_screen_lock_handles_empty_status_output
+assert_configure_screen_lock_skips_when_status_is_reported_on_stderr
 assert_finalize_setup_reports_manual_system_steps
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
 assert_setup_javascript_tooling_skips_global_pnpm_packages
