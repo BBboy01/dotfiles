@@ -288,6 +288,13 @@ apply_current_host_defaults_entries() {
 }
 
 #######################################
+# Clear all persistent Dock apps while keeping folder stacks untouched.
+#######################################
+clear_dock_persistent_apps() {
+  defaults write com.apple.dock persistent-apps -array
+}
+
+#######################################
 # Restart a UI process only when it is currently running.
 # Arguments:
 #   $1: Process name
@@ -610,6 +617,7 @@ apply_system_defaults() {
   defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
   apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
   apply_current_host_defaults_entries "${CURRENT_HOST_SYSTEM_DEFAULTS[@]}"
+  clear_dock_persistent_apps
   apply_pmset_entries "${PMSET_SETTINGS[@]}"
   configure_screen_lock_settings
 

@@ -275,6 +275,45 @@ assert_apply_system_defaults_refreshes_menu_bar_processes() {
 	assert_file_contains "$log_file" "exec killall SystemUIServer"
 }
 
+assert_apply_system_defaults_clears_persistent_dock_apps() {
+	local log_file
+
+	log_file="$TMP_DIR/dock-persistent-apps.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		defaults() {
+			printf 'defaults %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		pgrep() {
+			return 1
+		}
+		log_task() {
+			:
+		}
+		pmset() {
+			if [[ \"\$1 \$2\" == '-g cap' ]]; then
+				printf '%s\n' 'Capabilities for AC Power:' ' lowpowermode'
+				return
+			fi
+			if [[ \"\$1 \$2\" == '-g batt' ]]; then
+				printf '%s\n' 'Now drawing from \"AC Power\"' ' -InternalBattery-0 (id=1234567)\t95%; charging;'
+				return
+			fi
+			return 1
+		}
+		DRY_RUN=false
+		apply_system_defaults
+	"
+
+	assert_file_contains "$log_file" "defaults write com.apple.dock persistent-apps -array"
+	assert_file_not_contains "$log_file" "defaults write com.apple.dock persistent-others"
+}
+
 assert_apply_pmset_entries_writes_supported_battery_settings() {
 	local log_file
 
@@ -723,6 +762,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks
 assert_system_preferences_skip_default_battery_and_drag_settings
 assert_apply_current_host_defaults_writes_menu_bar_controls
 assert_apply_system_defaults_refreshes_menu_bar_processes
+assert_apply_system_defaults_clears_persistent_dock_apps
 assert_apply_pmset_entries_writes_supported_battery_settings
 assert_configure_screen_lock_requests_immediate_password_prompt_when_needed
 assert_configure_screen_lock_skips_when_already_immediate
