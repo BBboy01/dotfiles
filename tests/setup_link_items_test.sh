@@ -466,6 +466,26 @@ assert_configure_screen_lock_skips_when_status_is_reported_on_stderr() {
 	assert_file_not_contains "$log_file" "exec sysadminctl -screenLock immediate -password -"
 }
 
+assert_configure_first_day_of_week_sets_monday() {
+	local log_file
+
+	log_file="$TMP_DIR/first-day-of-week.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			:
+		}
+		configure_first_day_of_week
+	"
+
+	assert_file_contains "$log_file" "exec defaults write NSGlobalDomain AppleFirstWeekday -dict gregorian 2"
+}
+
 assert_finalize_setup_reports_manual_system_steps() {
 	local log_file
 
@@ -771,6 +791,7 @@ assert_configure_screen_lock_requests_immediate_password_prompt_when_needed
 assert_configure_screen_lock_skips_when_already_immediate
 assert_configure_screen_lock_handles_empty_status_output
 assert_configure_screen_lock_skips_when_status_is_reported_on_stderr
+assert_configure_first_day_of_week_sets_monday
 assert_finalize_setup_reports_manual_system_steps
 assert_finalize_setup_skips_manual_system_steps_when_system_module_disabled
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
