@@ -714,7 +714,7 @@ EOF
 refresh_font_cache() {
   log_task "Refreshing font cache..."
   if command -v fc-cache >/dev/null 2>&1; then
-    execute_with_log fc-cache -f -v
+    execute_with_log fc-cache -f
   else
     log_warn "fc-cache command not found. Font cache refresh skipped."
   fi
@@ -730,7 +730,7 @@ configure_login_settings() {
     log_task "DRY RUN: Would touch ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
     log_task "DRY RUN: Would create SSH directory and config with proper permissions"
     log_subtask "DRY RUN: Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
-    log_task "DRY RUN: Would execute ${COLOR_CMD}fc-cache${COLOR_RESET} ${COLOR_ARG}-f -v${COLOR_RESET}"
+    log_task "DRY RUN: Would execute ${COLOR_CMD}fc-cache${COLOR_RESET} ${COLOR_ARG}-f${COLOR_RESET}"
   fi
 }
 

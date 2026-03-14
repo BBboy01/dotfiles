@@ -100,6 +100,7 @@ assert_dry_run_reports_without_creating_links() {
 	assert_file_contains "$stripped_output" "$fake_home/.hushlogin"
 	assert_file_contains "$stripped_output" "$fake_home/.ssh/config"
 	assert_file_contains "$stripped_output" "fc-cache"
+	assert_file_not_contains "$stripped_output" "fc-cache -f -v"
 	test ! -d "$fake_home/.config"
 	test ! -e "$fake_home/.config/starship.toml"
 	test ! -e "$fake_home/.config/nvim"
