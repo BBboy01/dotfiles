@@ -129,6 +129,7 @@ assert_dry_run_system_module_skips_spctl_and_reports_manual_steps() {
 	strip_ansi < "$output_file" > "$stripped_output"
 
 	assert_file_not_contains "$stripped_output" "spctl --master-disable"
+	assert_file_contains "$stripped_output" "ACTION REQUIRED AFTER A REAL RUN: Gatekeeper changes must be confirmed manually."
 	assert_file_contains "$stripped_output" "Manual steps you may still need to complete:"
 	assert_file_contains "$stripped_output" "Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
 }
@@ -156,6 +157,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tBluetooth\t-int\t24'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tFocusModes\t-int\t8'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
+		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tSpotlight\t-int\t2'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tTimer\t-int\t2'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tVoiceControl\t-int\t8'
 		printf '%s\n' \"\${CURRENT_HOST_SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.controlcenter\tWeather\t-int\t8'
@@ -226,6 +228,7 @@ assert_apply_current_host_defaults_writes_menu_bar_controls() {
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Bluetooth -int 24"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter FocusModes -int 8"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter KeyboardBrightness -int 8"
+	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Spotlight -int 2"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Timer -int 2"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter VoiceControl -int 8"
 	assert_file_contains "$log_file" "defaults -currentHost write com.apple.controlcenter Weather -int 8"
@@ -432,6 +435,9 @@ assert_finalize_setup_reports_manual_system_steps() {
 		log_main() {
 			printf 'main %s\n' \"\$*\" >> \"\$LOG_FILE\"
 		}
+		log_warn() {
+			printf 'warn %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
 		log_task() {
 			printf 'task %s\n' \"\$*\" >> \"\$LOG_FILE\"
 		}
@@ -447,8 +453,43 @@ assert_finalize_setup_reports_manual_system_steps() {
 		finalize_setup
 	"
 
+	assert_file_contains "$log_file" "warn ACTION REQUIRED: Gatekeeper changes must be confirmed manually."
 	assert_file_contains "$log_file" "task Manual steps you may still need to complete:"
 	assert_file_contains "$log_file" "subtask Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
+}
+
+assert_finalize_setup_skips_manual_system_steps_when_system_module_disabled() {
+	local log_file
+
+	log_file="$TMP_DIR/finalize-no-system.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		log_main() {
+			printf 'main %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_warn() {
+			printf 'warn %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			printf 'task %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		MODULE_SYSTEM=false
+		MODULE_CONFIG=true
+		MODULE_BREW=false
+		MODULE_SHELL=false
+		MODULE_GIT=false
+		MODULE_TOOLS=false
+		DRY_RUN=false
+		finalize_setup
+	"
+
+	assert_file_not_contains "$log_file" "Gatekeeper changes"
+	assert_file_not_contains "$log_file" "ACTION REQUIRED"
 }
 
 assert_install_homebrew_packages_continues_when_brew_doctor_fails() {
@@ -688,6 +729,7 @@ assert_configure_screen_lock_skips_when_already_immediate
 assert_configure_screen_lock_handles_empty_status_output
 assert_configure_screen_lock_skips_when_status_is_reported_on_stderr
 assert_finalize_setup_reports_manual_system_steps
+assert_finalize_setup_skips_manual_system_steps_when_system_module_disabled
 assert_install_homebrew_packages_continues_when_brew_doctor_fails
 assert_setup_javascript_tooling_skips_global_pnpm_packages
 assert_install_neovim_config_skips_existing_target

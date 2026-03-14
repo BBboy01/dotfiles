@@ -117,6 +117,7 @@ readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
   $'com.apple.controlcenter\tBluetooth\t-int\t24'
   $'com.apple.controlcenter\tFocusModes\t-int\t8'
   $'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
+  $'com.apple.controlcenter\tSpotlight\t-int\t2'
   $'com.apple.controlcenter\tTimer\t-int\t2'
   $'com.apple.controlcenter\tVoiceControl\t-int\t8'
   $'com.apple.controlcenter\tWeather\t-int\t8'
@@ -934,6 +935,11 @@ log_manual_steps() {
     return
   fi
 
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log_warn "ACTION REQUIRED AFTER A REAL RUN: Gatekeeper changes must be confirmed manually."
+  else
+    log_warn "ACTION REQUIRED: Gatekeeper changes must be confirmed manually."
+  fi
   log_task "Manual steps you may still need to complete:"
   log_subtask "Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
 }
