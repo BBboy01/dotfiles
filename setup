@@ -80,7 +80,14 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
   $'com.apple.finder\tQLEnableTextSelection\t-bool\ttrue'
   $'com.apple.AppleMultitouchTrackpad\tClicking\t-bool\ttrue'
+  $'com.apple.AppleMultitouchTrackpad\tTrackpadRightClick\t-bool\ttrue'
+  $'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
   $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tClicking\t-bool\ttrue'
+  $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadRightClick\t-bool\ttrue'
+  $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
+  $'-g\tcom.apple.trackpad.forceClick\t-bool\tfalse'
+  $'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
+  $'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
   $'com.apple.LaunchServices\tLSQuarantine\t-bool\tfalse'
   $'com.apple.desktopservices\tDSDontWriteUSBStores\t-bool\ttrue'
   $'com.apple.desktopservices\tDSDontWriteNetworkStores\t-bool\ttrue'
@@ -197,8 +204,6 @@ write_default_setting() {
 
 #######################################
 # Apply a list of "domain key flag value" defaults entries.
-# Globals:
-#   DEFAULTS_FIELD_SEPARATOR
 # Arguments:
 #   Array entries as positional parameters
 #######################################

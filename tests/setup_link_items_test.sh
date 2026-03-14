@@ -41,6 +41,15 @@ assert_file_contains() {
 	grep -F "$expected" "$file" >/dev/null
 }
 
+assert_file_not_contains() {
+	local file="$1"
+	local unexpected="$2"
+
+	if grep -F -- "$unexpected" "$file" >/dev/null; then
+		return 1
+	fi
+}
+
 assert_line_contains_both() {
 	local file="$1"
 	local first="$2"
@@ -118,6 +127,39 @@ assert_eval_homebrew_shellenv_allows_brew_exports() {
 	"
 }
 
+assert_system_preferences_include_battery_and_trackpad_tweaks() {
+	HOME="$TMP_DIR/home" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.AppleMultitouchTrackpad\tTrackpadRightClick\t-bool\ttrue'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadRightClick\t-bool\ttrue'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tcom.apple.trackpad.forceClick\t-bool\tfalse'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
+	"
+}
+
+assert_system_preferences_skip_default_battery_and_drag_settings() {
+	local setup_copy
+
+	setup_copy="$TMP_DIR/setup-values.txt"
+
+	HOME="$TMP_DIR/home" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\"
+	" > "$setup_copy"
+
+	assert_file_not_contains "$setup_copy" $'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerDrag\t-bool\ttrue'
+	assert_file_not_contains "$setup_copy" $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerDrag\t-bool\ttrue'
+	assert_file_not_contains "$setup_copy" $'com.apple.controlcenter\tBatteryShowPercentage\t-bool\ttrue'
+	assert_file_not_contains "$setup_copy" $'-a\tlowpowermode\t0'
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
 assert_eval_homebrew_shellenv_allows_brew_exports
+assert_system_preferences_include_battery_and_trackpad_tweaks
+assert_system_preferences_skip_default_battery_and_drag_settings
