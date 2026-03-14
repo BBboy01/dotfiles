@@ -769,7 +769,9 @@ install_homebrew_packages() {
 
   log_task "Cleaning up Homebrew..."
   execute_with_log brew cleanup
-  execute_with_log brew doctor
+  if ! execute_with_log brew doctor; then
+    log_warn "Homebrew doctor reported issues; continuing setup."
+  fi
 }
 
 configure_shell_module() {

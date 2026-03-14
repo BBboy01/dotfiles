@@ -355,6 +355,54 @@ assert_finalize_setup_reports_manual_system_steps() {
 	assert_file_contains "$log_file" "subtask Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
 }
 
+assert_install_homebrew_packages_continues_when_brew_doctor_fails() {
+	local log_file
+
+	log_file="$TMP_DIR/homebrew-doctor.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		eval_homebrew_shellenv() {
+			:
+		}
+		log_task() {
+			printf 'task %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_subtask() {
+			printf 'subtask %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_warn() {
+			printf 'warn %s\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		brew() {
+			if [[ \"\$1 \$2 \$3\" == 'bundle install --file' ]]; then
+				printf 'brew %s\n' \"\$*\" >> \"\$LOG_FILE\"
+				return 0
+			fi
+			printf 'brew %s\n' \"\$*\" >> \"\$LOG_FILE\"
+			return 0
+		}
+		execute_with_log() {
+			printf 'exec %s\n' \"\$*\" >> \"\$LOG_FILE\"
+			if [[ \"\$1 \$2\" == 'brew doctor' ]]; then
+				return 1
+			fi
+			return 0
+		}
+		MODULE_BREW=true
+		DRY_RUN=false
+		install_homebrew_packages
+		printf 'after install_homebrew_packages\n' >> \"\$LOG_FILE\"
+	"
+
+	assert_file_contains "$log_file" "brew bundle install --file $TMP_DIR/home/.dotfiles/Brewfile"
+	assert_file_contains "$log_file" "exec brew cleanup"
+	assert_file_contains "$log_file" "exec brew doctor"
+	assert_file_contains "$log_file" "warn Homebrew doctor reported issues; continuing setup."
+	assert_file_contains "$log_file" "after install_homebrew_packages"
+}
+
 assert_normal_run_links_files_and_directories
 assert_dry_run_reports_without_creating_links
 assert_dry_run_system_module_skips_spctl_and_reports_manual_steps
@@ -366,3 +414,4 @@ assert_apply_system_defaults_refreshes_menu_bar_processes
 assert_apply_pmset_entries_writes_supported_battery_settings
 assert_configure_screen_lock_requests_immediate_password_prompt
 assert_finalize_setup_reports_manual_system_steps
+assert_install_homebrew_packages_continues_when_brew_doctor_fails
