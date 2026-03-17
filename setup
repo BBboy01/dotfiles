@@ -925,6 +925,8 @@ install_rust_toolchain() {
 
 setup_javascript_tooling() {
   log_task "Setting up JavaScript package management..."
+  log_subtask "Enabling mise..."
+  execute_with_log mise reshim
   log_subtask "Enabling corepack..."
   execute_with_log corepack enable
   log_subtask "Installing pnpm via corepack..."
