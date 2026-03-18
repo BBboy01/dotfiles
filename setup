@@ -80,7 +80,6 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.finder\tAppleShowAllFiles\t-bool\ttrue'
   $'com.apple.finder\tFXPreferredViewStyle\t-string\tclmv'
   $'com.apple.finder\tFXDefaultSearchScope\t-string\tSCcf'
-  $'com.apple.finder\tCreateDesktop\t-bool\tfalse'
   $'com.apple.finder\tShowHardDrivesOnDesktop\t-bool\tfalse'
   $'com.apple.finder\tShowRemovableMediaOnDesktop\t-bool\tfalse'
   $'com.apple.finder\tShowExternalHardDrivesOnDesktop\t-bool\tfalse'
