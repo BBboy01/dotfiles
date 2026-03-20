@@ -901,7 +901,7 @@ install_neovim_config() {
     return
   fi
 
-  git clone --recurse-submodules https://github.com/BBBoy01/nvim "$CONFIG_PATH/nvim"
+  git clone --recurse-submodules git@github.com:BBboy01/nvim.git "$CONFIG_PATH/nvim"
 }
 
 install_tmux_plugin_manager() {
