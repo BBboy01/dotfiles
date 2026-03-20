@@ -206,17 +206,99 @@ log_status() {
     "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}✅${COLOR_RESET}  ${INDENT_LVL3}$*"
 }
 
+log_preview() {
+  printf '%b\n' \
+    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}PREVIEW${COLOR_RESET} ${INDENT_LVL2}$*"
+}
+
+log_manual_confirmation_section() {
+  local section_title="$1"
+  shift
+  local step=""
+  local step_number=1
+
+  log_task "$section_title"
+  for step in "$@"; do
+    log_subtask "${step_number}. ${step}"
+    step_number=$((step_number + 1))
+  done
+}
+
+count_first_level_items() {
+	local source_dir="$1"
+
+	find "$source_dir" -mindepth 1 -maxdepth 1 | wc -l | tr -d '[:space:]'
+}
+
+count_brewfile_entries() {
+	local brewfile_path="$1"
+	local entry_type="$2"
+
+	awk -v entry_type="$entry_type" '
+		$0 ~ "^[[:space:]]*" entry_type "[[:space:]]+\"" { count++ }
+		END { print count + 0 }
+	' "$brewfile_path"
+}
+
+preview_brewfile_entries() {
+	local brewfile_path="$1"
+	local entry_type=""
+	local entry_name=""
+	local entry_label=""
+
+	while IFS=$'\t' read -r entry_type entry_name; do
+		if [[ -z "$entry_type" || -z "$entry_name" ]]; then
+			continue
+		fi
+
+		if [[ "$entry_type" == "brew" ]]; then
+			entry_label="formula"
+		else
+			entry_label="cask"
+		fi
+
+		log_preview "Would install ${entry_label}: ${COLOR_PATH}${entry_name}${COLOR_RESET}"
+	done < <(
+		awk '
+			/^[[:space:]]*(brew|cask)[[:space:]]+"/ {
+				line = $0
+				sub(/^[[:space:]]*/, "", line)
+				entry_type = line
+				sub(/[[:space:]].*$/, "", entry_type)
+				sub(/^[[:space:]]*(brew|cask)[[:space:]]+"/, "", line)
+				sub(/".*$/, "", line)
+				printf "%s\t%s\n", entry_type, line
+			}
+		' "$brewfile_path"
+	)
+}
+
+render_command() {
+	local rendered_command=""
+	local arg=""
+	local escaped_arg=""
+
+  for arg in "$@"; do
+    printf -v escaped_arg '%q' "$arg"
+    rendered_command+="${rendered_command:+ }${escaped_arg}"
+  done
+
+  printf '%s\n' "$rendered_command"
+}
+
 execute_with_log() {
   local cmd="$1"
   shift
   local args=("$@")
+  local rendered_command=""
 
-  log_task "EXECUTING: ${COLOR_CMD}${cmd}${COLOR_RESET} ${COLOR_ARG}${args[*]}${COLOR_RESET}"
+  rendered_command="$(render_command "$cmd" "${args[@]}")"
+
   if [[ "$DRY_RUN" != "true" ]]; then
+    log_task "EXECUTING: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
     "$cmd" "${args[@]}"
   else
-    log_subtask \
-      "DRY RUN: Would execute '${COLOR_CMD}${cmd}${COLOR_RESET} ${COLOR_ARG}${args[*]}${COLOR_RESET}'"
+    log_preview "Would execute: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
   fi
 }
 
@@ -234,7 +316,7 @@ write_default_setting() {
   local flag="$3"
   local value="$4"
 
-  defaults write "${domain}" "${key}" "${flag}" "${value}"
+  execute_with_log defaults write "${domain}" "${key}" "${flag}" "${value}"
 }
 
 #######################################
@@ -269,7 +351,7 @@ write_current_host_default_setting() {
   local flag="$3"
   local value="$4"
 
-  defaults -currentHost write "${domain}" "${key}" "${flag}" "${value}"
+  execute_with_log defaults -currentHost write "${domain}" "${key}" "${flag}" "${value}"
 }
 
 #######################################
@@ -296,7 +378,7 @@ apply_current_host_defaults_entries() {
 # Clear all persistent Dock apps while keeping folder stacks untouched.
 #######################################
 clear_dock_persistent_apps() {
-  defaults write com.apple.dock persistent-apps -array
+  execute_with_log defaults write com.apple.dock persistent-apps -array
 }
 
 #######################################
@@ -439,7 +521,7 @@ apply_git_config_entries() {
 
   for entry in "$@"; do
     IFS="${GIT_CONFIG_FIELD_SEPARATOR}" read -r key value <<<"${entry}"
-    git config --global "${key}" "${value}"
+    execute_with_log git config --global "${key}" "${value}"
   done
 }
 
@@ -458,7 +540,7 @@ Options:
   --brew                       Install applications via Homebrew
   --shell                      Configure shell (fish)
   --git                        Configure Git
-  --tools                      Initialize other tools (luarocks, rust, etc.)
+  --tools                      Initialize developer tooling (Neovim, tmux, Rust, JS)
   --help                       Show this help message
 
 Examples:
@@ -476,7 +558,7 @@ Available modules:
   --brew     : Homebrew and applications
   --shell    : Shell configuration (fish)
   --git      : Git configuration
-  --tools    : Other tools (luarocks, rust, pnpm, etc.)
+  --tools    : Developer tooling (Neovim, tmux, Rust, JS)
 EOF
 }
 
@@ -565,7 +647,7 @@ parse_args() {
 }
 
 enable_verbose_tracing() {
-  if [[ "$VERBOSE" == "true" ]]; then
+  if [[ "$VERBOSE" == "true" && "$DRY_RUN" != "true" ]]; then
     set -x
   fi
 }
@@ -600,13 +682,13 @@ log_enabled_modules() {
   log_enabled_module "Homebrew & Apps" "$MODULE_BREW"
   log_enabled_module "Shell Configuration" "$MODULE_SHELL"
   log_enabled_module "Git Configuration" "$MODULE_GIT"
-  log_enabled_module "Other Tools" "$MODULE_TOOLS"
+  log_enabled_module "Developer Tooling" "$MODULE_TOOLS"
 }
 
 should_authenticate_for_sudo() {
   [[ "$DRY_RUN" != "true" ]] &&
     [[ "$MODULE_SYSTEM" == "true" || "$MODULE_BREW" == "true" || \
-      "$MODULE_SHELL" == "true" || "$MODULE_TOOLS" == "true" ]]
+      "$MODULE_SHELL" == "true" ]]
 }
 
 keep_sudo_alive() {
@@ -633,6 +715,11 @@ authenticate_for_system_operations() {
 
 ensure_xcode_command_line_tools() {
   if [[ "$DRY_RUN" == "true" ]]; then
+    if xcode-select --print-path &>/dev/null; then
+      log_task "XCode Command Line Tools already installed"
+    else
+      log_preview "Would install XCode Command Line Tools"
+    fi
     return
   fi
 
@@ -649,11 +736,18 @@ ensure_xcode_command_line_tools() {
 }
 
 apply_system_defaults() {
-  if [[ "$DRY_RUN" == "true" ]]; then
+  if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
+    log_task "Previewing macOS defaults changes..."
+    log_preview "Would apply ${#SYSTEM_DEFAULTS[@]} macOS defaults entries"
+    log_preview "Would apply ${#CURRENT_HOST_SYSTEM_DEFAULTS[@]} current-host Control Center entries"
+    log_preview "Would clear Dock persistent apps and apply ${#PMSET_SETTINGS[@]} power settings"
+    log_preview "Would configure first day of week, startup sound, and screen lock"
+    log_preview "Would refresh Dock, ControlCenter, and SystemUIServer when running"
+    log_preview "Use --dry-run --verbose to expand every macOS settings command"
     return
   fi
 
-  defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
+  execute_with_log defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
   apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
   apply_current_host_defaults_entries "${CURRENT_HOST_SYSTEM_DEFAULTS[@]}"
   clear_dock_persistent_apps
@@ -688,6 +782,14 @@ run_homebrew_module() {
 
   log_main "Installing Homebrew if needed..."
   if [[ "$DRY_RUN" == "true" ]]; then
+    if command -v brew >/dev/null 2>&1; then
+      log_task "Homebrew already installed"
+    else
+      log_preview "Would install Homebrew"
+      log_preview \
+        "Would execute: ${COLOR_CMD}/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"${COLOR_RESET}"
+    fi
+    log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
     return
   fi
 
@@ -717,6 +819,7 @@ symlink_first_level_items() {
   local target_dir="$2"
   local source_label="$3"
   local should_create_target_dir="$4"
+  local item_count=""
   local item=""
   local item_name=""
   local target_item=""
@@ -727,8 +830,15 @@ symlink_first_level_items() {
     fi
   else
     if [[ "$should_create_target_dir" == "true" ]]; then
-      log_status "DRY RUN: Would create directory: ${COLOR_PATH}${target_dir}${COLOR_RESET}"
+      log_preview "Would create directory: ${COLOR_PATH}${target_dir}${COLOR_RESET}"
     fi
+  fi
+
+  if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
+    item_count="$(count_first_level_items "$source_dir")"
+    log_preview \
+      "Would symlink ${item_count} item(s) from ${COLOR_PATH}${source_dir}${COLOR_RESET} to ${COLOR_PATH}${target_dir}${COLOR_RESET}"
+    return
   fi
 
   while IFS= read -r -d '' item; do
@@ -742,8 +852,8 @@ symlink_first_level_items() {
           "Creating symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
         execute_with_log ln -s "$item" "$target_item"
       else
-        log_status \
-          "DRY RUN: Would symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
+        log_preview \
+          "Would symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
       fi
     else
       log_warn "${source_label} source does not exist: ${COLOR_PATH}${item}${COLOR_RESET}"
@@ -790,10 +900,10 @@ configure_login_settings() {
     configure_ssh_settings
     refresh_font_cache
   else
-    log_task "DRY RUN: Would touch ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
-    log_task "DRY RUN: Would create SSH directory and config with proper permissions"
-    log_subtask "DRY RUN: Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
-    log_task "DRY RUN: Would execute ${COLOR_CMD}fc-cache${COLOR_RESET} ${COLOR_ARG}-f${COLOR_RESET}"
+    log_preview "Would touch: ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
+    log_preview "Would create SSH directory and config with proper permissions"
+    log_preview "Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
+    log_preview "Would execute: ${COLOR_CMD}fc-cache -f${COLOR_RESET}"
   fi
 }
 
@@ -818,21 +928,41 @@ eval_homebrew_shellenv() {
 }
 
 install_homebrew_packages() {
-  if [[ "$MODULE_BREW" != "true" ]]; then
-    log_task "Skipping Homebrew packages installation (module disabled)"
-    return
-  fi
+	local brewfile_path="$DOTFILES_DIR/Brewfile"
+	local formula_count=""
+	local cask_count=""
 
-  log_task "Updating environment to include Homebrew in PATH..."
-  eval_homebrew_shellenv
+	if [[ "$MODULE_BREW" != "true" ]]; then
+		log_task "Skipping Homebrew packages installation (module disabled)"
+		return
+	fi
 
-  log_task "Installing Homebrew packages..."
-  log_subtask "Using Brewfile: ${COLOR_PATH}$DOTFILES_DIR/Brewfile${COLOR_RESET}"
-  brew bundle install --file "$DOTFILES_DIR/Brewfile"
+  if [[ "$DRY_RUN" != "true" ]]; then
+    log_task "Updating environment to include Homebrew in PATH..."
+    eval_homebrew_shellenv
+  else
+    log_preview "Would update environment to include Homebrew in PATH"
+	fi
 
-  log_task "Cleaning up Homebrew..."
-  execute_with_log brew cleanup
-  if ! execute_with_log brew doctor; then
+	log_task "Installing Homebrew packages..."
+	log_subtask "Using Brewfile: ${COLOR_PATH}${brewfile_path}${COLOR_RESET}"
+	if [[ "$DRY_RUN" == "true" ]]; then
+		if [[ "$VERBOSE" == "true" ]]; then
+			preview_brewfile_entries "$brewfile_path"
+		else
+			formula_count="$(count_brewfile_entries "$brewfile_path" brew)"
+			cask_count="$(count_brewfile_entries "$brewfile_path" cask)"
+			log_preview \
+				"Would install ${formula_count} Homebrew formulae and ${cask_count} casks from ${COLOR_PATH}${brewfile_path}${COLOR_RESET}"
+			log_preview "Use --dry-run --verbose to expand Brewfile entries"
+		fi
+	else
+		execute_with_log brew bundle install --file "$brewfile_path"
+	fi
+
+	log_task "Cleaning up Homebrew..."
+	execute_with_log brew cleanup
+	if ! execute_with_log brew doctor; then
     log_warn "Homebrew doctor reported issues; continuing setup."
   fi
 }
@@ -846,16 +976,26 @@ configure_shell_module() {
     return
   fi
 
-  fish_bin="$(command -v fish)"
+  fish_bin="$(command -v fish || true)"
   if [[ -z "$fish_bin" ]]; then
-    log_error "fish is not installed. Enable --brew first or install fish manually."
+    if [[ "$DRY_RUN" == "true" ]]; then
+      fish_bin="${BREW_PREFIX}/bin/fish"
+      log_preview \
+        "fish not found in PATH; assuming ${COLOR_PATH}${fish_bin}${COLOR_RESET} after installation"
+    else
+      log_error "fish is not installed. Enable --brew first or install fish manually."
+    fi
   fi
 
   log_task "Setting fish as default shell..."
   if ! grep -qs "${fish_bin}" "/etc/shells"; then
-    log_task "Adding fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}..."
-    printf '%s\n' "$fish_bin" | sudo tee -a /etc/shells >/dev/null
-    log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+    if [[ "$DRY_RUN" == "true" ]]; then
+      log_preview "Would add fish to ${COLOR_PATH}/etc/shells${COLOR_RESET} if needed"
+    else
+      log_task "Adding fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}..."
+      printf '%s\n' "$fish_bin" | sudo tee -a /etc/shells >/dev/null
+      log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+    fi
   else
     log_subtask "Fish shell already in ${COLOR_PATH}/etc/shells${COLOR_RESET}"
   fi
@@ -877,19 +1017,14 @@ configure_git_module() {
   fi
 
   log_task "Configuring Git..."
+
+  if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
+    log_preview "Would apply ${#GIT_CONFIG_SETTINGS[@]} global Git config entries"
+    log_preview "Use --dry-run --verbose to expand every Git config command"
+    return
+  fi
+
   apply_git_config_entries "${GIT_CONFIG_SETTINGS[@]}"
-}
-
-write_yabai_sudoers_rule() {
-  local yabai_path=""
-  local yabai_hash=""
-  local sudoers_rule=""
-
-  yabai_path="$(command -v yabai)"
-  yabai_hash="$(shasum -a 256 "$yabai_path" | cut -d " " -f 1)"
-  sudoers_rule="$(whoami) ALL=(root) NOPASSWD: sha256:${yabai_hash} ${yabai_path} --load-sa"
-
-  printf '%s\n' "$sudoers_rule" | sudo tee /private/etc/sudoers.d/yabai >/dev/null
 }
 
 install_neovim_config() {
@@ -901,7 +1036,7 @@ install_neovim_config() {
     return
   fi
 
-  git clone --recurse-submodules git@github.com:BBboy01/nvim.git "$CONFIG_PATH/nvim"
+  execute_with_log git clone --recurse-submodules git@github.com:BBboy01/nvim.git "$CONFIG_PATH/nvim"
 }
 
 install_tmux_plugin_manager() {
@@ -913,13 +1048,67 @@ install_tmux_plugin_manager() {
     return
   fi
 
-  git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+  execute_with_log git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+}
+
+resolve_rustup_bin() {
+  if command -v rustup >/dev/null 2>&1; then
+    command -v rustup
+    return
+  fi
+
+  if [[ -x "$HOME/.cargo/bin/rustup" ]]; then
+    printf '%s\n' "$HOME/.cargo/bin/rustup"
+    return
+  fi
+
+  return 1
+}
+
+install_rustup() {
+  local rustup_bin=""
+
+  if rustup_bin="$(resolve_rustup_bin)"; then
+    log_subtask "rustup already available at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}, skipping bootstrap."
+    return
+  fi
+
+  log_subtask "Installing rustup via the official installer..."
+  log_subtask \
+    "Running: ${COLOR_CMD}curl${COLOR_RESET} ${COLOR_ARG}--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs${COLOR_RESET} | ${COLOR_CMD}sh${COLOR_RESET} ${COLOR_ARG}-s -- -y --no-modify-path${COLOR_RESET}"
+
+  if [[ "$DRY_RUN" != "true" ]]; then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+  else
+    log_preview \
+      "Would execute: ${COLOR_CMD}curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path${COLOR_RESET}"
+  fi
 }
 
 install_rust_toolchain() {
+  local rustup_bin=""
+
   log_task "Installing Rust..."
-  log_subtask "Running: ${COLOR_CMD}rustup${COLOR_RESET} ${COLOR_ARG}default stable${COLOR_RESET}"
-  rustup default stable
+  install_rustup
+
+  if rustup_bin="$(resolve_rustup_bin)"; then
+    log_subtask "Using rustup at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}"
+    execute_with_log "$rustup_bin" default stable
+    return
+  fi
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    rustup_bin="$HOME/.cargo/bin/rustup"
+    log_preview \
+      "Assuming rustup would be available at ${COLOR_PATH}${rustup_bin}${COLOR_RESET} after bootstrap"
+    log_subtask "Using rustup at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}"
+    execute_with_log "$rustup_bin" default stable
+    return
+  fi
+
+  if ! rustup_bin="$(resolve_rustup_bin)"; then
+    log_error "rustup was not found after installation."
+  fi
 }
 
 setup_javascript_tooling() {
@@ -932,19 +1121,9 @@ setup_javascript_tooling() {
   execute_with_log corepack install -g pnpm@latest
 }
 
-start_window_manager_services() {
-  log_task "Starting yabai and skhd..."
-  log_subtask "Loading yabai scripting addition (password required)..."
-  execute_with_log sudo yabai --load-sa
-  execute_with_log yabai --start-service
-  execute_with_log skhd --start-service
-  log_subtask "Disable SIP for advanced yabai features."
-  write_yabai_sudoers_rule
-}
-
 configure_tools_module() {
   if [[ "$MODULE_TOOLS" != "true" ]]; then
-    log_task "Skipping other tools initialization (module disabled)"
+    log_task "Skipping developer tooling initialization (module disabled)"
     return
   fi
 
@@ -952,16 +1131,20 @@ configure_tools_module() {
   install_tmux_plugin_manager
   install_rust_toolchain
   setup_javascript_tooling
-  start_window_manager_services
 }
 
 run_post_install_modules() {
-  if [[ "$DRY_RUN" == "true" ]]; then
+  if [[ "$MODULE_BREW" != "true" && "$MODULE_SHELL" != "true" && \
+    "$MODULE_GIT" != "true" && "$MODULE_TOOLS" != "true" ]]; then
     return
   fi
 
-  if [[ "$MODULE_BREW" != "true" && "$MODULE_SHELL" != "true" && \
-    "$MODULE_GIT" != "true" && "$MODULE_TOOLS" != "true" ]]; then
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log_main "Previewing post-install package configuration..."
+    install_homebrew_packages
+    configure_shell_module
+    configure_git_module
+    configure_tools_module
     return
   fi
 
@@ -987,12 +1170,13 @@ log_manual_steps() {
   fi
 
   if [[ "$DRY_RUN" == "true" ]]; then
-    log_warn "ACTION REQUIRED AFTER A REAL RUN: Gatekeeper changes must be confirmed manually."
+    log_warn "ACTION REQUIRED AFTER A REAL RUN: confirm the Gatekeeper change in macOS settings."
   else
-    log_warn "ACTION REQUIRED: Gatekeeper changes must be confirmed manually."
+    log_warn "ACTION REQUIRED: confirm the Gatekeeper change in macOS settings."
   fi
-  log_task "Manual steps you may still need to complete:"
-  log_subtask "Gatekeeper changes now require confirmation in System Settings > Privacy & Security."
+  log_manual_confirmation_section "Manual Confirmation Required:" \
+    "Open ${COLOR_PATH}System Settings > Privacy & Security${COLOR_RESET}." \
+    "Approve the pending Gatekeeper change if macOS shows it."
 }
 
 finalize_setup() {
@@ -1008,7 +1192,7 @@ finalize_setup() {
     log_summary_module "Homebrew & Apps" "$MODULE_BREW"
     log_summary_module "Shell Configuration" "$MODULE_SHELL"
     log_summary_module "Git Configuration" "$MODULE_GIT"
-    log_summary_module "Other Tools" "$MODULE_TOOLS"
+    log_summary_module "Developer Tooling" "$MODULE_TOOLS"
     log_manual_steps
   else
     log_main "No modules were selected for execution. Use --help for usage information."
