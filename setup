@@ -290,14 +290,22 @@ render_command() {
 execute_with_log() {
   local cmd="$1"
   shift
-  local args=("$@")
+  local -a args=("$@")
   local rendered_command=""
 
-  rendered_command="$(render_command "$cmd" "${args[@]}")"
+  if (( ${#args[@]} > 0 )); then
+    rendered_command="$(render_command "$cmd" "${args[@]}")"
+  else
+    rendered_command="$(render_command "$cmd")"
+  fi
 
   if [[ "$DRY_RUN" != "true" ]]; then
     log_task "EXECUTING: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
-    "$cmd" "${args[@]}"
+    if (( ${#args[@]} > 0 )); then
+      "$cmd" "${args[@]}"
+    else
+      "$cmd"
+    fi
   else
     log_preview "Would execute: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
   fi
@@ -1052,6 +1060,34 @@ install_tmux_plugin_manager() {
   execute_with_log git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 }
 
+resolve_tpm_install_plugins_bin() {
+  if [[ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]]; then
+    printf '%s\n' "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+    return
+  fi
+
+  return 1
+}
+
+install_tmux_plugins() {
+  local install_plugins_bin=""
+
+  if install_plugins_bin="$(resolve_tpm_install_plugins_bin)"; then
+    log_task "Installing tmux plugins from ${COLOR_PATH}${install_plugins_bin}${COLOR_RESET}..."
+    execute_with_log "$install_plugins_bin"
+    return
+  fi
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    install_plugins_bin="$HOME/.tmux/plugins/tpm/bin/install_plugins"
+    log_task "Installing tmux plugins from ${COLOR_PATH}${install_plugins_bin}${COLOR_RESET}..."
+    execute_with_log "$install_plugins_bin"
+    return
+  fi
+
+  log_warn "Tmux plugin installer not found at ${COLOR_PATH}$HOME/.tmux/plugins/tpm/bin/install_plugins${COLOR_RESET}, skipping plugin installation."
+}
+
 resolve_rustup_bin() {
   if command -v rustup >/dev/null 2>&1; then
     command -v rustup
@@ -1130,6 +1166,7 @@ configure_tools_module() {
 
   install_neovim_config
   install_tmux_plugin_manager
+  install_tmux_plugins
   install_rust_toolchain
   setup_javascript_tooling
 }

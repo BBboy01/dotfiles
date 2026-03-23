@@ -374,6 +374,9 @@ assert_dry_run_tools_module_reports_preview_steps() {
 	assert_file_contains "$stripped_output" "Previewing post-install package configuration..."
 	assert_file_contains "$stripped_output" "Downloading neovim config..."
 	assert_file_contains "$stripped_output" "Installing Tmux Plugin Manager..."
+	assert_file_contains "$stripped_output" "Installing tmux plugins from "
+	assert_file_contains "$stripped_output" "$fake_home/.tmux/plugins/tpm/bin/install_plugins"
+	assert_file_contains "$stripped_output" "Would execute: $fake_home/.tmux/plugins/tpm/bin/install_plugins"
 	assert_file_contains "$stripped_output" "Installing Rust..."
 	assert_file_contains "$stripped_output" "Installing rustup via the official installer..."
 	assert_file_contains "$stripped_output" "Would execute: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path"
@@ -1143,6 +1146,38 @@ assert_install_tmux_plugin_manager_skips_existing_target() {
 	assert_file_not_contains "$stripped_log_file" "git clone https://github.com/tmux-plugins/tpm $fake_home/.tmux/plugins/tpm"
 }
 
+assert_install_tmux_plugins_runs_install_script_when_present() {
+	local fake_home
+	local log_file
+	local call_log_file
+	local stripped_log_file
+
+	fake_home="$TMP_DIR/tmux-plugins-run/home"
+	log_file="$TMP_DIR/tmux-plugins-run.log"
+	call_log_file="$TMP_DIR/tmux-plugins-run-calls.log"
+	stripped_log_file="$TMP_DIR/tmux-plugins-run-stripped.log"
+	mkdir -p "$fake_home/.tmux/plugins/tpm/bin"
+
+	cat > "$fake_home/.tmux/plugins/tpm/bin/install_plugins" <<'EOF'
+#!/usr/bin/env bash
+printf 'install_plugins %s\n' "$*" >> "$LOG_FILE"
+EOF
+	chmod +x "$fake_home/.tmux/plugins/tpm/bin/install_plugins"
+
+	HOME="$fake_home" LOG_FILE="$call_log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		install_tmux_plugins
+	" > "$log_file"
+
+	strip_ansi < "$log_file" > "$stripped_log_file"
+
+	assert_file_contains "$stripped_log_file" "Installing tmux plugins from "
+	assert_file_contains "$stripped_log_file" "$fake_home/.tmux/plugins/tpm/bin/install_plugins"
+	assert_file_contains "$stripped_log_file" "EXECUTING: $fake_home/.tmux/plugins/tpm/bin/install_plugins"
+	assert_file_contains "$call_log_file" "install_plugins "
+}
+
 assert_configure_shell_module_skips_chsh_when_shell_matches() {
 	local log_file
 	local stripped_log_file
@@ -1287,6 +1322,9 @@ assert_configure_tools_module_runs_current_developer_tooling_steps() {
 		install_tmux_plugin_manager() {
 			printf 'step tmux\n' >> \"\$LOG_FILE\"
 		}
+		install_tmux_plugins() {
+			printf 'step tmux-plugins\n' >> \"\$LOG_FILE\"
+		}
 		install_rust_toolchain() {
 			printf 'step rust\n' >> \"\$LOG_FILE\"
 		}
@@ -1302,6 +1340,7 @@ assert_configure_tools_module_runs_current_developer_tooling_steps() {
 
 	assert_file_contains "$log_file" "step neovim"
 	assert_file_contains "$log_file" "step tmux"
+	assert_file_contains "$log_file" "step tmux-plugins"
 	assert_file_contains "$log_file" "step rust"
 	assert_file_contains "$log_file" "step javascript"
 	assert_file_not_contains "$log_file" "luarocks --lua-version=5.1 install vusted"
@@ -1341,6 +1380,7 @@ assert_install_homebrew_packages_continues_when_brew_doctor_fails
 assert_setup_javascript_tooling_skips_global_pnpm_packages
 assert_install_neovim_config_skips_existing_target
 assert_install_tmux_plugin_manager_skips_existing_target
+assert_install_tmux_plugins_runs_install_script_when_present
 assert_configure_shell_module_skips_chsh_when_shell_matches
 assert_install_rust_toolchain_skips_bootstrap_when_rustup_exists
 assert_install_rust_toolchain_bootstraps_rustup_when_missing
