@@ -10,15 +10,6 @@
       "installedAt": "2026-02-06T07:31:34.960Z",
       "updatedAt": "2026-02-06T07:31:34.960Z"
     },
-    "tsdown": {
-      "source": "antfu/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/antfu/skills.git",
-      "skillPath": "skills/tsdown/SKILL.md",
-      "skillFolderHash": "ca25dac43c1b94638f3423231692796704b1016c",
-      "installedAt": "2026-02-06T07:31:35.071Z",
-      "updatedAt": "2026-02-06T07:31:35.071Z"
-    },
     "vite": {
       "source": "antfu/skills",
       "sourceType": "github",
@@ -54,15 +45,6 @@
       "skillFolderHash": "3116f3e62dbd02b44a598b1aa690d2a8938e8f89",
       "installedAt": "2026-02-06T07:31:35.508Z",
       "updatedAt": "2026-02-11T05:54:31.706Z"
-    },
-    "antfu": {
-      "source": "antfu/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/antfu/skills.git",
-      "skillPath": "skills/antfu/SKILL.md",
-      "skillFolderHash": "892f71a5d96f9ad720d7af4cdb692852b643f119",
-      "installedAt": "2026-02-06T07:31:35.609Z",
-      "updatedAt": "2026-02-06T07:31:35.609Z"
     },
     "nuxt": {
       "source": "antfu/skills",
@@ -208,15 +190,6 @@
       "installedAt": "2026-02-10T02:28:04.463Z",
       "updatedAt": "2026-02-10T02:28:04.463Z"
     },
-    "code-review-expert": {
-      "source": "sanyuan0704/code-review-expert",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanyuan0704/code-review-expert.git",
-      "skillPath": "skills/code-review-expert/SKILL.md",
-      "skillFolderHash": "d3ff60f85c38178f30c5fe25a396030fb74bc859",
-      "installedAt": "2026-02-11T05:42:58.490Z",
-      "updatedAt": "2026-03-03T02:07:05.266Z"
-    },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
@@ -243,15 +216,6 @@
       "skillFolderHash": "8b4c6a51914e2111ab6f4f00cb81778652aa241d",
       "installedAt": "2026-02-11T05:54:31.587Z",
       "updatedAt": "2026-02-11T05:54:31.587Z"
-    },
-    "bun-file-io": {
-      "source": "anomalyco/opencode",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/anomalyco/opencode.git",
-      "skillPath": ".opencode/skill/bun-file-io/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-02-11T08:40:43.654Z",
-      "updatedAt": "2026-02-11T08:40:43.654Z"
     },
     "frontend-design": {
       "source": "anthropics/skills",
@@ -334,51 +298,6 @@
       "installedAt": "2026-02-13T06:27:13.881Z",
       "updatedAt": "2026-03-09T02:59:33.694Z"
     },
-    "react-doctor": {
-      "source": "millionco/react-doctor",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/millionco/react-doctor.git",
-      "skillPath": "skills/react-doctor/SKILL.md",
-      "skillFolderHash": "63a9d42561575b2a8f8c29798040d7b9defbbda8",
-      "installedAt": "2026-02-24T07:00:07.614Z",
-      "updatedAt": "2026-02-24T07:00:07.614Z"
-    },
-    "gitnexus-debugging": {
-      "source": "abhigyanpatwari/GitNexus",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/abhigyanpatwari/GitNexus.git",
-      "skillPath": ".claude/skills/gitnexus/debugging/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-02-25T07:15:06.320Z",
-      "updatedAt": "2026-02-25T07:39:30.119Z"
-    },
-    "gitnexus-exploring": {
-      "source": "abhigyanpatwari/GitNexus",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/abhigyanpatwari/GitNexus.git",
-      "skillPath": ".claude/skills/gitnexus/exploring/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-02-25T07:15:06.430Z",
-      "updatedAt": "2026-02-25T07:39:30.316Z"
-    },
-    "gitnexus-impact-analysis": {
-      "source": "abhigyanpatwari/GitNexus",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/abhigyanpatwari/GitNexus.git",
-      "skillPath": ".claude/skills/gitnexus/impact-analysis/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-02-25T07:15:06.530Z",
-      "updatedAt": "2026-02-25T07:39:30.523Z"
-    },
-    "gitnexus-refactoring": {
-      "source": "abhigyanpatwari/GitNexus",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/abhigyanpatwari/GitNexus.git",
-      "skillPath": ".claude/skills/gitnexus/refactoring/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-02-25T07:15:06.630Z",
-      "updatedAt": "2026-02-25T07:39:30.720Z"
-    },
     "brainstorming": {
       "source": "obra/superpowers",
       "sourceType": "github",
@@ -442,15 +361,6 @@
       "installedAt": "2026-02-25T07:36:42.633Z",
       "updatedAt": "2026-03-10T06:02:33.074Z"
     },
-    "using-superpowers": {
-      "source": "obra/superpowers",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/obra/superpowers.git",
-      "skillPath": "skills/using-superpowers/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-02-25T07:36:43.039Z",
-      "updatedAt": "2026-03-10T06:02:36.400Z"
-    },
     "writing-plans": {
       "source": "obra/superpowers",
       "sourceType": "github",
@@ -477,24 +387,6 @@
       "skillFolderHash": "",
       "installedAt": "2026-02-28T09:04:20.278Z",
       "updatedAt": "2026-03-10T06:02:46.386Z"
-    },
-    "sigma": {
-      "source": "sanyuan0704/code-review-expert",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanyuan0704/code-review-expert.git",
-      "skillPath": "skills/sigma/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-03-03T02:07:05.570Z",
-      "updatedAt": "2026-03-03T02:07:05.570Z"
-    },
-    "skill-forge": {
-      "source": "sanyuan0704/code-review-expert",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanyuan0704/code-review-expert.git",
-      "skillPath": "skills/skill-forge/SKILL.md",
-      "skillFolderHash": "",
-      "installedAt": "2026-03-03T02:07:05.767Z",
-      "updatedAt": "2026-03-03T02:07:05.767Z"
     },
     "canvas-design": {
       "source": "anthropics/skills",
