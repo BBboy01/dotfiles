@@ -90,6 +90,7 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.finder\tQLEnableTextSelection\t-bool\ttrue'
   $'com.apple.WindowManager\tHideDesktop\t-bool\ttrue'
   $'com.apple.WindowManager\tStandardHideDesktopIcons\t-bool\ttrue'
+  $'com.apple.WindowManager\tEnableStandardClickToShowDesktop\t-bool\tfalse'
   $'com.apple.WindowManager\tAutoHide\t-bool\ttrue'
   $'com.apple.WindowManager\tStandardHideWidgets\t-bool\ttrue'
   $'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
@@ -1165,18 +1166,26 @@ log_summary_module() {
 }
 
 log_manual_steps() {
-  if [[ "$MODULE_SYSTEM" != "true" ]]; then
+  if [[ "$MODULE_SYSTEM" != "true" && "$MODULE_BREW" != "true" ]]; then
     return
   fi
 
-  if [[ "$DRY_RUN" == "true" ]]; then
-    log_warn "ACTION REQUIRED AFTER A REAL RUN: confirm the Gatekeeper change in macOS settings."
-  else
-    log_warn "ACTION REQUIRED: confirm the Gatekeeper change in macOS settings."
+  if [[ "$MODULE_SYSTEM" == "true" ]]; then
+    if [[ "$DRY_RUN" == "true" ]]; then
+      log_warn "ACTION REQUIRED AFTER A REAL RUN: confirm the Gatekeeper change in macOS settings."
+    else
+      log_warn "ACTION REQUIRED: confirm the Gatekeeper change in macOS settings."
+    fi
+    log_manual_confirmation_section "Manual Confirmation Required:" \
+      "Open ${COLOR_PATH}System Settings > Privacy & Security${COLOR_RESET}." \
+      "Approve the pending Gatekeeper change if macOS shows it."
   fi
-  log_manual_confirmation_section "Manual Confirmation Required:" \
-    "Open ${COLOR_PATH}System Settings > Privacy & Security${COLOR_RESET}." \
-    "Approve the pending Gatekeeper change if macOS shows it."
+
+  if [[ "$MODULE_BREW" == "true" ]]; then
+    log_manual_confirmation_section "Recommended for Homebrew Cask updates:" \
+      "Open ${COLOR_PATH}System Settings > Privacy & Security > App Management${COLOR_RESET}." \
+      "Enable ${COLOR_PATH}Ghostty${COLOR_RESET} if you use it to run Homebrew upgrades."
+  fi
 }
 
 finalize_setup() {

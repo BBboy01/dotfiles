@@ -430,6 +430,7 @@ assert_system_preferences_include_battery_and_trackpad_tweaks() {
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tHideDesktop\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tStandardHideDesktopIcons\t-bool\ttrue'
+		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tEnableStandardClickToShowDesktop\t-bool\tfalse'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tAutoHide\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tStandardHideWidgets\t-bool\ttrue'
 		printf '%s\n' \"\${SYSTEM_DEFAULTS[@]}\" | grep -Fq -- \$'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
@@ -833,6 +834,45 @@ assert_finalize_setup_reports_manual_system_steps() {
 	assert_file_contains "$stripped_log_file" "task Manual Confirmation Required:"
 	assert_file_contains "$stripped_log_file" "subtask 1. Open System Settings > Privacy & Security."
 	assert_file_contains "$stripped_log_file" "subtask 2. Approve the pending Gatekeeper change if macOS shows it."
+}
+
+assert_finalize_setup_reports_ghostty_app_management_recommendation_for_brew() {
+	local log_file
+	local stripped_log_file
+
+	log_file="$TMP_DIR/finalize-brew.log"
+	stripped_log_file="$TMP_DIR/finalize-brew-stripped.log"
+
+	HOME="$TMP_DIR/home" LOG_FILE="$log_file" bash -lc "
+		set -euo pipefail
+		source '$ROOT_DIR/setup'
+		log_main() {
+			printf 'main %b\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_warn() {
+			printf 'warn %b\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_task() {
+			printf 'task %b\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		log_subtask() {
+			printf 'subtask %b\n' \"\$*\" >> \"\$LOG_FILE\"
+		}
+		MODULE_SYSTEM=false
+		MODULE_CONFIG=false
+		MODULE_BREW=true
+		MODULE_SHELL=false
+		MODULE_GIT=false
+		MODULE_TOOLS=false
+		finalize_setup
+	"
+
+	strip_ansi < "$log_file" > "$stripped_log_file"
+
+	assert_file_not_contains "$stripped_log_file" "ACTION REQUIRED"
+	assert_file_contains "$stripped_log_file" "task Recommended for Homebrew Cask updates:"
+	assert_file_contains "$stripped_log_file" "subtask 1. Open System Settings > Privacy & Security > App Management."
+	assert_file_contains "$stripped_log_file" "subtask 2. Enable Ghostty if you use it to run Homebrew upgrades."
 }
 
 assert_log_manual_confirmation_section_numbers_steps() {
@@ -1292,6 +1332,7 @@ assert_configure_first_day_of_week_sets_monday
 assert_configure_startup_sound_skips_when_already_disabled
 assert_configure_startup_sound_disables_when_needed
 assert_finalize_setup_reports_manual_system_steps
+assert_finalize_setup_reports_ghostty_app_management_recommendation_for_brew
 assert_log_manual_confirmation_section_numbers_steps
 assert_finalize_setup_skips_optional_window_manager_steps
 assert_should_not_authenticate_for_sudo_when_only_tools_enabled
