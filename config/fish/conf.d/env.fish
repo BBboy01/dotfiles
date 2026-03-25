@@ -26,15 +26,15 @@ set -gx GOPROXY https://goproxy.cn,direct
 set -gx GO111MODULE on
 
 # Rust programming language
-set -gx CARGO_HOME $XDG_DATA_HOME/cargo
-set -gx RUSTUP_HOME $XDG_DATA_HOME/rustup
+set -gx RUSTUP_HOME $HOME/.rustup
+set -gx CARGO_HOME $HOME/.cargo
 
 # =============================================================================
 # PACKAGE MANAGERS
 # =============================================================================
 
 set -gx PNPM_HOME $HOME/Library/pnpm
-set -gx BUN_INSTALL $HOME/.bun
+set -gx BUN_INSTALL $HOME/.bun/bin
 
 # =============================================================================
 # SHELL PROMPT CONFIGURATION
