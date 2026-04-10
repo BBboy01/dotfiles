@@ -116,3 +116,5 @@ Xtest_logging
 Xviminfo
 .tmux/plugins/*
 */neovim/min_repro*
+
+.env
