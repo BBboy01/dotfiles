@@ -1,6 +1,7 @@
 theme = Solarized Dark Higher Contrast
 font-family = Cascadia Mono
 font-size = 14
+font-thicken = true
 background-blur = macos-glass-clear
 mouse-hide-while-typing = true
 macos-titlebar-style = hidden
