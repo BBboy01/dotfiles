@@ -1,6 +1,7 @@
 brew "git"
 brew "difftastic"
 brew "git-delta"
+brew "git-cliff"
 brew "ripgrep"
 brew "fd"
 brew "eza"
