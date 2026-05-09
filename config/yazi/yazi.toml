@@ -1,4 +1,4 @@
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+#:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
 linemode = "size"
@@ -17,6 +17,6 @@ prepend_previewers = [
   { mime = "image/{jpeg,png,webp}", run = "zoom 5" },
 ]
 prepend_fetchers = [
-  { id = "git", url = "*", run = "git" },
-  { id = "git", url = "*/", run = "git" },
+  { group = "git", id = "git", url = "*", run = "git" },
+  { group = "git", id = "git", url = "*/", run = "git" },
 ]
