@@ -16,7 +16,7 @@ brew "ffmpeg"  # video file processor
 brew "wrk"  # HTTP benchmarking tool
 brew "flamegraph"  # convert profile log to flamegraph
 brew "ouch"  # compressing and decompressing
-brew "caddy" # web server with automatic HTTPS
+brew "caddy" # web server with automatic HTTPS (mordern nginx)
 brew "exiftool"
 brew "fish"
 brew "starship"
@@ -67,7 +67,6 @@ cask "codex"
 cask "codex-app"
 cask "claude-code"
 cask "ghostty"
-cask "cmux"
 cask "alacritty"
 cask "kitty"
 cask "neovide-app"
