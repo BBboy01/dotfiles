@@ -25,7 +25,7 @@ brew "ast-grep"
 brew "task" # todo list
 brew "tokei"  # code line summary
 brew "vhs"  # generate GIFs with terminal code
-brew "tw93/tap/mole" # deep cleaning
+brew "mole" # deep cleaning
 brew "bat"
 brew "zoxide"
 brew "fzf"
@@ -59,7 +59,7 @@ brew "ruby"
 brew "tree-sitter-cli"
 brew "neovim"
 brew "ollama"
-brew "anomalyco/tap/opencode"
+brew "opencode"
 
 cask "font-hack-nerd-font"
 cask "font-cascadia-mono"
