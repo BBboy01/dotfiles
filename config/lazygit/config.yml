@@ -2,8 +2,9 @@ disableStartupPopups: true
 os:
   editPreset: 'nvim'
 git:
-  pagers:
-    - externalDiffCommand: difft --color=always
+  diffRenderers:
+    - command: difft --color=always
+      type: extDiff
 gui:
   nerdFontsVersion: "3"
   showFileIcons: false
