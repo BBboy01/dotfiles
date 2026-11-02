@@ -1,6 +1,5 @@
 brew "git"
 brew "difftastic"
-brew "git-delta"
 brew "git-cliff" # Changelog Generator
 brew "ripgrep"
 brew "fd"

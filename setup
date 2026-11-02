@@ -161,13 +161,6 @@ readonly -a GIT_CONFIG_SETTINGS=(
   $'difftool.prompt\tfalse'
   $'difftool.difftastic.cmd\tdifft "$LOCAL" "$REMOTE"'
   $'pager.difftool\ttrue'
-  $'core.pager\tdelta'
-  $'interactive.difffilter\tdelta --color-only'
-  $'delta.light\tfalse'
-  $'delta.navigate\ttrue'
-  $'delta.side-by-side\ttrue'
-  $'delta.line-numbers\ttrue'
-  $'delta.syntax-theme\tDracula'
 )
 
 log_info() {
