@@ -72,7 +72,7 @@ cask "kitty"
 cask "neovide-app"
 cask "zed"
 cask "adguard"
-cask "orbstack" # faster & lighter docker runner
+cask "libracoder/kiri/kiri" # faster & lighter docker runner
 cask "utm" # Virtual machines
 cask "thaw"
 cask "mos" # smooth mouse scroll & reverse scroll on trackpad
