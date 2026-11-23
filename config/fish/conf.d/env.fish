@@ -34,7 +34,7 @@ set -gx CARGO_HOME $HOME/.cargo
 # =============================================================================
 
 set -gx PNPM_HOME $HOME/Library/pnpm
-set -gx BUN_HOME $HOME/.bun
+set -gx BUN_HOME $HOME/.cache/.bun
 
 # =============================================================================
 # SHELL PROMPT CONFIGURATION
