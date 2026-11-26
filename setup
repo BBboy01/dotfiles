@@ -133,7 +133,8 @@ readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
 readonly -a PMSET_SETTINGS=(
   $'-b\tlowpowermode\t0'
   $'-b\tlessbright\t0'
-  $'-b\tdisplaysleep\t5'
+  $'-b\tdisplaysleep\t60'
+	$'-c\tdisplaysleep\t120'
 )
 
 readonly -a GIT_CONFIG_SETTINGS=(
@@ -454,6 +455,11 @@ apply_pmset_entries() {
   done
 }
 
+configure_screensaver_settings() {
+	log_task "Configuring screen saver to start after 1 hour..."
+	execute_with_log defaults -currentHost write com.apple.screensaver idleTime -int 3600
+}
+
 #######################################
 # Configure screen lock to require the password immediately.
 #######################################
@@ -744,6 +750,7 @@ apply_system_defaults() {
     log_preview "Would apply ${#CURRENT_HOST_SYSTEM_DEFAULTS[@]} current-host Control Center entries"
     log_preview "Would clear Dock persistent apps and apply ${#PMSET_SETTINGS[@]} power settings"
     log_preview "Would configure first day of week, startup sound, and screen lock"
+		log_preview "Would start the screen saver after 1 hour, turn off the display after 1 hour on battery or 2 hours on AC power, and require the password immediately"
     log_preview "Would refresh Dock, ControlCenter, and SystemUIServer when running"
     log_preview "Use --dry-run --verbose to expand every macOS settings command"
     return
@@ -756,6 +763,7 @@ apply_system_defaults() {
   apply_pmset_entries "${PMSET_SETTINGS[@]}"
   configure_first_day_of_week
   configure_startup_sound
+	configure_screensaver_settings
   configure_screen_lock_settings
 
   execute_with_log killall Dock Finder
