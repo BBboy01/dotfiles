@@ -33,7 +33,7 @@ readonly INDENT_LVL3="      "
 
 readonly DEFAULTS_FIELD_SEPARATOR=$'\t'
 readonly GIT_CONFIG_FIELD_SEPARATOR=$'\t'
-readonly STARTUP_SOUND_DISABLED_VALUE='%80'
+readonly STARTUP_SOUND_DISABLED_VALUE='%01'
 
 DRY_RUN=false
 VERBOSE=false
@@ -47,6 +47,8 @@ MODULE_TOOLS=true
 
 readonly -a SYSTEM_DEFAULTS=(
   $'-g\t_HIHideMenuBar\t-bool\ttrue'
+	$'-g\tAppleMenuBarVisibleInFullscreen\t-bool\tfalse'
+	$'com.apple.controlcenter\tAutoHideMenuBarOption\t-int\t0'
   $'-g\tAppleKeyboardUIMode\t-int\t2'
   $'-g\tApplePressAndHoldEnabled\t-bool\tfalse'
   $'-g\tInitialKeyRepeat\t-int\t10'
@@ -87,7 +89,6 @@ readonly -a SYSTEM_DEFAULTS=(
   $'com.apple.finder\tShowRecentTags\t-bool\tfalse'
   $'com.apple.finder\tNewWindowTarget\t-string\tPfHm'
   $'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
-  $'com.apple.finder\tQLEnableTextSelection\t-bool\ttrue'
   $'com.apple.WindowManager\tHideDesktop\t-bool\ttrue'
   $'com.apple.WindowManager\tStandardHideDesktopIcons\t-bool\ttrue'
   $'com.apple.WindowManager\tEnableStandardClickToShowDesktop\t-bool\tfalse'
@@ -103,31 +104,14 @@ readonly -a SYSTEM_DEFAULTS=(
   $'-g\tcom.apple.trackpad.forceClick\t-bool\tfalse'
   $'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
   $'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
-  $'com.apple.LaunchServices\tLSQuarantine\t-bool\tfalse'
   $'com.apple.desktopservices\tDSDontWriteUSBStores\t-bool\ttrue'
   $'com.apple.desktopservices\tDSDontWriteNetworkStores\t-bool\ttrue'
   $'com.apple.CrashReporter\tDialogType\t-string\tnone'
-  $'com.apple.frameworks.diskimages\tskip-verify\t-bool\ttrue'
-  $'com.apple.frameworks.diskimages\tskip-verify-locked\t-bool\ttrue'
-  $'com.apple.frameworks.diskimages\tskip-verify-remote\t-bool\ttrue'
-  $'com.apple.AdLib\tforceLimitAdTracking\t-bool\ttrue'
   $'com.apple.AdLib\tallowApplePersonalizedAdvertising\t-bool\tfalse'
-  $'com.apple.AdLib\tallowIdentifierForAdvertising\t-bool\tfalse'
 )
 
-# Control Center module display modes mirror the current values returned by
-# `defaults -currentHost read com.apple.controlcenter` on this machine.
 readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
-  $'com.apple.controlcenter\tAirDrop\t-int\t8'
-  $'com.apple.controlcenter\tBattery\t-int\t4'
-  $'com.apple.controlcenter\tBluetooth\t-int\t24'
-  $'com.apple.controlcenter\tFocusModes\t-int\t8'
-  $'com.apple.controlcenter\tKeyboardBrightness\t-int\t8'
-  $'com.apple.controlcenter\tSpotlight\t-int\t8'
-  $'com.apple.controlcenter\tTimer\t-int\t2'
-  $'com.apple.controlcenter\tVoiceControl\t-int\t8'
-  $'com.apple.controlcenter\tWeather\t-int\t8'
-  $'com.apple.controlcenter\tWiFi\t-int\t24'
+	$'com.apple.screensaver\tidleTime\t-int\t3600'
 )
 
 readonly -a PMSET_SETTINGS=(
@@ -455,11 +439,6 @@ apply_pmset_entries() {
   done
 }
 
-configure_screensaver_settings() {
-	log_task "Configuring screen saver to start after 1 hour..."
-	execute_with_log defaults -currentHost write com.apple.screensaver idleTime -int 3600
-}
-
 #######################################
 # Configure screen lock to require the password immediately.
 #######################################
@@ -497,7 +476,7 @@ configure_first_day_of_week() {
 startup_sound_is_disabled() {
   local current_value=""
 
-  current_value="$(nvram SystemAudioVolume 2>/dev/null | awk '{print $2}' || true)"
+  current_value="$(nvram StartupMute 2>/dev/null | awk '{print $2}' || true)"
   [[ "${current_value}" == "${STARTUP_SOUND_DISABLED_VALUE}" ]]
 }
 
@@ -512,7 +491,7 @@ configure_startup_sound() {
     return
   fi
 
-  execute_with_log sudo nvram "SystemAudioVolume=${STARTUP_SOUND_DISABLED_VALUE}"
+	execute_with_log sudo nvram "StartupMute=${STARTUP_SOUND_DISABLED_VALUE}"
 }
 
 #######################################
@@ -747,11 +726,11 @@ apply_system_defaults() {
   if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
     log_task "Previewing macOS defaults changes..."
     log_preview "Would apply ${#SYSTEM_DEFAULTS[@]} macOS defaults entries"
-    log_preview "Would apply ${#CURRENT_HOST_SYSTEM_DEFAULTS[@]} current-host Control Center entries"
+		log_preview "Would apply ${#CURRENT_HOST_SYSTEM_DEFAULTS[@]} current-host preferences"
     log_preview "Would clear Dock persistent apps and apply ${#PMSET_SETTINGS[@]} power settings"
     log_preview "Would configure first day of week, startup sound, and screen lock"
 		log_preview "Would start the screen saver after 1 hour, turn off the display after 1 hour on battery or 2 hours on AC power, and require the password immediately"
-    log_preview "Would refresh Dock, ControlCenter, and SystemUIServer when running"
+		log_preview "Would refresh Dock, ControlCenter, SystemUIServer, and MenuBarAgent when running"
     log_preview "Use --dry-run --verbose to expand every macOS settings command"
     return
   fi
@@ -763,12 +742,12 @@ apply_system_defaults() {
   apply_pmset_entries "${PMSET_SETTINGS[@]}"
   configure_first_day_of_week
   configure_startup_sound
-	configure_screensaver_settings
   configure_screen_lock_settings
 
   execute_with_log killall Dock Finder
   refresh_ui_process_if_running ControlCenter
   refresh_ui_process_if_running SystemUIServer
+	refresh_ui_process_if_running MenuBarAgent
 }
 
 run_system_module() {
@@ -1209,14 +1188,9 @@ log_manual_steps() {
   fi
 
   if [[ "$MODULE_SYSTEM" == "true" ]]; then
-    if [[ "$DRY_RUN" == "true" ]]; then
-      log_warn "ACTION REQUIRED AFTER A REAL RUN: confirm the Gatekeeper change in macOS settings."
-    else
-      log_warn "ACTION REQUIRED: confirm the Gatekeeper change in macOS settings."
-    fi
-    log_manual_confirmation_section "Manual Confirmation Required:" \
-      "Open ${COLOR_PATH}System Settings > Privacy & Security${COLOR_RESET}." \
-      "Approve the pending Gatekeeper change if macOS shows it."
+		log_manual_confirmation_section "Review Menu Bar Controls:" \
+			"Open ${COLOR_PATH}System Settings > Menu Bar${COLOR_RESET}." \
+			"Choose which controls appear in the menu bar and customize Control Center as needed."
   fi
 
   if [[ "$MODULE_BREW" == "true" ]]; then
