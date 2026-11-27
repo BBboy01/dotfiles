@@ -1138,6 +1138,18 @@ setup_javascript_tooling() {
   execute_with_log corepack install -g pnpm@latest
 }
 
+initialize_rtk_for_codex() {
+  if [[ ! -L "$HOME/.codex" || ! "$HOME/.codex" -ef "$DOTFILES_DIR/link/.codex" ]]; then
+    if [[ "$DRY_RUN" != "true" || "$MODULE_CONFIG" != "true" || ! -d "$DOTFILES_DIR/link/.codex" ]]; then
+      log_warn "Skipping RTK initialization: link/.codex must be linked to ~/.codex first. Run ./setup --config before ./setup --tools."
+      return
+    fi
+  fi
+
+  log_task "Initializing RTK for Codex..."
+  execute_with_log rtk init -g --codex
+}
+
 configure_tools_module() {
   if [[ "$MODULE_TOOLS" != "true" ]]; then
     log_task "Skipping developer tooling initialization (module disabled)"
@@ -1149,6 +1161,7 @@ configure_tools_module() {
   install_tmux_plugins
   install_rust_toolchain
   setup_javascript_tooling
+  initialize_rtk_for_codex
 }
 
 run_post_install_modules() {

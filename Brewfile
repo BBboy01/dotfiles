@@ -63,6 +63,7 @@ brew "opencode"
 
 cask "font-hack-nerd-font"
 cask "font-cascadia-mono"
+cask "rtk" # CLI proxy that reduces LLM token consumption
 cask "codex"
 cask "chatgpt"
 cask "claude-code"
