@@ -46,68 +46,68 @@ MODULE_GIT=true
 MODULE_TOOLS=true
 
 readonly -a SYSTEM_DEFAULTS=(
-  $'-g\t_HIHideMenuBar\t-bool\ttrue'
+	$'-g\t_HIHideMenuBar\t-bool\ttrue'
 	$'-g\tAppleMenuBarVisibleInFullscreen\t-bool\tfalse'
 	$'com.apple.controlcenter\tAutoHideMenuBarOption\t-int\t0'
-  $'-g\tAppleKeyboardUIMode\t-int\t2'
-  $'-g\tApplePressAndHoldEnabled\t-bool\tfalse'
-  $'-g\tInitialKeyRepeat\t-int\t10'
-  $'-g\tKeyRepeat\t-int\t1'
-  $'com.apple.HIToolbox\tAppleDictationAutoEnable\t-int\t0'
-  $'com.apple.HIToolbox\tAppleFnUsageType\t-int\t0'
-  $'-g\tAppleIconAppearanceTheme\t-string\tRegularDark'
-  $'-g\tNSGlassDiffusionSetting\t-int\t1'
-  $'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
-  $'-g\tAppleScrollerPagingBehavior\t-bool\ttrue'
-  $'-g\tcom.apple.keyboard.fnState\t-bool\ttrue'
-  $'-g\tcom.apple.swipescrolldirection\t-bool\ttrue'
-  $'-g\tNSAutomaticDashSubstitutionEnabled\t-bool\tfalse'
-  $'-g\tNSAutomaticPeriodSubstitutionEnabled\t-bool\tfalse'
-  $'-g\tNSAutomaticQuoteSubstitutionEnabled\t-bool\tfalse'
-  $'-g\tNSAutomaticCapitalizationEnabled\t-bool\tfalse'
-  $'-g\tNSNavPanelExpandedStateForSaveMode\t-bool\ttrue'
-  $'-g\tNSNavPanelExpandedStateForSaveMode2\t-bool\ttrue'
-  $'-g\tNSDocumentSaveNewDocumentsToCloud\t-bool\tfalse'
-  $'-g\tAppleWindowTabbingMode\t-string\talways'
-  $'-g\tNSToolbarTitleViewRolloverDelay\t-int\t0'
-  $'com.apple.dock\ttilesize\t-int\t48'
-  $'com.apple.dock\torientation\t-string\tbottom'
-  $'com.apple.dock\tautohide\t-bool\ttrue'
-  $'com.apple.dock\tmru-spaces\t-bool\tfalse'
-  $'com.apple.dock\tshow-recents\t-bool\tfalse'
-  $'com.apple.dock\tshow-process-indicators\t-bool\tfalse'
-  $'com.apple.finder\tQuitMenuItem\t-bool\ttrue'
-  $'com.apple.finder\tFXEnableExtensionChangeWarning\t-bool\tfalse'
-  $'com.apple.finder\tAppleShowAllExtensions\t-bool\ttrue'
-  $'com.apple.finder\tAppleShowAllFiles\t-bool\ttrue'
-  $'com.apple.finder\tFXPreferredViewStyle\t-string\tclmv'
-  $'com.apple.finder\tFXDefaultSearchScope\t-string\tSCcf'
-  $'com.apple.finder\tShowHardDrivesOnDesktop\t-bool\tfalse'
-  $'com.apple.finder\tShowRemovableMediaOnDesktop\t-bool\tfalse'
-  $'com.apple.finder\tShowExternalHardDrivesOnDesktop\t-bool\tfalse'
-  $'com.apple.finder\tShowMountedServersOnDesktop\t-bool\tfalse'
-  $'com.apple.finder\tShowRecentTags\t-bool\tfalse'
-  $'com.apple.finder\tNewWindowTarget\t-string\tPfHm'
-  $'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
-  $'com.apple.WindowManager\tHideDesktop\t-bool\ttrue'
-  $'com.apple.WindowManager\tStandardHideDesktopIcons\t-bool\ttrue'
-  $'com.apple.WindowManager\tEnableStandardClickToShowDesktop\t-bool\tfalse'
-  $'com.apple.WindowManager\tAutoHide\t-bool\ttrue'
-  $'com.apple.WindowManager\tStandardHideWidgets\t-bool\ttrue'
-  $'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
-  $'com.apple.AppleMultitouchTrackpad\tClicking\t-bool\ttrue'
-  $'com.apple.AppleMultitouchTrackpad\tTrackpadRightClick\t-bool\ttrue'
-  $'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
-  $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tClicking\t-bool\ttrue'
-  $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadRightClick\t-bool\ttrue'
-  $'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
-  $'-g\tcom.apple.trackpad.forceClick\t-bool\tfalse'
-  $'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
-  $'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
-  $'com.apple.desktopservices\tDSDontWriteUSBStores\t-bool\ttrue'
-  $'com.apple.desktopservices\tDSDontWriteNetworkStores\t-bool\ttrue'
-  $'com.apple.CrashReporter\tDialogType\t-string\tnone'
-  $'com.apple.AdLib\tallowApplePersonalizedAdvertising\t-bool\tfalse'
+	$'-g\tAppleKeyboardUIMode\t-int\t2'
+	$'-g\tApplePressAndHoldEnabled\t-bool\tfalse'
+	$'-g\tInitialKeyRepeat\t-int\t10'
+	$'-g\tKeyRepeat\t-int\t1'
+	$'com.apple.HIToolbox\tAppleDictationAutoEnable\t-int\t0'
+	$'com.apple.HIToolbox\tAppleFnUsageType\t-int\t0'
+	$'-g\tAppleIconAppearanceTheme\t-string\tRegularDark'
+	$'-g\tNSGlassDiffusionSetting\t-int\t1'
+	$'-g\tAppleShowScrollBars\t-string\tWhenScrolling'
+	$'-g\tAppleScrollerPagingBehavior\t-bool\ttrue'
+	$'-g\tcom.apple.keyboard.fnState\t-bool\ttrue'
+	$'-g\tcom.apple.swipescrolldirection\t-bool\ttrue'
+	$'-g\tNSAutomaticDashSubstitutionEnabled\t-bool\tfalse'
+	$'-g\tNSAutomaticPeriodSubstitutionEnabled\t-bool\tfalse'
+	$'-g\tNSAutomaticQuoteSubstitutionEnabled\t-bool\tfalse'
+	$'-g\tNSAutomaticCapitalizationEnabled\t-bool\tfalse'
+	$'-g\tNSNavPanelExpandedStateForSaveMode\t-bool\ttrue'
+	$'-g\tNSNavPanelExpandedStateForSaveMode2\t-bool\ttrue'
+	$'-g\tNSDocumentSaveNewDocumentsToCloud\t-bool\tfalse'
+	$'-g\tAppleWindowTabbingMode\t-string\talways'
+	$'-g\tNSToolbarTitleViewRolloverDelay\t-int\t0'
+	$'com.apple.dock\ttilesize\t-int\t48'
+	$'com.apple.dock\torientation\t-string\tbottom'
+	$'com.apple.dock\tautohide\t-bool\ttrue'
+	$'com.apple.dock\tmru-spaces\t-bool\tfalse'
+	$'com.apple.dock\tshow-recents\t-bool\tfalse'
+	$'com.apple.dock\tshow-process-indicators\t-bool\tfalse'
+	$'com.apple.finder\tQuitMenuItem\t-bool\ttrue'
+	$'com.apple.finder\tFXEnableExtensionChangeWarning\t-bool\tfalse'
+	$'com.apple.finder\tAppleShowAllExtensions\t-bool\ttrue'
+	$'com.apple.finder\tAppleShowAllFiles\t-bool\ttrue'
+	$'com.apple.finder\tFXPreferredViewStyle\t-string\tclmv'
+	$'com.apple.finder\tFXDefaultSearchScope\t-string\tSCcf'
+	$'com.apple.finder\tShowHardDrivesOnDesktop\t-bool\tfalse'
+	$'com.apple.finder\tShowRemovableMediaOnDesktop\t-bool\tfalse'
+	$'com.apple.finder\tShowExternalHardDrivesOnDesktop\t-bool\tfalse'
+	$'com.apple.finder\tShowMountedServersOnDesktop\t-bool\tfalse'
+	$'com.apple.finder\tShowRecentTags\t-bool\tfalse'
+	$'com.apple.finder\tNewWindowTarget\t-string\tPfHm'
+	$'com.apple.finder\tNewWindowTargetPath\t-string\t'"file://$HOME/"
+	$'com.apple.WindowManager\tHideDesktop\t-bool\ttrue'
+	$'com.apple.WindowManager\tStandardHideDesktopIcons\t-bool\ttrue'
+	$'com.apple.WindowManager\tEnableStandardClickToShowDesktop\t-bool\tfalse'
+	$'com.apple.WindowManager\tAutoHide\t-bool\ttrue'
+	$'com.apple.WindowManager\tStandardHideWidgets\t-bool\ttrue'
+	$'com.apple.WindowManager\tStageManagerHideWidgets\t-bool\ttrue'
+	$'com.apple.AppleMultitouchTrackpad\tClicking\t-bool\ttrue'
+	$'com.apple.AppleMultitouchTrackpad\tTrackpadRightClick\t-bool\ttrue'
+	$'com.apple.AppleMultitouchTrackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
+	$'com.apple.driver.AppleBluetoothMultitouch.trackpad\tClicking\t-bool\ttrue'
+	$'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadRightClick\t-bool\ttrue'
+	$'com.apple.driver.AppleBluetoothMultitouch.trackpad\tTrackpadThreeFingerTapGesture\t-int\t0'
+	$'-g\tcom.apple.trackpad.forceClick\t-bool\tfalse'
+	$'-g\tcom.apple.trackpad.scaling\t-float\t1.5'
+	$'-g\tshouldShowRSVPDataDetectors\t-bool\tfalse'
+	$'com.apple.desktopservices\tDSDontWriteUSBStores\t-bool\ttrue'
+	$'com.apple.desktopservices\tDSDontWriteNetworkStores\t-bool\ttrue'
+	$'com.apple.CrashReporter\tDialogType\t-string\tnone'
+	$'com.apple.AdLib\tallowApplePersonalizedAdvertising\t-bool\tfalse'
 )
 
 readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
@@ -115,92 +115,92 @@ readonly -a CURRENT_HOST_SYSTEM_DEFAULTS=(
 )
 
 readonly -a PMSET_SETTINGS=(
-  $'-b\tlowpowermode\t0'
-  $'-b\tlessbright\t0'
-  $'-b\tdisplaysleep\t60'
+	$'-b\tlowpowermode\t0'
+	$'-b\tlessbright\t0'
+	$'-b\tdisplaysleep\t60'
 	$'-c\tdisplaysleep\t120'
 )
 
 readonly -a GIT_CONFIG_SETTINGS=(
-  $'core.editor\tnvim'
-  $'core.excludesFile\t'"$HOME/.gitignore_global"
-  $'core.attributesFile\t'"$HOME/.gitattributes_global"
-  $'init.defaultbranch\tmain'
-  $'pull.rebase\ttrue'
-  $'push.autoSetupRemote\ttrue'
-  $'merge.conflictStyle\tzdiff3'
-  $'fetch.writeCommitGraph\ttrue'
-  $'rerere.enabled\ttrue'
-  $'column.ui\tauto'
-  $'branch.sort\t-committerdate'
-  $'gpg.format\tssh'
-  $'user.signingKey\t'"$HOME/.ssh/key.pub"
-  $'commit.gpgsign\ttrue'
-  $'maintenance.auto\tfalse'
-  $'maintenance.strategy\tincremental'
-  $'diff.colormoved\tdefault'
-  $'diff.nodiff.command\ttrue'
-  $'diff.nodiff.binary\ttrue'
-  $'diff.tool\tdifftastic'
-  $'diff.external\tdifft --color=always'
-  $'difftool.prompt\tfalse'
-  $'difftool.difftastic.cmd\tdifft "$LOCAL" "$REMOTE"'
-  $'pager.difftool\ttrue'
+	$'core.editor\tnvim'
+	$'core.excludesFile\t'"$HOME/.gitignore_global"
+	$'core.attributesFile\t'"$HOME/.gitattributes_global"
+	$'init.defaultbranch\tmain'
+	$'pull.rebase\ttrue'
+	$'push.autoSetupRemote\ttrue'
+	$'merge.conflictStyle\tzdiff3'
+	$'fetch.writeCommitGraph\ttrue'
+	$'rerere.enabled\ttrue'
+	$'column.ui\tauto'
+	$'branch.sort\t-committerdate'
+	$'gpg.format\tssh'
+	$'user.signingKey\t'"$HOME/.ssh/key.pub"
+	$'commit.gpgsign\ttrue'
+	$'maintenance.auto\tfalse'
+	$'maintenance.strategy\tincremental'
+	$'diff.colormoved\tdefault'
+	$'diff.nodiff.command\ttrue'
+	$'diff.nodiff.binary\ttrue'
+	$'diff.tool\tdifftastic'
+	$'diff.external\tdifft --color=always'
+	$'difftool.prompt\tfalse'
+	$'difftool.difftastic.cmd\tdifft "$LOCAL" "$REMOTE"'
+	$'pager.difftool\ttrue'
 )
 
 log_info() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_INFO}INFO${COLOR_RESET}    $*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_INFO}INFO${COLOR_RESET}    $*"
 }
 
 log_warn() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_WARNING}⚠️ ${COLOR_RESET} $*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_WARNING}⚠️ ${COLOR_RESET} $*"
 }
 
 log_error() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_ERROR}❌${COLOR_RESET}   $*" \
-    >&2
-  exit 1
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_ERROR}❌${COLOR_RESET}   $*" \
+		>&2
+	exit 1
 }
 
 log_main() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_MAIN}⚙️ ${COLOR_RESET}    ${INDENT_LVL0}$*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_MAIN}⚙️ ${COLOR_RESET}    ${INDENT_LVL0}$*"
 }
 
 log_task() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📋${COLOR_RESET}    ${INDENT_LVL1}$*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📋${COLOR_RESET}    ${INDENT_LVL1}$*"
 }
 
 log_subtask() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📝${COLOR_RESET}     ${INDENT_LVL2}$*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_TASK}📝${COLOR_RESET}     ${INDENT_LVL2}$*"
 }
 
 log_status() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}✅${COLOR_RESET}  ${INDENT_LVL3}$*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}✅${COLOR_RESET}  ${INDENT_LVL3}$*"
 }
 
 log_preview() {
-  printf '%b\n' \
-    "${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}PREVIEW${COLOR_RESET} ${INDENT_LVL2}$*"
+	printf '%b\n' \
+		"${COLOR_TIMESTAMP}[$(date +'%Y-%m-%d %H:%M:%S')]${COLOR_RESET} ${COLOR_STATUS}PREVIEW${COLOR_RESET} ${INDENT_LVL2}$*"
 }
 
 log_manual_confirmation_section() {
-  local section_title="$1"
-  shift
-  local step=""
-  local step_number=1
+	local section_title="$1"
+	shift
+	local step=""
+	local step_number=1
 
-  log_task "$section_title"
-  for step in "$@"; do
-    log_subtask "${step_number}. ${step}"
-    step_number=$((step_number + 1))
-  done
+	log_task "$section_title"
+	for step in "$@"; do
+		log_subtask "${step_number}. ${step}"
+		step_number=$((step_number + 1))
+	done
 }
 
 count_first_level_items() {
@@ -257,36 +257,36 @@ render_command() {
 	local arg=""
 	local escaped_arg=""
 
-  for arg in "$@"; do
-    printf -v escaped_arg '%q' "$arg"
-    rendered_command+="${rendered_command:+ }${escaped_arg}"
-  done
+	for arg in "$@"; do
+		printf -v escaped_arg '%q' "$arg"
+		rendered_command+="${rendered_command:+ }${escaped_arg}"
+	done
 
-  printf '%s\n' "$rendered_command"
+	printf '%s\n' "$rendered_command"
 }
 
 execute_with_log() {
-  local cmd="$1"
-  shift
-  local -a args=("$@")
-  local rendered_command=""
+	local cmd="$1"
+	shift
+	local -a args=("$@")
+	local rendered_command=""
 
-  if (( ${#args[@]} > 0 )); then
-    rendered_command="$(render_command "$cmd" "${args[@]}")"
-  else
-    rendered_command="$(render_command "$cmd")"
-  fi
+	if ((${#args[@]} > 0)); then
+		rendered_command="$(render_command "$cmd" "${args[@]}")"
+	else
+		rendered_command="$(render_command "$cmd")"
+	fi
 
-  if [[ "$DRY_RUN" != "true" ]]; then
-    log_task "EXECUTING: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
-    if (( ${#args[@]} > 0 )); then
-      "$cmd" "${args[@]}"
-    else
-      "$cmd"
-    fi
-  else
-    log_preview "Would execute: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
-  fi
+	if [[ "$DRY_RUN" != "true" ]]; then
+		log_task "EXECUTING: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
+		if ((${#args[@]} > 0)); then
+			"$cmd" "${args[@]}"
+		else
+			"$cmd"
+		fi
+	else
+		log_preview "Would execute: ${COLOR_CMD}${rendered_command}${COLOR_RESET}"
+	fi
 }
 
 #######################################
@@ -298,12 +298,12 @@ execute_with_log() {
 #   $4: Value
 #######################################
 write_default_setting() {
-  local domain="$1"
-  local key="$2"
-  local flag="$3"
-  local value="$4"
+	local domain="$1"
+	local key="$2"
+	local flag="$3"
+	local value="$4"
 
-  execute_with_log defaults write "${domain}" "${key}" "${flag}" "${value}"
+	execute_with_log defaults write "${domain}" "${key}" "${flag}" "${value}"
 }
 
 #######################################
@@ -312,16 +312,16 @@ write_default_setting() {
 #   Array entries as positional parameters
 #######################################
 apply_defaults_entries() {
-  local entry=""
-  local domain=""
-  local key=""
-  local flag=""
-  local value=""
+	local entry=""
+	local domain=""
+	local key=""
+	local flag=""
+	local value=""
 
-  for entry in "$@"; do
-    IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
-    write_default_setting "${domain}" "${key}" "${flag}" "${value}"
-  done
+	for entry in "$@"; do
+		IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
+		write_default_setting "${domain}" "${key}" "${flag}" "${value}"
+	done
 }
 
 #######################################
@@ -333,12 +333,12 @@ apply_defaults_entries() {
 #   $4: Value
 #######################################
 write_current_host_default_setting() {
-  local domain="$1"
-  local key="$2"
-  local flag="$3"
-  local value="$4"
+	local domain="$1"
+	local key="$2"
+	local flag="$3"
+	local value="$4"
 
-  execute_with_log defaults -currentHost write "${domain}" "${key}" "${flag}" "${value}"
+	execute_with_log defaults -currentHost write "${domain}" "${key}" "${flag}" "${value}"
 }
 
 #######################################
@@ -349,23 +349,23 @@ write_current_host_default_setting() {
 #   Array entries as positional parameters
 #######################################
 apply_current_host_defaults_entries() {
-  local entry=""
-  local domain=""
-  local key=""
-  local flag=""
-  local value=""
+	local entry=""
+	local domain=""
+	local key=""
+	local flag=""
+	local value=""
 
-  for entry in "$@"; do
-    IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
-    write_current_host_default_setting "${domain}" "${key}" "${flag}" "${value}"
-  done
+	for entry in "$@"; do
+		IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r domain key flag value <<<"${entry}"
+		write_current_host_default_setting "${domain}" "${key}" "${flag}" "${value}"
+	done
 }
 
 #######################################
 # Clear all persistent Dock apps while keeping folder stacks untouched.
 #######################################
 clear_dock_persistent_apps() {
-  execute_with_log defaults write com.apple.dock persistent-apps -array
+	execute_with_log defaults write com.apple.dock persistent-apps -array
 }
 
 #######################################
@@ -374,11 +374,11 @@ clear_dock_persistent_apps() {
 #   $1: Process name
 #######################################
 refresh_ui_process_if_running() {
-  local process_name="$1"
+	local process_name="$1"
 
-  if pgrep -x "${process_name}" >/dev/null 2>&1; then
-    execute_with_log killall "${process_name}"
-  fi
+	if pgrep -x "${process_name}" >/dev/null 2>&1; then
+		execute_with_log killall "${process_name}"
+	fi
 }
 
 #######################################
@@ -387,7 +387,7 @@ refresh_ui_process_if_running() {
 #   0 if an internal battery is present, non-zero otherwise
 #######################################
 pmset_has_internal_battery() {
-  pmset -g batt | grep -Eq 'InternalBattery|Battery'
+	pmset -g batt | grep -Eq 'InternalBattery|Battery'
 }
 
 #######################################
@@ -397,22 +397,22 @@ pmset_has_internal_battery() {
 #   $2: pmset setting name
 #######################################
 pmset_supports_setting() {
-  local scope="$1"
-  local setting="$2"
+	local scope="$1"
+	local setting="$2"
 
-  if pmset -g cap | grep -Eq "(^|[[:space:]])${setting}($|[[:space:]])"; then
-    return 0
-  fi
+	if pmset -g cap | grep -Eq "(^|[[:space:]])${setting}($|[[:space:]])"; then
+		return 0
+	fi
 
-  if [[ "${scope}" == "-b" ]] && pmset_has_internal_battery; then
-    case "${setting}" in
-      displaysleep | lessbright)
-        return 0
-        ;;
-    esac
-  fi
+	if [[ "${scope}" == "-b" ]] && pmset_has_internal_battery; then
+		case "${setting}" in
+		displaysleep | lessbright)
+			return 0
+			;;
+		esac
+	fi
 
-  return 1
+	return 1
 }
 
 #######################################
@@ -423,49 +423,49 @@ pmset_supports_setting() {
 #   Array entries as positional parameters
 #######################################
 apply_pmset_entries() {
-  local entry=""
-  local scope=""
-  local setting=""
-  local value=""
+	local entry=""
+	local scope=""
+	local setting=""
+	local value=""
 
-  for entry in "$@"; do
-    IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r scope setting value <<<"${entry}"
+	for entry in "$@"; do
+		IFS="${DEFAULTS_FIELD_SEPARATOR}" read -r scope setting value <<<"${entry}"
 
-    if pmset_supports_setting "${scope}" "${setting}"; then
-      execute_with_log sudo pmset "${scope}" "${setting}" "${value}"
-    else
-      log_warn "Skipping unsupported power setting: ${setting}"
-    fi
-  done
+		if pmset_supports_setting "${scope}" "${setting}"; then
+			execute_with_log sudo pmset "${scope}" "${setting}" "${value}"
+		else
+			log_warn "Skipping unsupported power setting: ${setting}"
+		fi
+	done
 }
 
 #######################################
 # Configure screen lock to require the password immediately.
 #######################################
 screen_lock_is_immediate() {
-  local screen_lock_status=""
+	local screen_lock_status=""
 
-  screen_lock_status="$(sysadminctl -screenLock status 2>&1 || true)"
-  [[ "${screen_lock_status}" == *"screenLock delay is immediate"* ]]
+	screen_lock_status="$(sysadminctl -screenLock status 2>&1 || true)"
+	[[ "${screen_lock_status}" == *"screenLock delay is immediate"* ]]
 }
 
 configure_screen_lock_settings() {
-  log_task "Configuring screen lock to require the password immediately..."
+	log_task "Configuring screen lock to require the password immediately..."
 
-  if screen_lock_is_immediate; then
-    log_subtask "Screen lock already requires the password immediately"
-    return
-  fi
+	if screen_lock_is_immediate; then
+		log_subtask "Screen lock already requires the password immediately"
+		return
+	fi
 
-  execute_with_log sysadminctl -screenLock immediate -password -
+	execute_with_log sysadminctl -screenLock immediate -password -
 }
 
 #######################################
 # Configure the first day of week to Monday.
 #######################################
 configure_first_day_of_week() {
-  log_task "Configuring the first day of week to Monday..."
-  execute_with_log defaults write NSGlobalDomain AppleFirstWeekday -dict gregorian 2
+	log_task "Configuring the first day of week to Monday..."
+	execute_with_log defaults write NSGlobalDomain AppleFirstWeekday -dict gregorian 2
 }
 
 #######################################
@@ -474,22 +474,22 @@ configure_first_day_of_week() {
 #   0 if disabled, non-zero otherwise
 #######################################
 startup_sound_is_disabled() {
-  local current_value=""
+	local current_value=""
 
-  current_value="$(nvram StartupMute 2>/dev/null | awk '{print $2}' || true)"
-  [[ "${current_value}" == "${STARTUP_SOUND_DISABLED_VALUE}" ]]
+	current_value="$(nvram StartupMute 2>/dev/null | awk '{print $2}' || true)"
+	[[ "${current_value}" == "${STARTUP_SOUND_DISABLED_VALUE}" ]]
 }
 
 #######################################
 # Disable the startup sound.
 #######################################
 configure_startup_sound() {
-  log_task "Disabling startup sound..."
+	log_task "Disabling startup sound..."
 
-  if startup_sound_is_disabled; then
-    log_subtask "Startup sound already disabled"
-    return
-  fi
+	if startup_sound_is_disabled; then
+		log_subtask "Startup sound already disabled"
+		return
+	fi
 
 	execute_with_log sudo nvram "StartupMute=${STARTUP_SOUND_DISABLED_VALUE}"
 }
@@ -502,18 +502,18 @@ configure_startup_sound() {
 #   Array entries as positional parameters
 #######################################
 apply_git_config_entries() {
-  local entry=""
-  local key=""
-  local value=""
+	local entry=""
+	local key=""
+	local value=""
 
-  for entry in "$@"; do
-    IFS="${GIT_CONFIG_FIELD_SEPARATOR}" read -r key value <<<"${entry}"
-    execute_with_log git config --global "${key}" "${value}"
-  done
+	for entry in "$@"; do
+		IFS="${GIT_CONFIG_FIELD_SEPARATOR}" read -r key value <<<"${entry}"
+		execute_with_log git config --global "${key}" "${value}"
+	done
 }
 
 show_help() {
-  cat <<EOF
+	cat <<EOF
 Usage: ${SCRIPT_NAME} [OPTIONS]
 
 Initialize macOS development environment with configurable modules.
@@ -538,7 +538,7 @@ EOF
 }
 
 list_modules() {
-  cat <<'EOF'
+	cat <<'EOF'
 Available modules:
   --system   : macOS system defaults
   --config   : Config linking
@@ -550,315 +550,315 @@ EOF
 }
 
 disable_all_modules() {
-  MODULE_SYSTEM=false
-  MODULE_CONFIG=false
-  MODULE_BREW=false
-  MODULE_SHELL=false
-  MODULE_GIT=false
-  MODULE_TOOLS=false
+	MODULE_SYSTEM=false
+	MODULE_CONFIG=false
+	MODULE_BREW=false
+	MODULE_SHELL=false
+	MODULE_GIT=false
+	MODULE_TOOLS=false
 }
 
 mark_explicit_module_selection() {
-  if [[ "$EXPLICIT_MODULES_SELECTED" == "true" ]]; then
-    return
-  fi
+	if [[ "$EXPLICIT_MODULES_SELECTED" == "true" ]]; then
+		return
+	fi
 
-  EXPLICIT_MODULES_SELECTED=true
-  disable_all_modules
+	EXPLICIT_MODULES_SELECTED=true
+	disable_all_modules
 }
 
 enable_module() {
-  local module_name="$1"
+	local module_name="$1"
 
-  mark_explicit_module_selection
+	mark_explicit_module_selection
 
-  case "$module_name" in
-    system) MODULE_SYSTEM=true ;;
-    config) MODULE_CONFIG=true ;;
-    brew) MODULE_BREW=true ;;
-    shell) MODULE_SHELL=true ;;
-    git) MODULE_GIT=true ;;
-    tools) MODULE_TOOLS=true ;;
-    *)
-      log_error "Unknown module: ${module_name}"
-      ;;
-  esac
+	case "$module_name" in
+	system) MODULE_SYSTEM=true ;;
+	config) MODULE_CONFIG=true ;;
+	brew) MODULE_BREW=true ;;
+	shell) MODULE_SHELL=true ;;
+	git) MODULE_GIT=true ;;
+	tools) MODULE_TOOLS=true ;;
+	*)
+		log_error "Unknown module: ${module_name}"
+		;;
+	esac
 }
 
 parse_args() {
-  local arg
+	local arg
 
-  while [[ $# -gt 0 ]]; do
-    arg="$1"
-    case "$arg" in
-      --help)
-        show_help
-        exit 0
-        ;;
-      --modules)
-        list_modules
-        exit 0
-        ;;
-      --dry-run)
-        DRY_RUN=true
-        ;;
-      --verbose)
-        VERBOSE=true
-        ;;
-      --system)
-        enable_module system
-        ;;
-      --config)
-        enable_module config
-        ;;
-      --brew)
-        enable_module brew
-        ;;
-      --shell)
-        enable_module shell
-        ;;
-      --git)
-        enable_module git
-        ;;
-      --tools)
-        enable_module tools
-        ;;
-      *)
-        printf 'Unknown option: %s\n' "$arg"
-        printf 'Use --help for usage information.\n'
-        exit 1
-        ;;
-    esac
-    shift
-  done
+	while [[ $# -gt 0 ]]; do
+		arg="$1"
+		case "$arg" in
+		--help)
+			show_help
+			exit 0
+			;;
+		--modules)
+			list_modules
+			exit 0
+			;;
+		--dry-run)
+			DRY_RUN=true
+			;;
+		--verbose)
+			VERBOSE=true
+			;;
+		--system)
+			enable_module system
+			;;
+		--config)
+			enable_module config
+			;;
+		--brew)
+			enable_module brew
+			;;
+		--shell)
+			enable_module shell
+			;;
+		--git)
+			enable_module git
+			;;
+		--tools)
+			enable_module tools
+			;;
+		*)
+			printf 'Unknown option: %s\n' "$arg"
+			printf 'Use --help for usage information.\n'
+			exit 1
+			;;
+		esac
+		shift
+	done
 }
 
 enable_verbose_tracing() {
-  if [[ "$VERBOSE" == "true" && "$DRY_RUN" != "true" ]]; then
-    set -x
-  fi
+	if [[ "$VERBOSE" == "true" && "$DRY_RUN" != "true" ]]; then
+		set -x
+	fi
 }
 
 log_execution_mode() {
-  if [[ "$DRY_RUN" == "true" && "$VERBOSE" == "true" ]]; then
-    log_task "Execution mode: DRY RUN with VERBOSE output - no changes will be made"
-  elif [[ "$DRY_RUN" == "true" ]]; then
-    log_task "Execution mode: DRY RUN - no changes will be made"
-  elif [[ "$VERBOSE" == "true" ]]; then
-    log_task "Execution mode: VERBOSE - detailed output will be shown"
-  else
-    log_task "Execution mode: NORMAL - standard output"
-  fi
+	if [[ "$DRY_RUN" == "true" && "$VERBOSE" == "true" ]]; then
+		log_task "Execution mode: DRY RUN with VERBOSE output - no changes will be made"
+	elif [[ "$DRY_RUN" == "true" ]]; then
+		log_task "Execution mode: DRY RUN - no changes will be made"
+	elif [[ "$VERBOSE" == "true" ]]; then
+		log_task "Execution mode: VERBOSE - detailed output will be shown"
+	else
+		log_task "Execution mode: NORMAL - standard output"
+	fi
 
-  enable_verbose_tracing
+	enable_verbose_tracing
 }
 
 log_enabled_module() {
-  local module_name="$1"
-  local enabled="$2"
+	local module_name="$1"
+	local enabled="$2"
 
-  if [[ "$enabled" == "true" ]]; then
-    log_subtask "${module_name}: ${COLOR_GREEN}✅${COLOR_RESET}"
-  fi
+	if [[ "$enabled" == "true" ]]; then
+		log_subtask "${module_name}: ${COLOR_GREEN}✅${COLOR_RESET}"
+	fi
 }
 
 log_enabled_modules() {
-  log_task "Enabled modules:"
-  log_enabled_module "macOS System Defaults" "$MODULE_SYSTEM"
-  log_enabled_module "Config Linking" "$MODULE_CONFIG"
-  log_enabled_module "Homebrew & Apps" "$MODULE_BREW"
-  log_enabled_module "Shell Configuration" "$MODULE_SHELL"
-  log_enabled_module "Git Configuration" "$MODULE_GIT"
-  log_enabled_module "Developer Tooling" "$MODULE_TOOLS"
+	log_task "Enabled modules:"
+	log_enabled_module "macOS System Defaults" "$MODULE_SYSTEM"
+	log_enabled_module "Config Linking" "$MODULE_CONFIG"
+	log_enabled_module "Homebrew & Apps" "$MODULE_BREW"
+	log_enabled_module "Shell Configuration" "$MODULE_SHELL"
+	log_enabled_module "Git Configuration" "$MODULE_GIT"
+	log_enabled_module "Developer Tooling" "$MODULE_TOOLS"
 }
 
 should_authenticate_for_sudo() {
-  [[ "$DRY_RUN" != "true" ]] &&
-    [[ "$MODULE_SYSTEM" == "true" || "$MODULE_BREW" == "true" || \
-      "$MODULE_SHELL" == "true" ]]
+	[[ "$DRY_RUN" != "true" ]] &&
+		[[ "$MODULE_SYSTEM" == "true" || "$MODULE_BREW" == "true" ||
+			"$MODULE_SHELL" == "true" ]]
 }
 
 keep_sudo_alive() {
-  while true; do
-    sleep 60
-    sudo -n true
-    kill -0 "$$" || exit
-  done 2>/dev/null &
+	while true; do
+		sleep 60
+		sudo -n true
+		kill -0 "$$" || exit
+	done 2>/dev/null &
 }
 
 authenticate_for_system_operations() {
-  if ! should_authenticate_for_sudo; then
-    return
-  fi
+	if ! should_authenticate_for_sudo; then
+		return
+	fi
 
-  log_task "Authenticating for system operations (if needed)..."
-  if sudo -v; then
-    keep_sudo_alive
-    log_subtask "Authentication successful"
-  else
-    log_error "Failed to authenticate. Please run the script again and enter your password when prompted."
-  fi
+	log_task "Authenticating for system operations (if needed)..."
+	if sudo -v; then
+		keep_sudo_alive
+		log_subtask "Authentication successful"
+	else
+		log_error "Failed to authenticate. Please run the script again and enter your password when prompted."
+	fi
 }
 
 ensure_xcode_command_line_tools() {
-  if [[ "$DRY_RUN" == "true" ]]; then
-    if xcode-select --print-path &>/dev/null; then
-      log_task "XCode Command Line Tools already installed"
-    else
-      log_preview "Would install XCode Command Line Tools"
-    fi
-    return
-  fi
+	if [[ "$DRY_RUN" == "true" ]]; then
+		if xcode-select --print-path &>/dev/null; then
+			log_task "XCode Command Line Tools already installed"
+		else
+			log_preview "Would install XCode Command Line Tools"
+		fi
+		return
+	fi
 
-  if ! xcode-select --print-path &>/dev/null; then
-    log_task "Installing XCode Command Line Tools"
-    if xcode-select --install &>/dev/null; then
-      log_subtask "XCode Command Line Tools install initiated. Please follow the prompts."
-    else
-      log_warn "XCode Command Line Tools install failed to initiate"
-    fi
-  else
-    log_task "XCode Command Line Tools already installed"
-  fi
+	if ! xcode-select --print-path &>/dev/null; then
+		log_task "Installing XCode Command Line Tools"
+		if xcode-select --install &>/dev/null; then
+			log_subtask "XCode Command Line Tools install initiated. Please follow the prompts."
+		else
+			log_warn "XCode Command Line Tools install failed to initiate"
+		fi
+	else
+		log_task "XCode Command Line Tools already installed"
+	fi
 }
 
 apply_system_defaults() {
-  if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
-    log_task "Previewing macOS defaults changes..."
-    log_preview "Would apply ${#SYSTEM_DEFAULTS[@]} macOS defaults entries"
+	if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
+		log_task "Previewing macOS defaults changes..."
+		log_preview "Would apply ${#SYSTEM_DEFAULTS[@]} macOS defaults entries"
 		log_preview "Would apply ${#CURRENT_HOST_SYSTEM_DEFAULTS[@]} current-host preferences"
-    log_preview "Would clear Dock persistent apps and apply ${#PMSET_SETTINGS[@]} power settings"
-    log_preview "Would configure first day of week, startup sound, and screen lock"
+		log_preview "Would clear Dock persistent apps and apply ${#PMSET_SETTINGS[@]} power settings"
+		log_preview "Would configure first day of week, startup sound, and screen lock"
 		log_preview "Would start the screen saver after 1 hour, turn off the display after 1 hour on battery or 2 hours on AC power, and require the password immediately"
 		log_preview "Would refresh Dock, ControlCenter, SystemUIServer, and MenuBarAgent when running"
-    log_preview "Use --dry-run --verbose to expand every macOS settings command"
-    return
-  fi
+		log_preview "Use --dry-run --verbose to expand every macOS settings command"
+		return
+	fi
 
-  execute_with_log defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
-  apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
-  apply_current_host_defaults_entries "${CURRENT_HOST_SYSTEM_DEFAULTS[@]}"
-  clear_dock_persistent_apps
-  apply_pmset_entries "${PMSET_SETTINGS[@]}"
-  configure_first_day_of_week
-  configure_startup_sound
-  configure_screen_lock_settings
+	execute_with_log defaults write com.apple.finder FXInfoPanesExpanded -dict MetaData -bool true Preview -bool false
+	apply_defaults_entries "${SYSTEM_DEFAULTS[@]}"
+	apply_current_host_defaults_entries "${CURRENT_HOST_SYSTEM_DEFAULTS[@]}"
+	clear_dock_persistent_apps
+	apply_pmset_entries "${PMSET_SETTINGS[@]}"
+	configure_first_day_of_week
+	configure_startup_sound
+	configure_screen_lock_settings
 
-  execute_with_log killall Dock Finder
-  refresh_ui_process_if_running ControlCenter
-  refresh_ui_process_if_running SystemUIServer
+	execute_with_log killall Dock Finder
+	refresh_ui_process_if_running ControlCenter
+	refresh_ui_process_if_running SystemUIServer
 	refresh_ui_process_if_running MenuBarAgent
 }
 
 run_system_module() {
-  if [[ "$MODULE_SYSTEM" != "true" ]]; then
-    log_main "Skipping macOS system defaults configuration (module disabled)"
-    return
-  fi
+	if [[ "$MODULE_SYSTEM" != "true" ]]; then
+		log_main "Skipping macOS system defaults configuration (module disabled)"
+		return
+	fi
 
-  log_main "Installing XCode Command Line Tools if needed..."
-  ensure_xcode_command_line_tools
+	log_main "Installing XCode Command Line Tools if needed..."
+	ensure_xcode_command_line_tools
 
-  log_main "Configuring system settings..."
-  apply_system_defaults
+	log_main "Configuring system settings..."
+	apply_system_defaults
 }
 
 run_homebrew_module() {
-  if [[ "$MODULE_BREW" != "true" ]]; then
-    log_main "Skipping Homebrew installation (module disabled)"
-    return
-  fi
+	if [[ "$MODULE_BREW" != "true" ]]; then
+		log_main "Skipping Homebrew installation (module disabled)"
+		return
+	fi
 
-  log_main "Installing Homebrew if needed..."
-  if [[ "$DRY_RUN" == "true" ]]; then
-    if command -v brew >/dev/null 2>&1; then
-      log_task "Homebrew already installed"
-    else
-      log_preview "Would install Homebrew"
-      log_preview \
-        "Would execute: ${COLOR_CMD}/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"${COLOR_RESET}"
-    fi
-    log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
-    return
-  fi
+	log_main "Installing Homebrew if needed..."
+	if [[ "$DRY_RUN" == "true" ]]; then
+		if command -v brew >/dev/null 2>&1; then
+			log_task "Homebrew already installed"
+		else
+			log_preview "Would install Homebrew"
+			log_preview \
+				"Would execute: ${COLOR_CMD}/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"${COLOR_RESET}"
+		fi
+		log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
+		return
+	fi
 
-  if ! command -v brew >/dev/null 2>&1; then
-    log_task "Installing Homebrew"
-    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-      log_error "Unable to install Homebrew, script abort!"
-    fi
-  else
-    log_task "Homebrew already installed"
-  fi
+	if ! command -v brew >/dev/null 2>&1; then
+		log_task "Installing Homebrew"
+		if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+			log_error "Unable to install Homebrew, script abort!"
+		fi
+	else
+		log_task "Homebrew already installed"
+	fi
 
-  log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
+	log_task "Homebrew PATH configuration handled via Fish configuration in config/fish/conf.d/path.fish"
 }
 
 remove_existing_target() {
-  local target_item="$1"
+	local target_item="$1"
 
-  if [[ -e "$target_item" || -L "$target_item" ]]; then
-    log_subtask "Removing existing ${COLOR_PATH}${target_item}${COLOR_RESET}"
-    rm -rf "$target_item"
-  fi
+	if [[ -e "$target_item" || -L "$target_item" ]]; then
+		log_subtask "Removing existing ${COLOR_PATH}${target_item}${COLOR_RESET}"
+		rm -rf "$target_item"
+	fi
 }
 
 symlink_first_level_items() {
-  local source_dir="$1"
-  local target_dir="$2"
-  local source_label="$3"
-  local should_create_target_dir="$4"
-  local item_count=""
-  local item=""
-  local item_name=""
-  local target_item=""
+	local source_dir="$1"
+	local target_dir="$2"
+	local source_label="$3"
+	local should_create_target_dir="$4"
+	local item_count=""
+	local item=""
+	local item_name=""
+	local target_item=""
 
-  if [[ "$DRY_RUN" != "true" ]]; then
-    if [[ "$should_create_target_dir" == "true" ]]; then
-      mkdir -p "$target_dir"
-    fi
-  else
-    if [[ "$should_create_target_dir" == "true" ]]; then
-      log_preview "Would create directory: ${COLOR_PATH}${target_dir}${COLOR_RESET}"
-    fi
-  fi
+	if [[ "$DRY_RUN" != "true" ]]; then
+		if [[ "$should_create_target_dir" == "true" ]]; then
+			mkdir -p "$target_dir"
+		fi
+	else
+		if [[ "$should_create_target_dir" == "true" ]]; then
+			log_preview "Would create directory: ${COLOR_PATH}${target_dir}${COLOR_RESET}"
+		fi
+	fi
 
-  if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
-    item_count="$(count_first_level_items "$source_dir")"
-    log_preview \
-      "Would symlink ${item_count} item(s) from ${COLOR_PATH}${source_dir}${COLOR_RESET} to ${COLOR_PATH}${target_dir}${COLOR_RESET}"
-    return
-  fi
+	if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
+		item_count="$(count_first_level_items "$source_dir")"
+		log_preview \
+			"Would symlink ${item_count} item(s) from ${COLOR_PATH}${source_dir}${COLOR_RESET} to ${COLOR_PATH}${target_dir}${COLOR_RESET}"
+		return
+	fi
 
-  while IFS= read -r -d '' item; do
-    if [[ -e "$item" || -L "$item" ]]; then
-      item_name="$(basename "$item")"
-      target_item="${target_dir}/${item_name}"
+	while IFS= read -r -d '' item; do
+		if [[ -e "$item" || -L "$item" ]]; then
+			item_name="$(basename "$item")"
+			target_item="${target_dir}/${item_name}"
 
-      if [[ "$DRY_RUN" != "true" ]]; then
-        remove_existing_target "$target_item"
-        log_task \
-          "Creating symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
-        execute_with_log ln -s "$item" "$target_item"
-      else
-        log_preview \
-          "Would symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
-      fi
-    else
-      log_warn "${source_label} source does not exist: ${COLOR_PATH}${item}${COLOR_RESET}"
-    fi
-  done < <(find "$source_dir" -mindepth 1 -maxdepth 1 -print0)
+			if [[ "$DRY_RUN" != "true" ]]; then
+				remove_existing_target "$target_item"
+				log_task \
+					"Creating symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
+				execute_with_log ln -s "$item" "$target_item"
+			else
+				log_preview \
+					"Would symlink: ${COLOR_PATH}${item}${COLOR_RESET} ${COLOR_ARROW}->${COLOR_RESET} ${COLOR_PATH}${target_item}${COLOR_RESET}"
+			fi
+		else
+			log_warn "${source_label} source does not exist: ${COLOR_PATH}${item}${COLOR_RESET}"
+		fi
+	done < <(find "$source_dir" -mindepth 1 -maxdepth 1 -print0)
 }
 
 configure_ssh_settings() {
-  local ssh_config_path="$HOME/.ssh/config"
+	local ssh_config_path="$HOME/.ssh/config"
 
-  log_task "Configuring SSH settings..."
-  mkdir -p "$HOME/.ssh"
-  chmod 700 "$HOME/.ssh"
-  log_subtask "Creating SSH config: ${COLOR_PATH}${ssh_config_path}${COLOR_RESET}"
+	log_task "Configuring SSH settings..."
+	mkdir -p "$HOME/.ssh"
+	chmod 700 "$HOME/.ssh"
+	log_subtask "Creating SSH config: ${COLOR_PATH}${ssh_config_path}${COLOR_RESET}"
 
-  cat >>"$ssh_config_path" <<'EOF'
+	cat >>"$ssh_config_path" <<'EOF'
 Host *
   ServerAliveInterval 30
   TCPKeepAlive yes
@@ -869,51 +869,51 @@ Host *
   IdentityFile ~/.ssh/key
 EOF
 
-  log_subtask "Setting permissions for SSH config..."
-  chmod 600 "$ssh_config_path"
+	log_subtask "Setting permissions for SSH config..."
+	chmod 600 "$ssh_config_path"
 }
 
 refresh_font_cache() {
-  log_task "Refreshing font cache..."
-  if command -v fc-cache >/dev/null 2>&1; then
-    execute_with_log fc-cache -f
-  else
-    log_warn "fc-cache command not found. Font cache refresh skipped."
-  fi
+	log_task "Refreshing font cache..."
+	if command -v fc-cache >/dev/null 2>&1; then
+		execute_with_log fc-cache -f
+	else
+		log_warn "fc-cache command not found. Font cache refresh skipped."
+	fi
 }
 
 configure_login_settings() {
-  if [[ "$DRY_RUN" != "true" ]]; then
-    log_task "Creating ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET} to disable Last Login message"
-    execute_with_log touch "$HOME/.hushlogin"
-    configure_ssh_settings
-    refresh_font_cache
-  else
-    log_preview "Would touch: ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
-    log_preview "Would create SSH directory and config with proper permissions"
-    log_preview "Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
-    log_preview "Would execute: ${COLOR_CMD}fc-cache -f${COLOR_RESET}"
-  fi
+	if [[ "$DRY_RUN" != "true" ]]; then
+		log_task "Creating ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET} to disable Last Login message"
+		execute_with_log touch "$HOME/.hushlogin"
+		configure_ssh_settings
+		refresh_font_cache
+	else
+		log_preview "Would touch: ${COLOR_PATH}$HOME/.hushlogin${COLOR_RESET}"
+		log_preview "Would create SSH directory and config with proper permissions"
+		log_preview "Would create SSH config: ${COLOR_PATH}$HOME/.ssh/config${COLOR_RESET}"
+		log_preview "Would execute: ${COLOR_CMD}fc-cache -f${COLOR_RESET}"
+	fi
 }
 
 run_config_module() {
-  if [[ "$MODULE_CONFIG" != "true" ]]; then
-    log_main "Skipping config linking (module disabled)"
-    return
-  fi
+	if [[ "$MODULE_CONFIG" != "true" ]]; then
+		log_main "Skipping config linking (module disabled)"
+		return
+	fi
 
-  log_main "Creating config symlinks..."
-  symlink_first_level_items "$DOTFILES_DIR/config" "$CONFIG_PATH" "Config" "true"
+	log_main "Creating config symlinks..."
+	symlink_first_level_items "$DOTFILES_DIR/config" "$CONFIG_PATH" "Config" "true"
 
-  log_main "Creating dotfile symlinks..."
-  symlink_first_level_items "$DOTFILES_DIR/link" "$HOME" "Link" "false"
+	log_main "Creating dotfile symlinks..."
+	symlink_first_level_items "$DOTFILES_DIR/link" "$HOME" "Link" "false"
 
-  log_main "Configuring login settings..."
-  configure_login_settings
+	log_main "Configuring login settings..."
+	configure_login_settings
 }
 
 eval_homebrew_shellenv() {
-  eval "$("${BREW_PREFIX}/bin/brew" shellenv)"
+	eval "$("${BREW_PREFIX}/bin/brew" shellenv)"
 }
 
 install_homebrew_packages() {
@@ -926,11 +926,11 @@ install_homebrew_packages() {
 		return
 	fi
 
-  if [[ "$DRY_RUN" != "true" ]]; then
-    log_task "Updating environment to include Homebrew in PATH..."
-    eval_homebrew_shellenv
-  else
-    log_preview "Would update environment to include Homebrew in PATH"
+	if [[ "$DRY_RUN" != "true" ]]; then
+		log_task "Updating environment to include Homebrew in PATH..."
+		eval_homebrew_shellenv
+	else
+		log_preview "Would update environment to include Homebrew in PATH"
 	fi
 
 	log_task "Installing Homebrew packages..."
@@ -952,302 +952,302 @@ install_homebrew_packages() {
 	log_task "Cleaning up Homebrew..."
 	execute_with_log brew cleanup
 	if ! execute_with_log brew doctor; then
-    log_warn "Homebrew doctor reported issues; continuing setup."
-  fi
+		log_warn "Homebrew doctor reported issues; continuing setup."
+	fi
 }
 
 configure_shell_module() {
-  local fish_bin=""
-  local current_shell=""
+	local fish_bin=""
+	local current_shell=""
 
-  if [[ "$MODULE_SHELL" != "true" ]]; then
-    log_task "Skipping fish shell configuration (module disabled)"
-    return
-  fi
+	if [[ "$MODULE_SHELL" != "true" ]]; then
+		log_task "Skipping fish shell configuration (module disabled)"
+		return
+	fi
 
-  fish_bin="$(command -v fish || true)"
-  if [[ -z "$fish_bin" ]]; then
-    if [[ "$DRY_RUN" == "true" ]]; then
-      fish_bin="${BREW_PREFIX}/bin/fish"
-      log_preview \
-        "fish not found in PATH; assuming ${COLOR_PATH}${fish_bin}${COLOR_RESET} after installation"
-    else
-      log_error "fish is not installed. Enable --brew first or install fish manually."
-    fi
-  fi
+	fish_bin="$(command -v fish || true)"
+	if [[ -z "$fish_bin" ]]; then
+		if [[ "$DRY_RUN" == "true" ]]; then
+			fish_bin="${BREW_PREFIX}/bin/fish"
+			log_preview \
+				"fish not found in PATH; assuming ${COLOR_PATH}${fish_bin}${COLOR_RESET} after installation"
+		else
+			log_error "fish is not installed. Enable --brew first or install fish manually."
+		fi
+	fi
 
-  log_task "Setting fish as default shell..."
-  if ! grep -qs "${fish_bin}" "/etc/shells"; then
-    if [[ "$DRY_RUN" == "true" ]]; then
-      log_preview "Would add fish to ${COLOR_PATH}/etc/shells${COLOR_RESET} if needed"
-    else
-      log_task "Adding fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}..."
-      printf '%s\n' "$fish_bin" | sudo tee -a /etc/shells >/dev/null
-      log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
-    fi
-  else
-    log_subtask "Fish shell already in ${COLOR_PATH}/etc/shells${COLOR_RESET}"
-  fi
+	log_task "Setting fish as default shell..."
+	if ! grep -qs "${fish_bin}" "/etc/shells"; then
+		if [[ "$DRY_RUN" == "true" ]]; then
+			log_preview "Would add fish to ${COLOR_PATH}/etc/shells${COLOR_RESET} if needed"
+		else
+			log_task "Adding fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}..."
+			printf '%s\n' "$fish_bin" | sudo tee -a /etc/shells >/dev/null
+			log_subtask "Added fish to ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+		fi
+	else
+		log_subtask "Fish shell already in ${COLOR_PATH}/etc/shells${COLOR_RESET}"
+	fi
 
-  current_shell="${SHELL:-}"
-  if [[ "$current_shell" == "$fish_bin" ]]; then
-    log_subtask "Default shell already set to ${COLOR_PATH}${fish_bin}${COLOR_RESET}"
-    return
-  fi
+	current_shell="${SHELL:-}"
+	if [[ "$current_shell" == "$fish_bin" ]]; then
+		log_subtask "Default shell already set to ${COLOR_PATH}${fish_bin}${COLOR_RESET}"
+		return
+	fi
 
-  log_subtask "Changing default shell to fish (password may be required)..."
-  execute_with_log chsh -s "$fish_bin"
+	log_subtask "Changing default shell to fish (password may be required)..."
+	execute_with_log chsh -s "$fish_bin"
 }
 
 configure_git_module() {
-  if [[ "$MODULE_GIT" != "true" ]]; then
-    log_task "Skipping Git configuration (module disabled)"
-    return
-  fi
+	if [[ "$MODULE_GIT" != "true" ]]; then
+		log_task "Skipping Git configuration (module disabled)"
+		return
+	fi
 
-  log_task "Configuring Git..."
+	log_task "Configuring Git..."
 
-  if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
-    log_preview "Would apply ${#GIT_CONFIG_SETTINGS[@]} global Git config entries"
-    log_preview "Use --dry-run --verbose to expand every Git config command"
-    return
-  fi
+	if [[ "$DRY_RUN" == "true" && "$VERBOSE" != "true" ]]; then
+		log_preview "Would apply ${#GIT_CONFIG_SETTINGS[@]} global Git config entries"
+		log_preview "Use --dry-run --verbose to expand every Git config command"
+		return
+	fi
 
-  apply_git_config_entries "${GIT_CONFIG_SETTINGS[@]}"
+	apply_git_config_entries "${GIT_CONFIG_SETTINGS[@]}"
 }
 
 install_neovim_config() {
-  log_task "Downloading neovim config..."
-  log_subtask "Destination: ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}"
+	log_task "Downloading neovim config..."
+	log_subtask "Destination: ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}"
 
-  if [[ -e "$CONFIG_PATH/nvim" ]]; then
-    log_warn "Neovim config already exists at ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}, skipping clone."
-    return
-  fi
+	if [[ -e "$CONFIG_PATH/nvim" ]]; then
+		log_warn "Neovim config already exists at ${COLOR_PATH}$CONFIG_PATH/nvim${COLOR_RESET}, skipping clone."
+		return
+	fi
 
-  execute_with_log git clone --recurse-submodules git@github.com:BBboy01/nvim.git "$CONFIG_PATH/nvim"
+	execute_with_log git clone --recurse-submodules git@github.com:BBboy01/nvim.git "$CONFIG_PATH/nvim"
 }
 
 install_tmux_plugin_manager() {
-  log_task "Installing Tmux Plugin Manager..."
-  log_subtask "Destination: ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}"
+	log_task "Installing Tmux Plugin Manager..."
+	log_subtask "Destination: ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}"
 
-  if [[ -e "$HOME/.tmux/plugins/tpm" ]]; then
-    log_warn "Tmux Plugin Manager already exists at ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}, skipping clone."
-    return
-  fi
+	if [[ -e "$HOME/.tmux/plugins/tpm" ]]; then
+		log_warn "Tmux Plugin Manager already exists at ${COLOR_PATH}$HOME/.tmux/plugins/tpm${COLOR_RESET}, skipping clone."
+		return
+	fi
 
-  execute_with_log git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+	execute_with_log git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 }
 
 resolve_tpm_install_plugins_bin() {
-  if [[ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]]; then
-    printf '%s\n' "$HOME/.tmux/plugins/tpm/bin/install_plugins"
-    return
-  fi
+	if [[ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]]; then
+		printf '%s\n' "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+		return
+	fi
 
-  return 1
+	return 1
 }
 
 install_tmux_plugins() {
-  local install_plugins_bin=""
+	local install_plugins_bin=""
 
-  if install_plugins_bin="$(resolve_tpm_install_plugins_bin)"; then
-    log_task "Installing tmux plugins from ${COLOR_PATH}${install_plugins_bin}${COLOR_RESET}..."
-    execute_with_log "$install_plugins_bin"
-    return
-  fi
+	if install_plugins_bin="$(resolve_tpm_install_plugins_bin)"; then
+		log_task "Installing tmux plugins from ${COLOR_PATH}${install_plugins_bin}${COLOR_RESET}..."
+		execute_with_log "$install_plugins_bin"
+		return
+	fi
 
-  if [[ "$DRY_RUN" == "true" ]]; then
-    install_plugins_bin="$HOME/.tmux/plugins/tpm/bin/install_plugins"
-    log_task "Installing tmux plugins from ${COLOR_PATH}${install_plugins_bin}${COLOR_RESET}..."
-    execute_with_log "$install_plugins_bin"
-    return
-  fi
+	if [[ "$DRY_RUN" == "true" ]]; then
+		install_plugins_bin="$HOME/.tmux/plugins/tpm/bin/install_plugins"
+		log_task "Installing tmux plugins from ${COLOR_PATH}${install_plugins_bin}${COLOR_RESET}..."
+		execute_with_log "$install_plugins_bin"
+		return
+	fi
 
-  log_warn "Tmux plugin installer not found at ${COLOR_PATH}$HOME/.tmux/plugins/tpm/bin/install_plugins${COLOR_RESET}, skipping plugin installation."
+	log_warn "Tmux plugin installer not found at ${COLOR_PATH}$HOME/.tmux/plugins/tpm/bin/install_plugins${COLOR_RESET}, skipping plugin installation."
 }
 
 resolve_rustup_bin() {
-  if command -v rustup >/dev/null 2>&1; then
-    command -v rustup
-    return
-  fi
+	if command -v rustup >/dev/null 2>&1; then
+		command -v rustup
+		return
+	fi
 
-  if [[ -x "$HOME/.cargo/bin/rustup" ]]; then
-    printf '%s\n' "$HOME/.cargo/bin/rustup"
-    return
-  fi
+	if [[ -x "$HOME/.cargo/bin/rustup" ]]; then
+		printf '%s\n' "$HOME/.cargo/bin/rustup"
+		return
+	fi
 
-  return 1
+	return 1
 }
 
 install_rustup() {
-  local rustup_bin=""
+	local rustup_bin=""
 
-  if rustup_bin="$(resolve_rustup_bin)"; then
-    log_subtask "rustup already available at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}, skipping bootstrap."
-    return
-  fi
+	if rustup_bin="$(resolve_rustup_bin)"; then
+		log_subtask "rustup already available at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}, skipping bootstrap."
+		return
+	fi
 
-  log_subtask "Installing rustup via the official installer..."
-  log_subtask \
-    "Running: ${COLOR_CMD}curl${COLOR_RESET} ${COLOR_ARG}--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs${COLOR_RESET} | ${COLOR_CMD}sh${COLOR_RESET} ${COLOR_ARG}-s -- -y --no-modify-path${COLOR_RESET}"
+	log_subtask "Installing rustup via the official installer..."
+	log_subtask \
+		"Running: ${COLOR_CMD}curl${COLOR_RESET} ${COLOR_ARG}--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs${COLOR_RESET} | ${COLOR_CMD}sh${COLOR_RESET} ${COLOR_ARG}-s -- -y --no-modify-path${COLOR_RESET}"
 
-  if [[ "$DRY_RUN" != "true" ]]; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
-  else
-    log_preview \
-      "Would execute: ${COLOR_CMD}curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path${COLOR_RESET}"
-  fi
+	if [[ "$DRY_RUN" != "true" ]]; then
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+	else
+		log_preview \
+			"Would execute: ${COLOR_CMD}curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path${COLOR_RESET}"
+	fi
 }
 
 install_rust_toolchain() {
-  local rustup_bin=""
+	local rustup_bin=""
 
-  log_task "Installing Rust..."
-  install_rustup
+	log_task "Installing Rust..."
+	install_rustup
 
-  if rustup_bin="$(resolve_rustup_bin)"; then
-    log_subtask "Using rustup at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}"
-    execute_with_log "$rustup_bin" default stable
-    return
-  fi
+	if rustup_bin="$(resolve_rustup_bin)"; then
+		log_subtask "Using rustup at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}"
+		execute_with_log "$rustup_bin" default stable
+		return
+	fi
 
-  if [[ "$DRY_RUN" == "true" ]]; then
-    rustup_bin="$HOME/.cargo/bin/rustup"
-    log_preview \
-      "Assuming rustup would be available at ${COLOR_PATH}${rustup_bin}${COLOR_RESET} after bootstrap"
-    log_subtask "Using rustup at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}"
-    execute_with_log "$rustup_bin" default stable
-    return
-  fi
+	if [[ "$DRY_RUN" == "true" ]]; then
+		rustup_bin="$HOME/.cargo/bin/rustup"
+		log_preview \
+			"Assuming rustup would be available at ${COLOR_PATH}${rustup_bin}${COLOR_RESET} after bootstrap"
+		log_subtask "Using rustup at ${COLOR_PATH}${rustup_bin}${COLOR_RESET}"
+		execute_with_log "$rustup_bin" default stable
+		return
+	fi
 
-  if ! rustup_bin="$(resolve_rustup_bin)"; then
-    log_error "rustup was not found after installation."
-  fi
+	if ! rustup_bin="$(resolve_rustup_bin)"; then
+		log_error "rustup was not found after installation."
+	fi
 }
 
 setup_javascript_tooling() {
-  log_task "Setting up JavaScript package management..."
-  log_subtask "Enabling mise..."
-  execute_with_log mise reshim
-  log_subtask "Enabling corepack..."
-  execute_with_log corepack enable
-  log_subtask "Installing pnpm via corepack..."
-  execute_with_log corepack install -g pnpm@latest
+	log_task "Setting up JavaScript package management..."
+	log_subtask "Enabling mise..."
+	execute_with_log mise reshim
+	log_subtask "Enabling corepack..."
+	execute_with_log corepack enable
+	log_subtask "Installing pnpm via corepack..."
+	execute_with_log corepack install -g pnpm@latest
 }
 
 initialize_rtk_for_codex() {
-  if [[ ! -L "$HOME/.codex" || ! "$HOME/.codex" -ef "$DOTFILES_DIR/link/.codex" ]]; then
-    if [[ "$DRY_RUN" != "true" || "$MODULE_CONFIG" != "true" || ! -d "$DOTFILES_DIR/link/.codex" ]]; then
-      log_warn "Skipping RTK initialization: link/.codex must be linked to ~/.codex first. Run ./setup --config before ./setup --tools."
-      return
-    fi
-  fi
+	if [[ ! -L "$HOME/.codex" || ! "$HOME/.codex" -ef "$DOTFILES_DIR/link/.codex" ]]; then
+		if [[ "$DRY_RUN" != "true" || "$MODULE_CONFIG" != "true" || ! -d "$DOTFILES_DIR/link/.codex" ]]; then
+			log_warn "Skipping RTK initialization: link/.codex must be linked to ~/.codex first. Run ./setup --config before ./setup --tools."
+			return
+		fi
+	fi
 
-  log_task "Initializing RTK for Codex..."
-  execute_with_log rtk init -g --codex
+	log_task "Initializing RTK for Codex..."
+	execute_with_log rtk init -g --codex
 }
 
 configure_tools_module() {
-  if [[ "$MODULE_TOOLS" != "true" ]]; then
-    log_task "Skipping developer tooling initialization (module disabled)"
-    return
-  fi
+	if [[ "$MODULE_TOOLS" != "true" ]]; then
+		log_task "Skipping developer tooling initialization (module disabled)"
+		return
+	fi
 
-  install_neovim_config
-  install_tmux_plugin_manager
-  install_tmux_plugins
-  install_rust_toolchain
-  setup_javascript_tooling
-  initialize_rtk_for_codex
+	install_neovim_config
+	install_tmux_plugin_manager
+	install_tmux_plugins
+	install_rust_toolchain
+	setup_javascript_tooling
+	initialize_rtk_for_codex
 }
 
 run_post_install_modules() {
-  if [[ "$MODULE_BREW" != "true" && "$MODULE_SHELL" != "true" && \
-    "$MODULE_GIT" != "true" && "$MODULE_TOOLS" != "true" ]]; then
-    return
-  fi
+	if [[ "$MODULE_BREW" != "true" && "$MODULE_SHELL" != "true" &&
+		"$MODULE_GIT" != "true" && "$MODULE_TOOLS" != "true" ]]; then
+		return
+	fi
 
-  if [[ "$DRY_RUN" == "true" ]]; then
-    log_main "Previewing post-install package configuration..."
-    install_homebrew_packages
-    configure_shell_module
-    configure_git_module
-    configure_tools_module
-    return
-  fi
+	if [[ "$DRY_RUN" == "true" ]]; then
+		log_main "Previewing post-install package configuration..."
+		install_homebrew_packages
+		configure_shell_module
+		configure_git_module
+		configure_tools_module
+		return
+	fi
 
-  log_main "Installing and configuring packages..."
-  install_homebrew_packages
-  configure_shell_module
-  configure_git_module
-  configure_tools_module
+	log_main "Installing and configuring packages..."
+	install_homebrew_packages
+	configure_shell_module
+	configure_git_module
+	configure_tools_module
 }
 
 log_summary_module() {
-  local module_name="$1"
-  local enabled="$2"
+	local module_name="$1"
+	local enabled="$2"
 
-  if [[ "$enabled" == "true" ]]; then
-    log_subtask "✅ ${module_name}"
-  fi
+	if [[ "$enabled" == "true" ]]; then
+		log_subtask "✅ ${module_name}"
+	fi
 }
 
 log_manual_steps() {
-  if [[ "$MODULE_SYSTEM" != "true" && "$MODULE_BREW" != "true" ]]; then
-    return
-  fi
+	if [[ "$MODULE_SYSTEM" != "true" && "$MODULE_BREW" != "true" ]]; then
+		return
+	fi
 
-  if [[ "$MODULE_SYSTEM" == "true" ]]; then
+	if [[ "$MODULE_SYSTEM" == "true" ]]; then
 		log_manual_confirmation_section "Review Menu Bar Controls:" \
 			"Open ${COLOR_PATH}System Settings > Menu Bar${COLOR_RESET}." \
 			"Choose which controls appear in the menu bar and customize Control Center as needed."
-  fi
+	fi
 
-  if [[ "$MODULE_BREW" == "true" ]]; then
-    log_manual_confirmation_section "Recommended for Homebrew Cask updates:" \
-      "Open ${COLOR_PATH}System Settings > Privacy & Security > App Management${COLOR_RESET}." \
-      "Enable ${COLOR_PATH}Ghostty${COLOR_RESET} if you use it to run Homebrew upgrades."
-  fi
+	if [[ "$MODULE_BREW" == "true" ]]; then
+		log_manual_confirmation_section "Recommended for Homebrew Cask updates:" \
+			"Open ${COLOR_PATH}System Settings > Privacy & Security > App Management${COLOR_RESET}." \
+			"Enable ${COLOR_PATH}Ghostty${COLOR_RESET} if you use it to run Homebrew upgrades."
+	fi
 }
 
 finalize_setup() {
-  if [[ "$MODULE_SYSTEM" == "true" || "$MODULE_CONFIG" == "true" || \
-    "$MODULE_BREW" == "true" || "$MODULE_SHELL" == "true" || \
-    "$MODULE_GIT" == "true" || "$MODULE_TOOLS" == "true" ]]; then
-    log_main "Setup completed successfully!"
-    log_main "Please sign out and sign in for all system configurations to take effect"
+	if [[ "$MODULE_SYSTEM" == "true" || "$MODULE_CONFIG" == "true" ||
+		"$MODULE_BREW" == "true" || "$MODULE_SHELL" == "true" ||
+		"$MODULE_GIT" == "true" || "$MODULE_TOOLS" == "true" ]]; then
+		log_main "Setup completed successfully!"
+		log_main "Please sign out and sign in for all system configurations to take effect"
 
-    log_task "Summary of executed modules:"
-    log_summary_module "macOS System Defaults" "$MODULE_SYSTEM"
-    log_summary_module "Config Linking" "$MODULE_CONFIG"
-    log_summary_module "Homebrew & Apps" "$MODULE_BREW"
-    log_summary_module "Shell Configuration" "$MODULE_SHELL"
-    log_summary_module "Git Configuration" "$MODULE_GIT"
-    log_summary_module "Developer Tooling" "$MODULE_TOOLS"
-    log_manual_steps
-  else
-    log_main "No modules were selected for execution. Use --help for usage information."
-  fi
+		log_task "Summary of executed modules:"
+		log_summary_module "macOS System Defaults" "$MODULE_SYSTEM"
+		log_summary_module "Config Linking" "$MODULE_CONFIG"
+		log_summary_module "Homebrew & Apps" "$MODULE_BREW"
+		log_summary_module "Shell Configuration" "$MODULE_SHELL"
+		log_summary_module "Git Configuration" "$MODULE_GIT"
+		log_summary_module "Developer Tooling" "$MODULE_TOOLS"
+		log_manual_steps
+	else
+		log_main "No modules were selected for execution. Use --help for usage information."
+	fi
 }
 
 main() {
-  parse_args "$@"
+	parse_args "$@"
 
-  log_main "Starting setup script..."
-  log_execution_mode
-  log_enabled_modules
-  authenticate_for_system_operations
+	log_main "Starting setup script..."
+	log_execution_mode
+	log_enabled_modules
+	authenticate_for_system_operations
 
-  run_system_module
-  run_homebrew_module
-  run_config_module
-  run_post_install_modules
-  finalize_setup
+	run_system_module
+	run_homebrew_module
+	run_config_module
+	run_post_install_modules
+	finalize_setup
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  main "$@"
+	main "$@"
 fi
